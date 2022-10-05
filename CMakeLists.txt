@@ -4,4 +4,4 @@ project(proyecto_sha256)
 set(CMAKE_CXX_STANDARD 17)
 
 add_executable(proyecto_sha256
-        main.cpp circular_list.h node.h list.h)
+        main.cpp circular_list.h node.h list.h block.h entry.h)
