@@ -36,8 +36,8 @@ public:
 
     virtual void clear() = 0;
 
-    virtual void sort() = 0; // comparables
-    virtual bool is_sorted() = 0;
+//    virtual void sort() = 0; // comparables
+//    virtual bool is_sorted() = 0;
 
     virtual void reverse() = 0; // revierte fisicamente in-place
 };

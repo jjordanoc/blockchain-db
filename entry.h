@@ -12,6 +12,8 @@ struct Entry {
     string receptor;
     double monto;
     unsigned long long timestamp;
+
+    Entry() = default;
     explicit Entry(const string &_emisor, const string &_receptor, const double &_monto, const unsigned long long &_timestamp) : emisor(_emisor), receptor(_receptor), monto(_monto), timestamp(_timestamp) {
     }
     string getDate() const {
@@ -19,6 +21,26 @@ struct Entry {
         return ctime(&t);
     }
 
+    Entry& operator=(Entry& other){
+        emisor = other.emisor;
+        receptor = other.receptor;
+        monto = other.monto;
+        timestamp = other.timestamp;
+        return *this;
+    }
+
+    string stringify(){
+        string str;
+        str += emisor + ",";
+        str += receptor + ",";
+        str += to_string(monto) + ",";
+        str += to_string(timestamp);
+        return str;
+    }
+
+    string print(){
+        return string(emisor + "->" + receptor + " (" + to_string(monto) + "$) " + getDate());
+    }
 };
 
 
