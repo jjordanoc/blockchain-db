@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.22)
 
-project(proyecto_sha256)
+project(sha256)
 
 set(CMAKE_CXX_STANDARD 17)
 

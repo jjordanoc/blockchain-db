@@ -32,6 +32,29 @@ public:
         }
         return os;
     }
+
+    void hack(int blockId, int entryId, Entry entry){
+        if(entryId <= 0 || entryId > BLOCK_SIZE || blockId <= 0 || blockId > this->size()) throw runtime_error("Invalid arguments");
+
+        Block<BLOCK_SIZE>& block = (*this)[blockId - 1];
+
+        // Modificamos un entry de un respectivo bloque
+        block[entryId - 1] = entry;
+        cout << "Hack success" << endl;
+
+        // En caso se modifique el último bloque de la lista
+        if(blockId == this->size()){
+            block.minar();
+        } else {
+            auto tmp = this->head->next;
+            while(tmp != this->head){
+                tmp->data.minar();
+                auto hash = tmp->data.getHashCode();
+                tmp = tmp->next;
+                tmp->data.setPrev(hash);
+            }
+        }
+    }
 };
 
 

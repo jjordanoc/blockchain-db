@@ -49,7 +49,8 @@ public:
             str += datos[i].stringify() + " | ";
         }
         str += to_string(nonce) + ",";
-        str += to_string(id);
+        str += to_string(id) + ",";
+        str += prev;
         return str;
     }
 
@@ -64,6 +65,7 @@ public:
 
     string print(){
         string s;
+        s += id + ":\n";
         for(int i = 0; i < fillCount; i++){
             s += "\t" + datos[i].print() + "\n";
         }
@@ -75,6 +77,15 @@ public:
     string getPrev(){return prev;}
 
     string getHashCode(){return hashCode;}
+
+    Entry& operator[](int id){
+        return datos[id];
+    }
+
+    void setPrev(const string& newhash){
+        prev = newhash;
+    }
+
 };
 
 
