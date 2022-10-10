@@ -10,7 +10,7 @@ void read_csv();
 
 int main()
 {
-    BlockChain<1> bc;
+    BlockChain<5> bc;
 
     auto start = std::chrono::steady_clock::now();
     bc.push("Renato", "Joaquin", 777, 10020);
@@ -48,19 +48,34 @@ int main()
 
     auto end = std::chrono::steady_clock::now();
     double duration = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
-    cout << "Se tardó: " << duration << " segundos en insertar 3 bloques" << endl;
+    cout << "Se tardo " << duration << " segundos en insertar " << bc.size() << " bloques" << endl;
 
     cout << bc << endl;
 
-    Entry entry("Chachi", "OtroChachi", 9999384717892471230, 1134124321119919);
+    string emisorHack, receptorHack; double montoHack; unsigned long long tiempoHack;
+    cout << "Datos del entry para hackear\n---------------------------\n";
+    cout << "Emisor: ";cin >> emisorHack;
+    cout << "Receptor: ";cin >> receptorHack;
+    cout << "Monto: "; cin >> montoHack;
+    cout << "Tiempo(Numeros): "; cin >> tiempoHack;
 
+    Entry entry(emisorHack, receptorHack, montoHack, tiempoHack);
+
+    int blockHack, entryHack;
+    cout << "\nPosicion a hackear\n---------------------\n";
+    while(true) {
+        cout << "Bloque (Numero menor o igual a " << bc.size() << " y mayor a 0): ";cin >> blockHack;
+        if((blockHack > 0 && blockHack <= bc.size())){break;}
+        cout << "Ingrese un numero valido\n";
+    }
+    cout << "Entry: "; cin >> entryHack;
     start = std::chrono::steady_clock::now();
-    bc.hack(1, 1, entry);
+    bc.hack(blockHack, entryHack, entry);
     end = std::chrono::steady_clock::now();
 
     duration = std::chrono::duration_cast<std::chrono::seconds>(end - start).count();
 
-    cout << "Se tardó: " << duration << " segundos el hackeo" << endl;
+    cout << "Se tardo " << duration << " segundos el hackeo" << endl;
 
     cout << bc << endl;
 

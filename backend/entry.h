@@ -40,7 +40,7 @@ struct Entry {
     }
 
     string print(){
-        return string(emisor + "->" + receptor + " (" + to_string(monto) + "$) " + getDate());
+        return emisor + "->" + receptor + " (" + to_string(monto) + "$) " + getDate();
     }
 };
 

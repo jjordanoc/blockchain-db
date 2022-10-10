@@ -65,7 +65,8 @@ public:
 
     string print(){
         string s;
-        s += id + ":\n";
+        s += to_string(id) + ":\n";
+        s += "\tnonce: " + to_string(nonce) + "\n\n";
         for(int i = 0; i < fillCount; i++){
             s += "\t" + datos[i].print() + "\n";
         }

@@ -24,9 +24,7 @@ public:
 
     friend ostream& operator<<(ostream& os, BlockChain<BLOCK_SIZE>& other){
         auto tmp = other.head->next;
-        int count = 1;
         while(tmp != other.head){
-            os << to_string(count++) << ":";
             os << tmp->data.print() << endl;
             tmp = tmp->next;
         }
@@ -40,7 +38,7 @@ public:
 
         // Modificamos un entry de un respectivo bloque
         block[entryId - 1] = entry;
-        cout << "Hack success" << endl;
+        cout << "Hack successed" << endl;
 
         // En caso se modifique el último bloque de la lista
         if(blockId == this->size()){
@@ -51,7 +49,7 @@ public:
                 tmp->data.minar();
                 auto hash = tmp->data.getHashCode();
                 tmp = tmp->next;
-                tmp->data.setPrev(hash);
+                if (tmp != this->head) tmp->data.setPrev(hash); // Validar si se está en el nodo centinela, para no modificar su prev
             }
         }
     }
