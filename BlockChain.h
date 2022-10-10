@@ -38,7 +38,6 @@ public:
 
         // Modificamos un entry de un respectivo bloque
         block[entryId - 1] = entry;
-        cout << "Hack successed" << endl;
 
         // En caso se modifique el último bloque de la lista
         if(blockId == this->size()){

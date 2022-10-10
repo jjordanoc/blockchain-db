@@ -1,5 +1,2 @@
 .idea
-backend/cmake-build-debug
-frontend/cmake-build-debug
-frontend/build
-frontend/.DS_Store
+cmake-build-debug
