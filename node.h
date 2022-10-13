@@ -18,5 +18,4 @@ struct Node {
 };
 
 
-
-#endif //PROYECTO_SHA256_NODE_H
+#endif//PROYECTO_SHA256_NODE_H

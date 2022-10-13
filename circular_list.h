@@ -1,14 +1,15 @@
 #ifndef PROYECTO_SHA256_CIRCULAR_LIST_H
 #define PROYECTO_SHA256_CIRCULAR_LIST_H
 
-#include <iostream>
 #include "list.h"
+#include <iostream>
 
 template<typename T>
 class CircularList : public List<T> {
 protected:
     Node<T> *head;//sentinel
     int _size;
+
 public:
     CircularList() : List<T>() {
         // initialize sentinel
@@ -148,36 +149,36 @@ public:
         _size = 0;
     }
 
-//    void sort() override {
-//        // insertion sort
-//        Node<T> *tmp = head->next->next;
-//        while (tmp != head) {
-//            Node<T> *tmp2 = tmp;
-//            // swap values until correct position is reached
-//            while (tmp2 != head->next && tmp2->prev->data > tmp2->data) {
-//                // swap
-//                T tmp_value = tmp2->prev->data;
-//                tmp2->prev->data = tmp2->data;
-//                tmp2->data = tmp_value;
-//                // move back
-//                tmp2 = tmp2->prev;
-//            }
-//            // advance
-//            tmp = tmp->next;
-//        }
-//    }
-//
-//    bool is_sorted() override {
-//        // compare each pair of elements
-//        Node<T> *tmp = head->next;
-//        for (int i = 0; i < _size; ++i) {
-//            tmp = tmp->next;
-//            if (tmp->prev->data > tmp->data) {
-//                return false;
-//            }
-//        }
-//        return true;
-//    }
+    //    void sort() override {
+    //        // insertion sort
+    //        Node<T> *tmp = head->next->next;
+    //        while (tmp != head) {
+    //            Node<T> *tmp2 = tmp;
+    //            // swap values until correct position is reached
+    //            while (tmp2 != head->next && tmp2->prev->data > tmp2->data) {
+    //                // swap
+    //                T tmp_value = tmp2->prev->data;
+    //                tmp2->prev->data = tmp2->data;
+    //                tmp2->data = tmp_value;
+    //                // move back
+    //                tmp2 = tmp2->prev;
+    //            }
+    //            // advance
+    //            tmp = tmp->next;
+    //        }
+    //    }
+    //
+    //    bool is_sorted() override {
+    //        // compare each pair of elements
+    //        Node<T> *tmp = head->next;
+    //        for (int i = 0; i < _size; ++i) {
+    //            tmp = tmp->next;
+    //            if (tmp->prev->data > tmp->data) {
+    //                return false;
+    //            }
+    //        }
+    //        return true;
+    //    }
 
     void reverse() override {
         Node<T> *tmp = head->next;
@@ -197,4 +198,4 @@ public:
     }
 };
 
-#endif //PROYECTO_SHA256_CIRCULAR_LIST_H
+#endif//PROYECTO_SHA256_CIRCULAR_LIST_H

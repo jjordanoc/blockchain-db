@@ -1,10 +1,9 @@
 #ifndef PROYECTO_SHA256_ENTRY_H
 #define PROYECTO_SHA256_ENTRY_H
 
+#include <chrono>
 #include <iostream>
-#include <chrono>
 #include <time.h>
-#include <chrono>
 
 using namespace std;
 
@@ -22,7 +21,7 @@ struct Entry {
         return ctime(&t);
     }
 
-    Entry& operator=(Entry& other){
+    Entry &operator=(const Entry &other) {
         emisor = other.emisor;
         receptor = other.receptor;
         monto = other.monto;
@@ -30,7 +29,7 @@ struct Entry {
         return *this;
     }
 
-    string stringify(){
+    [[nodiscard]] string stringify() const {
         string str;
         str += emisor + ",";
         str += receptor + ",";
@@ -39,10 +38,10 @@ struct Entry {
         return str;
     }
 
-    string print(){
+    [[nodiscard]] string print() const {
         return emisor + "->" + receptor + " (" + to_string(monto) + "$) " + getDate();
     }
 };
 
 
-#endif //PROYECTO_SHA256_ENTRY_H
+#endif//PROYECTO_SHA256_ENTRY_H
