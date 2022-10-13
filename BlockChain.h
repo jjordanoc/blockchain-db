@@ -13,8 +13,7 @@ class BlockChain : public CircularList<Block<BLOCK_SIZE>> {
 public:
     BlockChain() : CircularList<Block<BLOCK_SIZE>>() {}
 
-    void push(const string &_emisor, const string &_receptor, const double &_monto, const unsigned long long &_timestamp) {
-        Entry transaccion(_emisor, _receptor, _monto, _timestamp);
+    void insertEntry(const Entry &transaccion) {
         // Si no se pudo insertar una transaccion en el último bloque, quiere decir que está lleno por lo que creamos un nuevo bloque
         if (!this->head->prev->data.push(transaccion)) {
             this->push_back(Block<BLOCK_SIZE>(this->size() + 1, this->head->prev->data.getHashCode()));
@@ -22,17 +21,7 @@ public:
         }
     }
 
-
-    friend ostream &operator<<(ostream &os, BlockChain<BLOCK_SIZE> &other) {
-        auto tmp = other.head->next;
-        while (tmp != other.head) {
-            os << tmp->data.print() << endl;
-            tmp = tmp->next;
-        }
-        return os;
-    }
-
-    void hack(int blockId, int entryId, const Entry &entry) {
+    void hackEntry(int blockId, int entryId, const Entry &entry) {
         if (entryId <= 0 || entryId > BLOCK_SIZE || blockId <= 0 || blockId > this->size()) throw runtime_error("Invalid arguments");
 
         Block<BLOCK_SIZE> &block = (*this)[blockId - 1];
@@ -52,6 +41,15 @@ public:
                 if (tmp != this->head) tmp->data.setPrev(hash);// Validar si se está en el nodo centinela, para no modificar su prev
             }
         }
+    }
+
+    friend ostream &operator<<(ostream &os, BlockChain<BLOCK_SIZE> &other) {
+        auto tmp = other.head->next;
+        while (tmp != other.head) {
+            os << tmp->data.print() << endl;
+            tmp = tmp->next;
+        }
+        return os;
     }
 };
 

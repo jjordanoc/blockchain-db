@@ -7,81 +7,89 @@
 using namespace std;
 
 void read_csv();
-
 template<typename Function, typename... Params>
 void time_function(Function &fun, const string &function_name, Params &...params);
 
+#define BLOCK_SIZE 5
+
 int main() {
-    BlockChain<5> bc;
+    BlockChain<BLOCK_SIZE> bc;
 
     auto test_insert_entry = [&]() {
-        bc.push("Renato", "Joaquin", 777, 10020);
-        bc.push("Chachi", "Joaquin", 123, 100420);
-        bc.push("Renato", "Joaquin", 3, 10020);
-        bc.push("Renato", "Joaquin", 5, 10020);
-        bc.push("Renato", "Joaquin", 1, 10020);
-        bc.push("Renato", "Joaquin", 521, 10020);
-        bc.push("Renato", "Joaquin", 14, 10020);
-        bc.push("Renato", "Joaquin", 13, 10020);
-        bc.push("Renato", "Joaquin", 13, 10020);
-        bc.push("Renato", "Joaquin", 13, 10020);
+        bc.insertEntry(Entry("Renato", "Joaquin", 777, 10020));
+        bc.insertEntry(Entry("Chachi", "Joaquin", 123, 100420));
+        bc.insertEntry(Entry("Renato", "Joaquin", 3, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 5, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 1, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 521, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 14, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
 
-        bc.push("Renato", "Joaquin", 777, 10020);
-        bc.push("Chachi", "Joaquin", 123, 100420);
-        bc.push("Renato", "Joaquin", 3, 10020);
-        bc.push("Renato", "Joaquin", 5, 10020);
-        bc.push("Renato", "Joaquin", 1, 10020);
-        bc.push("Renato", "Joaquin", 521, 10020);
-        bc.push("Renato", "Joaquin", 14, 10020);
-        bc.push("Renato", "Joaquin", 13, 10020);
-        bc.push("Renato", "Joaquin", 13, 10020);
-        bc.push("Renato", "Joaquin", 13, 10020);
+        bc.insertEntry(Entry("Renato", "Joaquin", 777, 10020));
+        bc.insertEntry(Entry("Chachi", "Joaquin", 123, 100420));
+        bc.insertEntry(Entry("Renato", "Joaquin", 3, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 5, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 1, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 521, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 14, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
 
-        bc.push("Renato", "Joaquin", 777, 10020);
-        bc.push("Chachi", "Joaquin", 123, 100420);
-        bc.push("Renato", "Joaquin", 3, 10020);
-        bc.push("Renato", "Joaquin", 5, 10020);
-        bc.push("Renato", "Joaquin", 1, 10020);
-        bc.push("Renato", "Joaquin", 521, 10020);
-        bc.push("Renato", "Joaquin", 14, 10020);
-        bc.push("Renato", "Joaquin", 13, 10020);
-        bc.push("Renato", "Joaquin", 13, 10020);
-        bc.push("Renato", "Joaquin", 13, 10020);
+        bc.insertEntry(Entry("Renato", "Joaquin", 777, 10020));
+        bc.insertEntry(Entry("Chachi", "Joaquin", 123, 100420));
+        bc.insertEntry(Entry("Renato", "Joaquin", 3, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 5, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 1, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 521, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 14, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
         cout << bc << endl;
     };
     time_function(test_insert_entry, "test_insert_entry");
 
+    char is_hacking = 'N';
+    cout << "Test hacking an entry? (Y/N): ";
+    cin >> is_hacking;
+    if (is_hacking == 'Y') {
+        int blockHack, entryHack;
+        cout << "Position to hack\n---------------------\n";
+        while (true) {
+            cout << "Block ID (Between " << bc.size() << " and 1): ";
+            cin >> blockHack;
+            if ((blockHack > 0 && blockHack <= bc.size())) { break; }
+            cout << "Invalid number.\n";
+        }
+        cout << "Block ID (Between " << BLOCK_SIZE << " and 1): ";
+        cin >> entryHack;
 
-    string emisorHack, receptorHack;
-    double montoHack;
-    unsigned long long tiempoHack;
-    cout << "Datos del entry para hackear\n---------------------------\n";
-    cout << "Emisor: ";
-    cin >> emisorHack;
-    cout << "Receptor: ";
-    cin >> receptorHack;
-    cout << "Monto: ";
-    cin >> montoHack;
-    cout << "Tiempo(Numeros): ";
-    cin >> tiempoHack;
+        string emisorHack, receptorHack;
+        double montoHack;
+        unsigned long long tiempoHack;
+        cout << "Datos del nuevo entry\n---------------------------\n";
+        cout << "Emisor: ";
+        cin >> emisorHack;
+        cout << "Receptor: ";
+        cin >> receptorHack;
+        cout << "Monto: ";
+        cin >> montoHack;
+        cout << "Tiempo (UNIX Timestamp): ";
+        cin >> tiempoHack;
 
-    Entry entry(emisorHack, receptorHack, montoHack, tiempoHack);
+        Entry entry(emisorHack, receptorHack, montoHack, tiempoHack);
 
-    int blockHack, entryHack;
-    cout << "\nPosicion a hackear\n---------------------\n";
-    while (true) {
-        cout << "Bloque (Numero menor o igual a " << bc.size() << " y mayor a 0): ";
-        cin >> blockHack;
-        if ((blockHack > 0 && blockHack <= bc.size())) { break; }
-        cout << "Ingrese un numero valido\n";
+
+        auto test_hack = [&]() {
+            bc.hackEntry(blockHack, entryHack, entry);
+            cout << bc << endl;
+        };
+        time_function(test_hack, "test_hack");
     }
-    cout << "Entry: ";
-    cin >> entryHack;
-    auto test_hack = [&]() {
-        bc.hack(blockHack, entryHack, entry);
-        cout << bc << endl;
-    };
-    time_function(test_hack, "test_hack");
+
 
     return 0;
 }
@@ -107,7 +115,7 @@ void read_csv() {
         getline(file, receptor, ',');
         getline(file, monto, ',');
         getline(file, time);
-        bc.push(emisor, receptor, stod(monto), stoll(time));
+        bc.insertEntry(Entry(emisor, receptor, stod(monto), stoll(time)));
         if (file.eof()) break;
     }
     cout << bc << endl;

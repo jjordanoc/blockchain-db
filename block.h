@@ -57,7 +57,7 @@ public:
 
     size_t getfillCount() { return fillCount; }
 
-    bool push(Entry &transaccion) {
+    bool push(const Entry &transaccion) {
         if (fillCount >= BLOCK_SIZE) { return false; }
         datos[fillCount++] = transaccion;
         minar();

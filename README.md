@@ -22,17 +22,17 @@ Se decidió estudiar más a fondo esta estructura de datos segura y ver que tan 
 
 ## Implementación del proyecto
 
-Para la implementación del Blockchain se decidió utilizar la estructura de datos **lista circular doblemente enlazada con nodo centila** [1]. 
-La lista circular doblemente enlazada con nodo centila es una construcción de nodos que apuntan a un siguiente nodo o uno anterior. Con esta construcción del nodo se logró juntar los bloques para poder formar nuestro Blockchain.
+Para la implementación del Blockchain se decidió utilizar la estructura de datos **lista circular doblemente enlazada con nodo centinela** [1]. 
+La lista circular doblemente enlazada con nodo centinela es una construcción de nodos que apuntan a un siguiente nodo o uno anterior. Con esta construcción del nodo se logró juntar los bloques para poder formar nuestro Blockchain.
 
 Se sabe por construcción del Blockchain que este siempre tiene un bloque inicial con el número máximo de registros que el bloque soporta, a este bloque se le denominará bloque génesis. Es por ello
-que se aprovechará la construcción que posee la lista circular doblemente enlazada con su nodo centila. Este nodo centila nos servirá para definir el bloque génesis el cual no tiene registro disponibles para modificar o buscar.
+que se aprovechará la construcción que posee la lista circular doblemente enlazada con su nodo centinela. Este nodo centinela nos servirá para definir el bloque génesis el cual no tiene registro disponibles para modificar o buscar.
 
 
 ### Métodos disponibles del Blockchain
 
 - **push( ):** Se insertará un nuevo registro al último bloque disponible que el Blockchain tenga. Si el último bloque está con el número máximo de registros disponibles por bloque, se procede a crear un nuevo bloque. 
-**Complejidad:** Se aprovechó el nodo centila de la lista circular doblementa enlazada para poder acceder al nodo previo que este tiene. Por definición de lista circular en [1], el primer nodo siempre apunturá hacia el último nodo. Complejidad de O(1).
+**Complejidad:** Se aprovechó el nodo centinela de la lista circular doblementa enlazada para poder acceder al nodo previo que este tiene. Por definición de lista circular en [1], el primer nodo siempre apunturá hacia el último nodo. Complejidad de O(1).
 
 ## Conclusiones
 

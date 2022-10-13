@@ -10,13 +10,13 @@ using namespace std;
 struct Entry {
     string emisor;
     string receptor;
-    double monto;
-    unsigned long long timestamp;
+    double monto{};
+    unsigned long long timestamp{};
 
     Entry() = default;
     explicit Entry(const string &_emisor, const string &_receptor, const double &_monto, const unsigned long long &_timestamp) : emisor(_emisor), receptor(_receptor), monto(_monto), timestamp(_timestamp) {
     }
-    string getDate() const {
+    [[nodiscard]] string getDate() const {
         time_t t = timestamp / 1000;
         return ctime(&t);
     }
