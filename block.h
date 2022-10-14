@@ -37,7 +37,7 @@ public:
 
         while (fourcharacters != "0000") {
             // rehashear
-            hashCode = sha256(stringify());
+            rehash();
             // Se toman los 4 primero caracteres
             fourcharacters = hashCode.substr(0, 4);
             ++nonce;
@@ -55,7 +55,9 @@ public:
         return str;
     }
 
-    size_t getfillCount() { return fillCount; }
+    void rehash() {
+        hashCode = sha256(stringify());
+    }
 
     bool push(const Entry &transaccion) {
         if (fillCount >= BLOCK_SIZE) { return false; }

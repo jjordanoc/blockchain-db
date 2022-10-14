@@ -12,11 +12,19 @@
 
 ## Introducción
 
-En el presente proyecto se ha implementado una estructura de datos denominada Blockchain. En esta se realizarán operaciones de inserción, modificación y búsqueda. Se tratará de seleccionar las mejores estrcuturas de datos con sus respectivos algoritmos para manejar una complejidad computacional y espacial razonable.  
+En el presente proyecto se ha implementado una estructura de datos de Blockchain. En esta se realizarán operaciones de inserción, modificación y búsqueda. Para la implementación de esta estructura, se han seleccionado las estructuras de datos óptimas con sus respectivos algoritmos asociados para manejar una complejidad computacional y espacial razonable.  
+
+## Descripción del caso de estudio planteado por el grupo
+
+En el presente proyecto se estudiarán las transacciones de un banco ficticio que maneja un Blockchain local con la finalidad de asegurar sus datos.
+
+## Importancia del Blockchain en el dominio de datos elegido
+
+El Blockchain surge en el año 2008 con el objetivo de servir como un registro de contabilidad distribuido y seguro para la criptomoneda Bitcoin. Es así que el Blockchain desde sus orígenes está pensado para servir en aplicaciones financieras.
 
 ## Motivación e importancia del proyecto
 
-Un Blockchain es una estructura que permite el guardado de datos de una forma segura. Su implementación consiste, básicamente, en un conjunto de distintos bloques en donde cada bloque está referenciado por el siguiente como si fuese una lista.
+Un Blockchain es una estructura que permite el guardado de datos de una forma segura. Su implementación consiste en un conjunto de distintos bloques en donde cada bloque está referenciado por el siguiente como si fuese una lista.
 Un bloque está conformado los datos que es un número máximo de registros y por un código hash que permite el guardado seguro. Si se intentase modificar los datos dentro del bloque, se procederá a generar un nuevo código hash lo que genera un retraso y así se pueden detectar fácilmente intentos de modificación.
 Se decidió estudiar más a fondo esta estructura de datos segura y ver que tan bien puede a ser el factor de confiabilidad que brinda el Blockchain, es por ello que se recurre a la construcción desde el inicio utilizando como ayuda un código de encriptación tal como [2].
 
@@ -31,8 +39,9 @@ que se aprovechará la construcción que posee la lista circular doblemente enla
 
 ### Métodos disponibles del Blockchain
 
-- **push( ):** Se insertará un nuevo registro al último bloque disponible que el Blockchain tenga. Si el último bloque está con el número máximo de registros disponibles por bloque, se procede a crear un nuevo bloque. 
-**Complejidad:** Se aprovechó el nodo centinela de la lista circular doblementa enlazada para poder acceder al nodo previo que este tiene. Por definición de lista circular en [1], el primer nodo siempre apunturá hacia el último nodo. Complejidad de O(1).
+- **insertEntry:** Inserta un nuevo registro al último bloque disponible en el Blockchain. Si el último bloque está lleno, se procede a crear un nuevo bloque. 
+**Complejidad:** Complejidad de O(1) en el mejor caso. En la práctica, el tiempo de ejecución en el caso promedio y peor caso tiende a ser aleatorio, pues se debe hacer un rehashing del bloque para mantenerlo íntegro.
+- **hackEntry:** Actualiza un registro en el Blockchain
 
 ## Conclusiones
 

@@ -6,9 +6,9 @@
 #include <iostream>
 using namespace std;
 
-void read_csv();
+void csv_test(const string &filepath);
 template<typename Function, typename... Params>
-void time_function(Function &fun, const string &function_name, Params &...params);
+void time_function(Function &fun, const string &function_name, const Params &...params);
 
 #define BLOCK_SIZE 5
 
@@ -70,18 +70,17 @@ int main() {
         string emisorHack, receptorHack;
         double montoHack;
         unsigned long long tiempoHack;
-        cout << "Datos del nuevo entry\n---------------------------\n";
-        cout << "Emisor: ";
+        cout << "New entry\n---------------------------\n";
+        cout << "Sender: ";
         cin >> emisorHack;
-        cout << "Receptor: ";
+        cout << "Receiver: ";
         cin >> receptorHack;
-        cout << "Monto: ";
+        cout << "Amount: ";
         cin >> montoHack;
-        cout << "Tiempo (UNIX Timestamp): ";
+        cout << "Time (UNIX Timestamp): ";
         cin >> tiempoHack;
 
         Entry entry(emisorHack, receptorHack, montoHack, tiempoHack);
-
 
         auto test_hack = [&]() {
             bc.hackEntry(blockHack, entryHack, entry);
@@ -90,12 +89,14 @@ int main() {
         time_function(test_hack, "test_hack");
     }
 
+    time_function(csv_test, "csv_test", "../MOCKDATA.csv");
 
     return 0;
 }
 
 template<typename Function, typename... Params>
-void time_function(Function &fun, const string &function_name, Params &...params) {
+void time_function(Function &fun, const string &function_name, const Params &...params) {
+    cout << "Executing function " << function_name << "..." << endl;
     const auto start = std::chrono::steady_clock::now();
     fun(params...);
     const auto end = std::chrono::steady_clock::now();
@@ -103,10 +104,10 @@ void time_function(Function &fun, const string &function_name, Params &...params
     cout << "Executed function " << function_name << " in " << duration << " seconds." << endl;
 }
 
-void read_csv() {
+void csv_test(const string &filepath) {
     BlockChain<10> bc;
     string s;
-    ifstream file("../MOCKDATA.csv");
+    ifstream file(filepath);
 
     getline(file, s);
     while (true) {
