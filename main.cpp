@@ -16,39 +16,43 @@ int main() {
     BlockChain<BLOCK_SIZE> bc;
 
     auto test_insert_entry = [&]() {
-        bc.insertEntry(Entry("Renato", "Joaquin", 777, 10020));
-        bc.insertEntry(Entry("Chachi", "Joaquin", 123, 100420));
-        bc.insertEntry(Entry("Renato", "Joaquin", 3, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 5, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 1, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 521, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 14, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 777, 10020));
+        bc.insertEntry(new Entry("Chachi", "Joaquin", 123, 100420));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 3, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 5, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 1, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 521, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 14, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
 
-        bc.insertEntry(Entry("Renato", "Joaquin", 777, 10020));
-        bc.insertEntry(Entry("Chachi", "Joaquin", 123, 100420));
-        bc.insertEntry(Entry("Renato", "Joaquin", 3, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 5, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 1, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 521, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 14, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 777, 10020));
+        bc.insertEntry(new Entry("Chachi", "Joaquin", 123, 100420));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 3, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 5, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 1, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 521, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 14, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
 
-        bc.insertEntry(Entry("Renato", "Joaquin", 777, 10020));
-        bc.insertEntry(Entry("Chachi", "Joaquin", 123, 100420));
-        bc.insertEntry(Entry("Renato", "Joaquin", 3, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 5, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 1, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 521, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 14, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 777, 10020));
+        bc.insertEntry(new Entry("Chachi", "Joaquin", 123, 100420));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 3, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 5, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 1, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 521, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 14, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
         cout << bc << endl;
+        cout << bc.isValid() << endl;
+        bc.validate();
+        cout << bc << endl;
+        cout << bc.isValid() << endl;
     };
     time_function(test_insert_entry, "test_insert_entry");
 
@@ -64,7 +68,7 @@ int main() {
             if ((blockHack > 0 && blockHack <= bc.size())) { break; }
             cout << "Invalid number.\n";
         }
-        cout << "Block ID (Between " << BLOCK_SIZE << " and 1): ";
+        cout << "Entry ID (Between " << BLOCK_SIZE << " and 1): ";
         cin >> entryHack;
 
         string emisorHack, receptorHack;
@@ -80,16 +84,20 @@ int main() {
         cout << "Time (UNIX Timestamp): ";
         cin >> tiempoHack;
 
-        Entry entry(emisorHack, receptorHack, montoHack, tiempoHack);
+        auto entry = new Entry(emisorHack, receptorHack, montoHack, tiempoHack);
 
         auto test_hack = [&]() {
             bc.hackEntry(blockHack, entryHack, entry);
             cout << bc << endl;
+            cout << bc.isValid() << endl;
+            bc.validate();
+            cout << bc << endl;
+            cout << bc.isValid() << endl;
         };
         time_function(test_hack, "test_hack");
     }
 
-    time_function(csv_test, "csv_test", "../MOCKDATA.csv");
+//    time_function(csv_test, "csv_test", "../MOCKDATA.csv");
 
     return 0;
 }
@@ -116,8 +124,12 @@ void csv_test(const string &filepath) {
         getline(file, receptor, ',');
         getline(file, monto, ',');
         getline(file, time);
-        bc.insertEntry(Entry(emisor, receptor, stod(monto), stoll(time)));
+        bc.insertEntry(new Entry(emisor, receptor, stod(monto), stoll(time)));
         if (file.eof()) break;
     }
     cout << bc << endl;
+    cout << bc.isValid() << endl;
+    bc.validate();
+    cout << bc << endl;
+    cout << bc.isValid() << endl;
 }

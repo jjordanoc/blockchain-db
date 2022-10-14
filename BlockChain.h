@@ -9,44 +9,50 @@
 #include "circular_list.h"
 
 template<size_t BLOCK_SIZE>
-class BlockChain : public CircularList<Block<BLOCK_SIZE>> {
+class BlockChain : public CircularList<Block<BLOCK_SIZE> *> {
 public:
-    BlockChain() : CircularList<Block<BLOCK_SIZE>>() {}
+    BlockChain() : CircularList<Block<BLOCK_SIZE> *>() {
+        this->head->data = new Block<BLOCK_SIZE>();
+    }
 
-    void insertEntry(const Entry &transaccion) {
-        // Si no se pudo insertar una transaccion en el último bloque, quiere decir que está lleno por lo que creamos un nuevo bloque
-        if (!this->head->prev->data.push(transaccion)) {
-            this->push_back(Block<BLOCK_SIZE>(this->size() + 1, this->head->prev->data.getHashCode()));
-            this->head->prev->data.push(transaccion);
+    void insertEntry(Entry *entry) {
+        // Si no se pudo insertar una entry en el último bloque, quiere decir que está lleno por lo que creamos un nuevo bloque
+        if (!this->head->prev->data->insertEntry(entry)) {
+            this->push_back(new Block<BLOCK_SIZE>(this->size() + 1, this->head->prev->data->getHashCode()));
+            this->head->prev->data->insertEntry(entry);
         }
     }
 
-    void hackEntry(int blockId, int entryId, const Entry &entry) {
+    void hackEntry(int blockId, int entryId, Entry *entry) {
         if (entryId <= 0 || entryId > BLOCK_SIZE || blockId <= 0 || blockId > this->size()) throw runtime_error("Invalid arguments");
+        Block<BLOCK_SIZE> *block = (*this)[blockId - 1];
+        block->updateEntry(entryId - 1, entry);
+    }
 
-        Block<BLOCK_SIZE> &block = (*this)[blockId - 1];
+    bool isValid() {
+        auto tmp = this->head->next;
+        while (tmp != this->head) {
+            if (!tmp->data->isValid() || tmp->data->getPrev() != tmp->prev->data->getHashCode()) return false;
+            tmp = tmp->next;
+        }
+        return true;
+    }
 
-        // Modificamos un entry de un respectivo bloque
-        block[entryId - 1] = entry;
-
-        // En caso se modifique el último bloque de la lista
-        if (blockId == this->size()) {
-            block.minar();
-        } else {
-            auto tmp = this->head->next;
-            while (tmp != this->head) {
-                tmp->data.minar();
-                auto hash = tmp->data.getHashCode();
-                tmp = tmp->next;
-                if (tmp != this->head) tmp->data.setPrev(hash);// Validar si se está en el nodo centinela, para no modificar su prev
+    void validate() {
+        auto tmp = this->head->next;
+        while (tmp != this->head) {
+            if (!tmp->data->isValid()) {
+                tmp->data->mine();
             }
+            tmp = tmp->next;
         }
     }
 
     friend ostream &operator<<(ostream &os, BlockChain<BLOCK_SIZE> &other) {
+        os << other.head->data->print() << endl;
         auto tmp = other.head->next;
         while (tmp != other.head) {
-            os << tmp->data.print() << endl;
+            os << tmp->data->print() << endl;
             tmp = tmp->next;
         }
         return os;

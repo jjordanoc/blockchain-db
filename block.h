@@ -10,84 +10,97 @@ class Block {
     size_t id = 0;
     size_t nonce = 0;
 
-    Entry datos[BLOCK_SIZE];
+    Entry *datos[BLOCK_SIZE]{};
     size_t fillCount = 0;
 
-    string prev;
-    string hashCode;
+    string *prev = nullptr;
+    string *hashCode = nullptr;
 
 public:
     Block() {
+        // bloque genesis
         fillCount = BLOCK_SIZE;
-        prev = string(64, '0');
-
-        // Calcular el nonce
-        minar();
+        prev = new string(64, '0');
+        hashCode = new string();
+        mine();
     };
 
-    explicit Block(size_t _id, string _prev) : id(_id), prev(_prev) {
-        // Calcular el nonce
-        minar();
+    explicit Block(size_t _id, string *_prev) : id(_id), prev(_prev) {
+        hashCode = new string();
+        rehash();
     };
 
     // Calcula el nonce para que el hash cumpla con el requisito de tener 4 ceros por delante
-    void minar() {
+    void mine() {
         nonce = 0;
-        string fourcharacters;
 
-        while (fourcharacters != "0000") {
+        while (!isValid()) {
             // rehashear
             rehash();
-            // Se toman los 4 primero caracteres
-            fourcharacters = hashCode.substr(0, 4);
             ++nonce;
         }
+        cout << *hashCode << endl;
     }
 
     string stringify() {
         string str;
-        for (int i = 0; i < fillCount; i++) {
-            str += datos[i].stringify() + " | ";
+        if (datos[0] != nullptr) {
+            for (int i = 0; i < fillCount; i++) {
+                str += datos[i]->stringify() + " | ";
+            }
         }
         str += to_string(nonce) + ",";
         str += to_string(id) + ",";
-        str += prev;
+        str += *prev;
         return str;
     }
 
     void rehash() {
-        hashCode = sha256(stringify());
+       *hashCode = sha256(stringify());
     }
 
-    bool push(const Entry &transaccion) {
-        if (fillCount >= BLOCK_SIZE) { return false; }
+    bool insertEntry(Entry *transaccion) {
+        if (fillCount >= BLOCK_SIZE) { return false; } // block is full
         datos[fillCount++] = transaccion;
-        minar();
+        rehash();
         return true;
+    }
+
+    void updateEntry(const size_t &entryId, Entry *entry) {
+        datos[entryId] = entry;
+        rehash();
+    }
+
+    bool isValid() {
+        return !hashCode->empty() && hashCode->substr(0, 4) == "0000";
     }
 
     string print() {
         string s;
         s += to_string(id) + ":\n";
         s += "\tnonce: " + to_string(nonce) + "\n\n";
-        for (int i = 0; i < fillCount; i++) {
-            s += "\t" + datos[i].print() + "\n";
+        if (datos[0] != nullptr) {
+            for (int i = 0; i < fillCount; i++) {
+                s += "\t" + datos[i]->print() + "\n";
+            }
         }
-        s += "prev: " + prev + "\n";
-        s += "hash: " + hashCode + "\n";
+
+        s += "prev: " + *prev + "\n";
+        s += "hash: " + *hashCode + "\n";
         return s;
     }
 
-    string getPrev() { return prev; }
+    string *getHashCode() { rehash(); return hashCode; }
 
-    string getHashCode() { return hashCode; }
-
-    Entry &operator[](int idx) {
-        return datos[idx];
+    string *getPrev() {
+        return prev;
     }
 
-    void setPrev(const string &newhash) {
-        prev = newhash;
+    ~Block() {
+        delete hashCode;
+        for (int i = 0; i < fillCount; ++i) {
+            delete datos[i];
+        }
     }
 };
 

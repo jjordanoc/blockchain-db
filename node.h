@@ -14,7 +14,9 @@ struct Node {
     explicit Node(T value) : data(value), next(nullptr), prev(nullptr) {
     }
 
-    ~Node() = default;
+    ~Node() {
+        delete data;
+    };
 };
 
 
