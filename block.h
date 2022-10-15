@@ -36,10 +36,9 @@ public:
 
         while (!isValid()) {
             // rehashear
-            rehash();
             ++nonce;
+            rehash();
         }
-        cout << *hashCode << endl;
     }
 
     string stringify() {

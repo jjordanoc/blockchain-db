@@ -49,7 +49,6 @@ public:
     }
 
     friend ostream &operator<<(ostream &os, BlockChain<BLOCK_SIZE> &other) {
-        os << other.head->data->print() << endl;
         auto tmp = other.head->next;
         while (tmp != other.head) {
             os << tmp->data->print() << endl;
