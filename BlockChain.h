@@ -16,7 +16,6 @@ public:
     }
 
     void insertEntry(Entry *entry) {
-        // Si no se pudo insertar una entry en el último bloque, quiere decir que está lleno por lo que creamos un nuevo bloque
         if (!this->head->prev->data->insertEntry(entry)) {
             this->push_back(new Block<BLOCK_SIZE>(this->size() + 1, this->head->prev->data->getHashCode()));
             this->head->prev->data->insertEntry(entry);

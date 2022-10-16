@@ -30,12 +30,12 @@ public:
         rehash();
     };
 
-    // Calcula el nonce para que el hash cumpla con el requisito de tener 4 ceros por delante
+
     void mine() {
+        // require the hash to have at least 4 leading zeros
         nonce = 0;
 
         while (!isValid()) {
-            // rehashear
             ++nonce;
             rehash();
         }
@@ -94,10 +94,6 @@ public:
     string *getHashCode() {
         rehash();
         return hashCode;
-    }
-
-    string *getPrev() {
-        return prev;
     }
 
     ~Block() {

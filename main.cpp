@@ -2,7 +2,9 @@
 // Created by renato on 10/5/22.
 //
 #include "BlockChain.h"
-#include "fstream"
+#include "studententry.h"
+#include "transactionentry.h"
+#include <fstream>
 #include <iostream>
 using namespace std;
 
@@ -16,38 +18,41 @@ int main() {
     BlockChain<BLOCK_SIZE> bc;
 
     auto test_insert_entry = [&]() {
-        bc.insertEntry(new Entry("Renato", "Joaquin", 777, 10020));
-        bc.insertEntry(new Entry("Chachi", "Joaquin", 123, 100420));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 3, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 5, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 1, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 521, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 14, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 777, 10020));
+        bc.insertEntry(new TransactionEntry("Chachi", "Joaquin", 123, 100420));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 3, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 5, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 1, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 521, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 14, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 13, 10020));
 
-        bc.insertEntry(new Entry("Renato", "Joaquin", 777, 10020));
-        bc.insertEntry(new Entry("Chachi", "Joaquin", 123, 100420));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 3, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 5, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 1, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 521, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 14, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 777, 10020));
+        bc.insertEntry(new TransactionEntry("Chachi", "Joaquin", 123, 100420));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 3, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 5, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 1, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 521, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 14, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 13, 10020));
 
-        bc.insertEntry(new Entry("Renato", "Joaquin", 777, 10020));
-        bc.insertEntry(new Entry("Chachi", "Joaquin", 123, 100420));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 3, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 5, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 1, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 521, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 14, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
-        bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 777, 10020));
+        bc.insertEntry(new TransactionEntry("Chachi", "Joaquin", 123, 100420));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 3, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 5, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 1, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 521, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 14, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new TransactionEntry("Renato", "Joaquin", 13, 10020));
+        bc.insertEntry(new StudentEntry("Joaquin", 20));
+        bc.insertEntry(new StudentEntry("Renato", 20));
+        bc.insertEntry(new StudentEntry("Jose Chachi", 20));
         cout << bc << endl;
         cout << "Is the blockchain valid? " << boolalpha << bc.isValid() << endl;
         bc.validate();
@@ -73,7 +78,7 @@ int main() {
 
         string emisorHack, receptorHack;
         double montoHack;
-        unsigned long long tiempoHack;
+        time_t tiempoHack;
         cout << "New entry\n---------------------------\n";
         cout << "Sender: ";
         cin >> emisorHack;
@@ -84,7 +89,7 @@ int main() {
         cout << "Time (UNIX Timestamp): ";
         cin >> tiempoHack;
 
-        auto entry = new Entry(emisorHack, receptorHack, montoHack, tiempoHack);
+        auto entry = new TransactionEntry(emisorHack, receptorHack, montoHack, tiempoHack);
 
         auto test_hack = [&]() {
             bc.hackEntry(blockHack, entryHack, entry);
@@ -124,7 +129,7 @@ void csv_test(const string &filepath) {
         getline(file, receptor, ',');
         getline(file, monto, ',');
         getline(file, time);
-        bc.insertEntry(new Entry(emisor, receptor, stod(monto), stoll(time)));
+        bc.insertEntry(new TransactionEntry(emisor, receptor, stod(monto), stoll(time)));
         if (file.eof()) break;
     }
     cout << bc << endl;
