@@ -1,14 +1,15 @@
-# Block Chain
-## Proyecto Computacional
-### Algoritmos y Estructuras de Datos - 2022 - 2
+# Blockchain
+## Algoritmos y Estructuras de Datos - 2022 - 2
 
 [![N|Solid](https://utec.edu.pe/sites/all/themes/utec_theme/LOGO_UTEC.png)](https://utec.edu.pe/carreras/ciencia-de-la-computacion)
 
-|            Participante             |  Papel  |
-|:-----------------------------------:|:-------:|
-|  Joaquín Francisco Jordán O'Connor  | Backend |
-|    José Rafael Chachi Rodriguez     | Backend |
-|    Renato Aurelio Cernades Ames     | Backend |
+## Autores
+
+|                     <a target="_blank">**Joaquín Jordán**</a>                     |                             <a target="_blank">**Renato Cernades**</a>                                                         |                       <a target="_blank">**José Chachi**</a>                        |  
+|:---------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------:|
+|           ![Joaquín](https://avatars.githubusercontent.com/u/83974213)            |                                  ![Renato](https://avatars.githubusercontent.com/u/83974266)                                   |              ![José](https://avatars.githubusercontent.com/u/83974741)              |                                              
+| <a href="https://github.com/jjordanoc" target="_blank">`github.com/jjordanoc`</a> |                <a href="https://github.com/RenatoCernades0107" target="_blank">`github.com/RenatoCernades`</a>                 | <a href="https://github.com/JoseChachi" target="_blank">`github.com/JoseChachi`</a> |
+
 
 ## Introducción
 
@@ -22,38 +23,28 @@ En el presente proyecto se estudiarán las transacciones de un banco ficticio qu
 
 El Blockchain surge en el año 2008 con el objetivo de servir como un registro de contabilidad distribuido y seguro para la criptomoneda Bitcoin. Es así que el Blockchain desde sus orígenes está pensado para servir en aplicaciones financieras.
 
-## Motivación e importancia del proyecto
+## Estructura del blockchain
 
-Un Blockchain es una estructura que permite el guardado de datos de una forma segura. Su implementación consiste en un conjunto de distintos bloques en donde cada bloque está referenciado por el siguiente como si fuese una lista.
-Un bloque está conformado los datos que es un número máximo de registros y por un código hash que permite el guardado seguro. Si se intentase modificar los datos dentro del bloque, se procederá a generar un nuevo código hash lo que genera un retraso y así se pueden detectar fácilmente intentos de modificación.
-Se decidió estudiar más a fondo esta estructura de datos segura y ver que tan bien puede a ser el factor de confiabilidad que brinda el Blockchain, es por ello que se recurre a la construcción desde el inicio utilizando como ayuda un código de encriptación tal como [2].
-
-## Implementación del proyecto
-
-Para la implementación del Blockchain se decidió utilizar la estructura de datos **lista circular doblemente enlazada con nodo centinela** [1]. 
-La lista circular doblemente enlazada con nodo centinela es una construcción de nodos que apuntan a un siguiente nodo o uno anterior. Con esta construcción del nodo se logró juntar los bloques para poder formar nuestro Blockchain.
-
-Se sabe por construcción del Blockchain que este siempre tiene un bloque inicial con el número máximo de registros que el bloque soporta, a este bloque se le denominará bloque génesis. Es por ello
-que se aprovechará la construcción que posee la lista circular doblemente enlazada con su nodo centinela. Este nodo centinela nos servirá para definir el bloque génesis el cual no tiene registro disponibles para modificar o buscar.
+Para la implementación del Blockchain se decidió utilizar una lista circular doblemente enlazada con centinela [1]. 
+Esta lista está compuesta por estructuras llamadas bloques, que son arreglos de tamaño fijo. Además, cuentan con un puntero a su propio código hash y un puntero al código hash del bloque anterior, de tal manera que, al alterarse el código hash del bloque anterior, esta actualización se ve reflejada también en el bloque actual.
+Los bloques tambien cuentan con un id, un entero positivo que indica el orden cronológico del bloque creado, y un nonce. El nonce se calcula al momento de minar el bloque como el menor entero positivo que produce por lo menos cuatro ceros al inicio del hash. Esta es la técnica de _proof of work_ que se implementó en el Blockchain.
+La integridad del contenido del Blockchain está garantizada por los métodos limitados que contamos para interactuar con la estructura: ``insertEntry``, ``hackEntry``, ``searchEntry``, ``isValid`` y ``validate``. Las operaciones realizadas sobre el Blockchain pueden invalidarlo; sin embargo, se puede verificar la validez del Blockchain y validarlo, minando los bloques que haga falta.
 
 
-### Métodos disponibles del Blockchain
+### Análisis de la complejidad de los métodos del Blockchain
 
 - **insertEntry:** Inserta un nuevo registro al último bloque disponible en el Blockchain. Si el último bloque está lleno, se procede a crear un nuevo bloque. 
-**Complejidad:** Complejidad de O(1) en el mejor caso. En la práctica, el tiempo de ejecución en el caso promedio y peor caso tiende a ser aleatorio, pues se debe hacer un rehashing del bloque para mantenerlo íntegro.
-- **hackEntry:** Actualiza un registro en el Blockchain
-
+**Complejidad:** O(1), pues se emplea una estructura de tipo lista doblemente enlazada con nodo centinela, que es eficiente para la inserción al final.
+- **hackEntry:** Actualiza un registro cualquiera en el Blockchain.
+**Complejidad:** O(n) donde n es la longitud del Blockchain, pues se debe buscar el bloque según su id para poder actualizar uno de sus registros.
+- **isValid:** Verifica que cada bloque en el Blockchain sea válido, es decir, el código hash de cada bloque debe contener por lo menos cuatro ceros al inicio.
+- **Complejidad:** O(n) donde n es la longitud del Blockchain, pues en el peor de los casos (si el bloque del final es el único invalido) se debe recorrer toda la estructura.
+- **validate:** Mina los bloques no válidos.
+- **Complejidad:** O(k*n) donde n es la longitud del Blockchain y k es una constante aleatoria, esto se debe a que el cálculo del nonce para cada bloque tarda un tiempo aleatorio.
 ## Conclusiones
 
-- Manejar un repositorio como github ayuda a trabajar de forma organizada.
-- La definición de un bloque mediante un código hash es seguro hasta cierto punto. Para poder mejorar esta seguridad se puede modificar el código hash para que cumpla ciertos requerimientos como un cantidad de 0 fijos al inicio. De esta forma se hashea reiteradas veces.
-
-## Autores
-
-|                     <a target="_blank">**Joaquín Jordán**</a>                     |                             <a target="_blank">**Renato Cernades**</a>                                                         |                       <a target="_blank">**José Chachi**</a>                        |  
-|:---------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------:|:-----------------------------------------------------------------------------------:|
-|           ![Joaquín](https://avatars.githubusercontent.com/u/83974213)            |                                  ![Renato](https://avatars.githubusercontent.com/u/83974266)                                   |              ![José](https://avatars.githubusercontent.com/u/83974741)              |                                              
-| <a href="https://github.com/jjordanoc" target="_blank">`github.com/jjordanoc`</a> |                <a href="https://github.com/RenatoCernades0107" target="_blank">`github.com/RenatoCernades`</a>                 | <a href="https://github.com/JoseChachi" target="_blank">`github.com/JoseChachi`</a> |
+- La estructura de Blockchain es una buena opción para asegurar información sensible gracias al mecanismo de _proof of work_, especialmente si la cadena es de gran tamaño, pues dificulta su modificación.
+- La seguridad que brinda la estructura se puede mejorar si se utiliza como un registro distribuido, pues esto dificulta aún más hacer cambios en la cadena.
 
 
 ## Bibliografía

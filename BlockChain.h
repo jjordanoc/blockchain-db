@@ -32,7 +32,7 @@ public:
     bool isValid() {
         auto tmp = this->head->next;
         while (tmp != this->head) {
-            if (!tmp->data->isValid() || tmp->data->getPrev() != tmp->prev->data->getHashCode()) return false;
+            if (!tmp->data->isValid()) return false;
             tmp = tmp->next;
         }
         return true;

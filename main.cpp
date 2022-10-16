@@ -49,7 +49,7 @@ int main() {
         bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
         bc.insertEntry(new Entry("Renato", "Joaquin", 13, 10020));
         cout << bc << endl;
-        cout << bc.isValid() << endl;
+        cout << "Is the blockchain valid? " << boolalpha << bc.isValid() << endl;
         bc.validate();
         cout << bc << endl;
         cout << bc.isValid() << endl;
@@ -89,15 +89,15 @@ int main() {
         auto test_hack = [&]() {
             bc.hackEntry(blockHack, entryHack, entry);
             cout << bc << endl;
-            cout << bc.isValid() << endl;
+            cout << "Is the blockchain valid? " << boolalpha << bc.isValid() << endl;
             bc.validate();
             cout << bc << endl;
-            cout << bc.isValid() << endl;
+            cout << "Is the blockchain valid? " << boolalpha << bc.isValid() << endl;
         };
         time_function(test_hack, "test_hack");
     }
 
-//    time_function(csv_test, "csv_test", "../MOCKDATA.csv");
+    time_function(csv_test, "csv_test", "../MOCKDATA.csv");
 
     return 0;
 }
@@ -128,8 +128,8 @@ void csv_test(const string &filepath) {
         if (file.eof()) break;
     }
     cout << bc << endl;
-    cout << bc.isValid() << endl;
+    cout << "Is the blockchain valid? " << boolalpha << bc.isValid() << endl;
     bc.validate();
     cout << bc << endl;
-    cout << bc.isValid() << endl;
+    cout << "Is the blockchain valid? " << boolalpha << bc.isValid() << endl;
 }

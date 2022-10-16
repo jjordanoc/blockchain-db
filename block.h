@@ -55,11 +55,11 @@ public:
     }
 
     void rehash() {
-       *hashCode = sha256(stringify());
+        *hashCode = sha256(stringify());
     }
 
     bool insertEntry(Entry *transaccion) {
-        if (fillCount >= BLOCK_SIZE) { return false; } // block is full
+        if (fillCount >= BLOCK_SIZE) { return false; }// block is full
         datos[fillCount++] = transaccion;
         rehash();
         return true;
@@ -71,10 +71,12 @@ public:
     }
 
     bool isValid() {
+        rehash();
         return !hashCode->empty() && hashCode->substr(0, 4) == "0000";
     }
 
     string print() {
+        rehash();
         string s;
         s += to_string(id) + ":\n";
         s += "\tnonce: " + to_string(nonce) + "\n\n";
@@ -89,7 +91,10 @@ public:
         return s;
     }
 
-    string *getHashCode() { rehash(); return hashCode; }
+    string *getHashCode() {
+        rehash();
+        return hashCode;
+    }
 
     string *getPrev() {
         return prev;
