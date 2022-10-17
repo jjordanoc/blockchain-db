@@ -9,7 +9,7 @@
 #include "circular_list.h"
 
 template<size_t BLOCK_SIZE>
-class BlockChain : public CircularList<Block<BLOCK_SIZE> *> {
+class BlockChain : protected CircularList<Block<BLOCK_SIZE> *> {
 public:
     BlockChain() : CircularList<Block<BLOCK_SIZE> *>() {
         this->head->data = new Block<BLOCK_SIZE>();
@@ -26,6 +26,11 @@ public:
         if (entryId <= 0 || entryId > BLOCK_SIZE || blockId <= 0 || blockId > this->size()) throw runtime_error("Invalid arguments");
         Block<BLOCK_SIZE> *block = (*this)[blockId - 1];
         block->updateEntry(entryId - 1, entry);
+    }
+
+    Entry *searchEntry(int blockId, int entryId) {// search for read only entry
+        if (entryId <= 0 || entryId > BLOCK_SIZE || blockId <= 0 || blockId > this->size()) throw runtime_error("Invalid arguments");
+        return ((*this)[blockId - 1])->getEntry(entryId);
     }
 
     bool isValid() {
@@ -45,6 +50,10 @@ public:
             }
             tmp = tmp->next;
         }
+    }
+
+    int size() override {
+        return this->_size;
     }
 
     friend ostream &operator<<(ostream &os, BlockChain<BLOCK_SIZE> &other) {

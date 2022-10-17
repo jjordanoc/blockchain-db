@@ -1,7 +1,7 @@
 //
 // Created by renato on 10/5/22.
 //
-#include "BlockChain.h"
+#include "blockchain.h"
 #include "studententry.h"
 #include "transactionentry.h"
 #include <fstream>
@@ -79,7 +79,9 @@ int main() {
         string emisorHack, receptorHack;
         double montoHack;
         time_t tiempoHack;
-        cout << "New entry\n---------------------------\n";
+        auto currentEntry = bc.searchEntry(blockHack, entryHack);
+        cout << "Current entry: " << (currentEntry == nullptr ? "No entry found at this position." : currentEntry->print()) << endl;
+        cout << "New entry:\n------------------------------\n";
         cout << "Sender: ";
         cin >> emisorHack;
         cout << "Receiver: ";
@@ -103,6 +105,8 @@ int main() {
     }
 
     time_function(csv_test, "csv_test", "../MOCKDATA.csv");
+
+
 
     return 0;
 }

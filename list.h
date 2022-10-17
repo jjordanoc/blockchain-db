@@ -8,10 +8,9 @@ class List {
 protected:
     Node<T> *head;
     Node<T> *tail;
-    int nodes;
 
 public:
-    List() : head(nullptr), tail(nullptr), nodes(0){};
+    List() : head(nullptr), tail(nullptr){};
 
     virtual ~List() = default;
 

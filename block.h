@@ -70,6 +70,10 @@ public:
         rehash();
     }
 
+    Entry *getEntry(const size_t &entryId) {
+        return datos[entryId];
+    }
+
     bool isValid() {
         rehash();
         return !hashCode->empty() && hashCode->substr(0, 4) == "0000";
