@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QHBoxLayout>
 #include <QGridLayout>
+#include <QScrollArea>
 
 class MainWindow : public QWidget
 {
@@ -13,6 +14,9 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 private:
-    QGridLayout *mainView;
+    int width = 1080;
+    int height = 720;
+    QHBoxLayout *mainView;
+    QScrollArea *scrollArea;
 };
 #endif // MAINWINDOW_H
