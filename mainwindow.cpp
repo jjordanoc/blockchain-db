@@ -15,14 +15,9 @@ MainWindow::MainWindow(QWidget *parent)
 
 //    BlockWidget **blocks = new BlockWidget*[100];
     for (int i = 0; i < 100; ++i) {
-        auto *sub = new QWidget();
-        auto *hboxSub = new QVBoxLayout(sub);
-        for (int i = 0; i < 10; ++i) {
-            QTextEdit *edit = new QTextEdit();
-            edit->setText(tr("hash"));
-            hboxSub->addWidget(edit);
-        }
-        mainView->addWidget(sub);
+//        auto *sub = new QWidget();
+        auto *block = new BlockWidget(0, 0, "hola", this);
+        mainView->addWidget(block);
     }
 //    QScrollArea *scrl = new QScrollArea();
 //        scrl->setGeometry(0,0,300,300);
