@@ -8,8 +8,11 @@
 #include "block.h"
 #include "circular_list.h"
 
+class MainWindow;
+
 template<size_t BLOCK_SIZE>
 class BlockChain : protected CircularList<Block<BLOCK_SIZE> *> {
+    friend class MainWindow;
 public:
     BlockChain() : CircularList<Block<BLOCK_SIZE> *>() {
         this->head->data = new Block<BLOCK_SIZE>();

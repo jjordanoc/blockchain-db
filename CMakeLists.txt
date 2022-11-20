@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.5)
 
 project(proyecto-sha256-ui VERSION 0.1 LANGUAGES CXX)
 
+if(MSVC)
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17 /Zc:__cplusplus /permissive-")
+endif()
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
 set(CMAKE_AUTOUIC ON)
@@ -11,6 +15,7 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+find_package(OpenSSL REQUIRED)
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
 
@@ -20,6 +25,8 @@ set(PROJECT_SOURCES
         mainwindow.h
         blockwidget.h blockwidget.cpp
         blockidinputbox.h blockidinputbox.cpp
+        blockchain.h node.h circular_list.h list.h entry.h crypto.h block.h studententry.h transactionentry.h crypto.cpp globals.h
+        createblockform.h createblockform.cpp createblockform.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -46,6 +53,7 @@ else()
 endif()
 
 target_link_libraries(proyecto-sha256-ui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(proyecto-sha256-ui PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 
 set_target_properties(proyecto-sha256-ui PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

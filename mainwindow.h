@@ -5,6 +5,9 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QScrollArea>
+#include "blockchain.h"
+#include "globals.h"
+
 
 class MainWindow : public QWidget
 {
@@ -16,7 +19,11 @@ public:
 private:
     int width = 1080;
     int height = 720;
-    QHBoxLayout *mainView;
-    QScrollArea *scrollArea;
+    QHBoxLayout *mainView{};
+    QScrollArea *scrollArea{};
+    BlockChain<BLOCK_SIZE> *blockChain{};
+    void onCreateBlockButtonClick();
+private slots:
+    void redrawBlockChain();
 };
 #endif // MAINWINDOW_H

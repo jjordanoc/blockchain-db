@@ -54,6 +54,10 @@ public:
         return str;
     }
 
+    size_t getFillCount() {
+        return fillCount;
+    }
+
     void rehash() {
         *hashCode = sha256(stringify());
     }
@@ -71,6 +75,7 @@ public:
     }
 
     Entry *getEntry(const size_t &entryId) {
+        rehash();
         return datos[entryId];
     }
 
@@ -92,6 +97,32 @@ public:
 
         s += "prev: " + *prev + "\n";
         s += "hash: " + *hashCode + "\n";
+        return s;
+    }
+
+    string getId() {
+        rehash();
+        return to_string(id);
+    }
+
+    string getNonce() {
+        rehash();
+        return to_string(nonce);
+    }
+
+    string *getPrev() {
+        rehash();
+        return prev;
+    }
+
+    string getData() {
+        rehash();
+        string s;
+        if (datos[0] != nullptr) {
+            for (int i = 0; i < fillCount; i++) {
+                s += "\t" + datos[i]->print() + "\n";
+            }
+        }
         return s;
     }
 
