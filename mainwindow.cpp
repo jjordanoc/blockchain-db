@@ -10,17 +10,14 @@
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent)
 {
+    setGeometry(0, 0, 1280, 720);
     blockChain = new BlockChain<BLOCK_SIZE>();
     scrollArea = new QScrollArea();
     scrollArea->setGeometry(0, 0, 1280, 720);
     mainView = new QHBoxLayout(this);
+    mainView->setSizeConstraint(QHBoxLayout::SetMinAndMaxSize);
     auto *btn = new QPushButton("&Crear transacción", this);
     connect(btn, &QPushButton::clicked, this, &MainWindow::onCreateBlockButtonClick);
-
-    for (int i = 0; i < 1; ++i) {
-        auto *block = new BlockWidget(0, 0, "hola", this);
-        mainView->addWidget(block);
-    }
     mainView->addWidget(btn);
     scrollArea->setWidget(this);
     scrollArea->show();
@@ -46,16 +43,8 @@ void MainWindow::onCreateBlockButtonClick()
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
 {
     std::cout << "Redrawing" << std::endl;
-//    auto *tmp = blockChain->head;
-//    while (tmp->next != blockChain->head) {
-//        auto *block = new BlockWidget(tmp->data, this);
-//        mainView->addWidget(block);
-//        tmp = tmp->next;
-//    }
     auto *blockWidget = new BlockWidget(block, this);
     mainView->addWidget(blockWidget);
     cout << *blockChain << endl;
-    mainView->update();
-    this->repaint();
 }
 

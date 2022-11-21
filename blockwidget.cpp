@@ -17,6 +17,7 @@ BlockWidget::BlockWidget(const size_t &id, const size_t &nonce, const std::strin
 }
 
 BlockWidget::BlockWidget(Block<BLOCK_SIZE> *block, QWidget *parent)
+: QWidget(parent)
 {
     QString qId = QString::fromStdString(block->getId());
     auto *id = new BlockInputBox(qId, this);
