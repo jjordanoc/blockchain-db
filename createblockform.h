@@ -22,7 +22,7 @@ private:
 private slots:
     void submitForm();
 signals:
-    void updatedBlockChain();
+    void updatedBlockChain(Block<BLOCK_SIZE> *);
 };
 
 #endif // CREATEBLOCKFORM_H

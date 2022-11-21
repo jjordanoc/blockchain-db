@@ -24,6 +24,6 @@ private:
     BlockChain<BLOCK_SIZE> *blockChain{};
     void onCreateBlockButtonClick();
 private slots:
-    void redrawBlockChain();
+    void redrawBlockChain(Block<BLOCK_SIZE> *);
 };
 #endif // MAINWINDOW_H

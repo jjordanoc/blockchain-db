@@ -18,11 +18,12 @@ public:
         this->head->data = new Block<BLOCK_SIZE>();
     }
 
-    void insertEntry(Entry *entry) {
+    Block<BLOCK_SIZE> *insertEntry(Entry *entry) {
         if (!this->head->prev->data->insertEntry(entry)) {
             this->push_back(new Block<BLOCK_SIZE>(this->size() + 1, this->head->prev->data->getHashCode()));
             this->head->prev->data->insertEntry(entry);
         }
+        return this->head->prev->data;
     }
 
     void hackEntry(int blockId, int entryId, Entry *entry) {

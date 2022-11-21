@@ -28,7 +28,7 @@ void CreateBlockForm::submitForm()
     time_t fechaUnix = fecha.toSecsSinceEpoch();
     double monto = ui->montoSpinBox->value();
 
-    bc->insertEntry(new TransactionEntry(emisorStd, receptorStd, monto, fechaUnix));
+    auto *block = bc->insertEntry(new TransactionEntry(emisorStd, receptorStd, monto, fechaUnix));
 //    std::cout << *bc << std::endl;
-    emit updatedBlockChain();
+    emit updatedBlockChain(block);
 }
