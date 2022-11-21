@@ -17,6 +17,10 @@ MainWindow::MainWindow(QWidget *parent)
     auto *btn = new QPushButton("&Crear transacción", this);
     connect(btn, &QPushButton::clicked, this, &MainWindow::onCreateBlockButtonClick);
     mainView->addWidget(btn);
+    for (int i = 0; i < 5; ++i) {
+        auto *block = new BlockWidget(0, 0, "hola", this);
+        mainView->addWidget(block);
+    }
     scrollArea->setWidget(this);
     scrollArea->show();
 
@@ -42,11 +46,12 @@ void MainWindow::redrawBlockChain()
 {
     std::cout << "Redrawing" << std::endl;
     auto *tmp = blockChain->head;
-    while (tmp != blockChain->head) {
+    while (tmp->next != blockChain->head) {
         auto *block = new BlockWidget(tmp->data, this);
         mainView->addWidget(block);
         tmp = tmp->next;
     }
+    cout << *blockChain << endl;
     mainView->update();
     this->repaint();
 }

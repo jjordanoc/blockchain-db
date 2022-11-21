@@ -29,6 +29,6 @@ void CreateBlockForm::submitForm()
     double monto = ui->montoSpinBox->value();
 
     bc->insertEntry(new TransactionEntry(emisorStd, receptorStd, monto, fechaUnix));
-    std::cout << *bc << std::endl;
+//    std::cout << *bc << std::endl;
     emit updatedBlockChain();
 }
