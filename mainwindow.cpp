@@ -43,8 +43,20 @@ void MainWindow::onCreateBlockButtonClick()
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
 {
     std::cout << "Redrawing" << std::endl;
-    auto *blockWidget = new BlockWidget(block, this);
-    mainView->addWidget(blockWidget);
+    if (block != nullptr) {
+        std::cout << "Creating new block." << std::endl;
+        auto *blockWidget = new BlockWidget(block, this);
+        mainView->addWidget(blockWidget);
+    }
+    else {
+        std::cout << "Updating existing block." << std::endl;
+        cout << "Current size of view:" << mainView->count() << endl;
+        cout << "Size of bc: " << blockChain->size() << endl;
+        cout << mainView->itemAt(blockChain->size() - 1)->widget() << endl;
+        BlockWidget *currentBlock = qobject_cast<BlockWidget *>(mainView->itemAt(blockChain->size())->widget());
+        cout << "Current block:" << currentBlock << endl;
+        currentBlock->updateBlockData();
+    }
     cout << *blockChain << endl;
 }
 

@@ -16,25 +16,32 @@ BlockWidget::BlockWidget(const size_t &id, const size_t &nonce, const std::strin
     this->layout->addWidget(this->nonce);
 }
 
-BlockWidget::BlockWidget(Block<BLOCK_SIZE> *block, QWidget *parent)
-: QWidget(parent)
+BlockWidget::BlockWidget(Block<BLOCK_SIZE> *_block, QWidget *parent)
+: block(_block), QWidget(parent)
 {
     QString qId = QString::fromStdString(block->getId());
-    auto *id = new BlockInputBox(qId, this);
+    id = new BlockInputBox(qId, this);
     QString qNonce = QString::fromStdString(block->getNonce());
-    auto *nonce = new BlockInputBox(qNonce, this);
+    nonce = new BlockInputBox(qNonce, this);
     QString qPrev = QString::fromStdString(*block->getPrev());
-    auto *prev = new BlockInputBox(qPrev, this);
+    prev = new BlockInputBox(qPrev, this);
     QString qHashCode = QString::fromStdString(*block->getHashCode());
-    auto *hashCode = new BlockInputBox(qHashCode, this);
+    hashCode = new BlockInputBox(qHashCode, this);
     QString qData = QString::fromStdString(block->getData());
-    auto *data = new BlockInputBox(qData, this);
+    blockData = new BlockInputBox(qData, this);
 
     this->layout = new QVBoxLayout(this);
 
     this->layout->addWidget(id);
     this->layout->addWidget(nonce);
-    this->layout->addWidget(data);
+    this->layout->addWidget(blockData);
     this->layout->addWidget(prev);
     this->layout->addWidget(hashCode);
+}
+
+void BlockWidget::updateBlockData()
+{
+    cout << "New data:" << block->getData() << endl;
+    QString newData = QString::fromStdString(block->getData());
+    blockData->setText(newData);
 }
