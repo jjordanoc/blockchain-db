@@ -68,6 +68,15 @@ p, li { white-space: pre-wrap; }
       <height>29</height>
      </rect>
     </property>
+    <property name="decimals">
+     <number>2</number>
+    </property>
+    <property name="maximum">
+     <double>9999999999.000000000000000</double>
+    </property>
+    <property name="singleStep">
+     <double>50.000000000000000</double>
+    </property>
    </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
@@ -130,6 +139,16 @@ p, li { white-space: pre-wrap; }
       <height>29</height>
      </rect>
     </property>
+    <property name="dateTime">
+     <datetime>
+      <hour>0</hour>
+      <minute>0</minute>
+      <second>0</second>
+      <year>2022</year>
+      <month>1</month>
+      <day>1</day>
+     </datetime>
+    </property>
    </widget>
    <widget class="QDialogButtonBox" name="buttonBox">
     <property name="geometry">
@@ -141,7 +160,7 @@ p, li { white-space: pre-wrap; }
      </rect>
     </property>
     <property name="standardButtons">
-     <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+     <set>QDialogButtonBox::Ok</set>
     </property>
    </widget>
   </widget>

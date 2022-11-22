@@ -23,7 +23,7 @@ public:
     }
 
     [[nodiscard]] string getDate() const {
-        time_t t = timestamp / 1000;
+        time_t t = timestamp;
         return ctime(&t);
     }
 
