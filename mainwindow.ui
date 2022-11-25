@@ -7,11 +7,11 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>720</height>
+    <height>800</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string>BlockDB</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: rgb(50, 50, 75);
@@ -23,8 +23,8 @@ font-family: monospace;</string>
     <rect>
      <x>10</x>
      <y>70</y>
-     <width>149</width>
-     <height>160</height>
+     <width>151</width>
+     <height>193</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="buttonLayout">
@@ -78,22 +78,35 @@ font-family: monospace;</string>
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="generateTestDataButton">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(108, 108, 162)</string>
+      </property>
+      <property name="text">
+       <string>Datos de prueba</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget_2">
    <property name="geometry">
     <rect>
      <x>1040</x>
-     <y>690</y>
+     <y>770</y>
      <width>225</width>
      <height>21</height>
     </rect>
    </property>
    <layout class="QHBoxLayout" name="horizontalLayout">
+    <property name="sizeConstraint">
+     <enum>QLayout::SetMinAndMaxSize</enum>
+    </property>
     <item>
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>Última operación ejecutada en </string>
+       <string>Última operación ejecutada en</string>
       </property>
      </widget>
     </item>
@@ -126,34 +139,56 @@ font-family: monospace;</string>
    <property name="geometry">
     <rect>
      <x>170</x>
-     <y>10</y>
-     <width>1101</width>
-     <height>661</height>
+     <y>20</y>
+     <width>1091</width>
+     <height>741</height>
     </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::NoFrame</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Sunken</enum>
+   </property>
+   <property name="verticalScrollBarPolicy">
+    <enum>Qt::ScrollBarAsNeeded</enum>
+   </property>
+   <property name="horizontalScrollBarPolicy">
+    <enum>Qt::ScrollBarAsNeeded</enum>
+   </property>
+   <property name="sizeAdjustPolicy">
+    <enum>QAbstractScrollArea::AdjustToContents</enum>
    </property>
    <property name="widgetResizable">
     <bool>true</bool>
    </property>
-   <widget class="QWidget" name="blockScrollArea">
+   <property name="alignment">
+    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+   </property>
+   <widget class="QWidget" name="blockScrollAreaWidget">
+    <property name="enabled">
+     <bool>true</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>0</x>
       <y>0</y>
-      <width>1099</width>
-      <height>659</height>
+      <width>1091</width>
+      <height>741</height>
      </rect>
     </property>
-    <widget class="QWidget" name="horizontalLayoutWidget_8">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>20</y>
-       <width>1071</width>
-       <height>621</height>
-      </rect>
-     </property>
-     <layout class="QHBoxLayout" name="horizontalBlockDiv"/>
-    </widget>
+    <property name="autoFillBackground">
+     <bool>false</bool>
+    </property>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <layout class="QHBoxLayout" name="horizontalBlockDiv">
+       <property name="sizeConstraint">
+        <enum>QLayout::SetFixedSize</enum>
+       </property>
+      </layout>
+     </item>
+    </layout>
    </widget>
   </widget>
  </widget>

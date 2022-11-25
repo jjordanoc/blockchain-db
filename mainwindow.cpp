@@ -11,11 +11,10 @@
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent), ui(new Ui::MainWindow)
 {
-    this->setWindowTitle(tr("BlockDB"));
     ui->setupUi(this);
     blockChain = new BlockChain<BLOCK_SIZE>();
     connect(ui->createEntryButton, &QPushButton::clicked, this, &MainWindow::onCreateBlockButtonClick);
-    ui->timeLabel->setWordWrap(true);
+    ui->scrollArea->setWidget(ui->blockScrollAreaWidget);
 }
 
 MainWindow::~MainWindow()

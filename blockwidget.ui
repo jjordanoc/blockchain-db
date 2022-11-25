@@ -22,7 +22,7 @@ color: white;</string>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout_10">
       <property name="sizeConstraint">
-       <enum>QLayout::SetMinAndMaxSize</enum>
+       <enum>QLayout::SetFixedSize</enum>
       </property>
       <item>
        <layout class="QHBoxLayout" name="blockIdDiv">
