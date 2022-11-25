@@ -10,13 +10,15 @@
 
 using namespace std;
 
+class EntryWidget;
+
 class TransactionEntry : public Entry {
 private:
     string emisor;
     string receptor;
     double monto{};
     time_t timestamp{};
-
+    friend class EntryWidget;
 public:
     TransactionEntry() = default;
     explicit TransactionEntry(string _emisor, string _receptor, const double &_monto, const time_t &_timestamp) : emisor(std::move(_emisor)), receptor(std::move(_receptor)), monto(_monto), timestamp(_timestamp) {

@@ -26,7 +26,7 @@ set(PROJECT_SOURCES
         blockwidget.h blockwidget.cpp
         blockidinputbox.h blockidinputbox.cpp
         blockchain.h node.h circular_list.h list.h entry.h crypto.h block.h studententry.h transactionentry.h crypto.cpp globals.h
-        createblockform.h createblockform.cpp createblockform.ui
+        createblockform.h createblockform.cpp createblockform.ui mainwindow.ui blockwidget.ui entrywidget.h entrywidget.cpp entrywidget.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

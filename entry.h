@@ -7,7 +7,10 @@
 
 using namespace std;
 
+class EntryWidget;
+
 class Entry {
+    friend class EntryWidget;
 public:
     Entry() = default;
 

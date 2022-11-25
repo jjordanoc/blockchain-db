@@ -6,27 +6,22 @@
 #include "createblockform.h"
 #include <QPushButton>
 #include <QDialog>
+#include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), ui(new Ui::MainWindow)
 {
-    setGeometry(0, 0, 1280, 720);
+    this->setWindowTitle(tr("BlockDB"));
+    ui->setupUi(this);
     blockChain = new BlockChain<BLOCK_SIZE>();
-    scrollArea = new QScrollArea();
-    scrollArea->setGeometry(0, 0, 1280, 720);
-    mainView = new QHBoxLayout(this);
-    mainView->setSizeConstraint(QHBoxLayout::SetMinAndMaxSize);
-    auto *btn = new QPushButton("&Crear transacción", this);
-    connect(btn, &QPushButton::clicked, this, &MainWindow::onCreateBlockButtonClick);
-    mainView->addWidget(btn);
-    scrollArea->setWidget(this);
-    scrollArea->show();
-
+    connect(ui->createEntryButton, &QPushButton::clicked, this, &MainWindow::onCreateBlockButtonClick);
+    ui->timeLabel->setWordWrap(true);
 }
 
 MainWindow::~MainWindow()
 {
     delete blockChain;
+    delete ui;
 }
 
 void MainWindow::onCreateBlockButtonClick()
@@ -42,20 +37,21 @@ void MainWindow::onCreateBlockButtonClick()
 
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
 {
+    auto *mainView = ui->horizontalBlockDiv;
     std::cout << "Redrawing" << std::endl;
     if (block != nullptr) {
         std::cout << "Creating new block." << std::endl;
-        auto *blockWidget = new BlockWidget(block, this);
-        mainView->addWidget(blockWidget);
+        auto insert_block_widget = [&](){
+            auto *blockWidget = new BlockWidget(block, this);
+            mainView->addWidget(blockWidget);
+            this->lastBlockInserted = blockWidget;
+        };
+        TimedResult r = time_function(insert_block_widget);
+        QString timeText = QString::number(r.duration) + " ms";
+        ui->timeLabel->setText(timeText);
     }
     else {
-        std::cout << "Updating existing block." << std::endl;
-        cout << "Current size of view:" << mainView->count() << endl;
-        cout << "Size of bc: " << blockChain->size() << endl;
-        cout << mainView->itemAt(blockChain->size() - 1)->widget() << endl;
-        BlockWidget *currentBlock = qobject_cast<BlockWidget *>(mainView->itemAt(blockChain->size())->widget());
-        cout << "Current block:" << currentBlock << endl;
-        currentBlock->updateBlockData();
+        this->lastBlockInserted->updateBlockData();
     }
     cout << *blockChain << endl;
 }

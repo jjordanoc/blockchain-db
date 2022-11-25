@@ -7,23 +7,29 @@
 #include<QWidget>
 #include "block.h"
 #include "globals.h"
+#include <QLabel>
+
+namespace Ui {
+class BlockWidget;
+}
 
 class BlockWidget : public QWidget
 {
     Q_OBJECT
 public:
-    explicit BlockWidget(const size_t &id, const size_t &nonce, const std::string &hashCode, QWidget *parent);
     explicit BlockWidget(Block<BLOCK_SIZE> *_block, QWidget *parent);
     void updateBlockData();
 signals:
 private:
-    BlockInputBox *id{};
-    BlockInputBox *nonce{};
-    BlockInputBox *hashCode{};
-    BlockInputBox *prev{};
-    BlockInputBox *blockData{};
+//    QLabel *id{};
+//    QLabel *nonce{};
+//    QLabel *hashCode{};
+//    QLabel *prev{};
+//    QLabel *blockData{};
     Block <BLOCK_SIZE> *block{};
-    QVBoxLayout *layout{};
+    Ui::BlockWidget *ui{};
+    int localFillCount = 0;
+//    QVBoxLayout *layout{};
 };
 
 #endif // BLOCKWIDGET_H

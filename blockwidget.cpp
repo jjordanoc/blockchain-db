@@ -1,47 +1,34 @@
 #include "blockwidget.h"
 #include "qlocale.h"
+#include "ui_blockwidget.h"
+#include "entrywidget.h"
 
-
-BlockWidget::BlockWidget(const size_t &id, const size_t &nonce, const std::string &hashCode, QWidget *parent)
-    : QWidget(parent)
-{
-    QString qHashCode = QString::fromStdString(hashCode);
-    this->id = new BlockInputBox(qHashCode, this);
-    this->hashCode = new BlockInputBox(tr("my hash code"), this);
-    this->nonce = new BlockInputBox(tr("my nonce"), this);
-
-    this->layout = new QVBoxLayout(this);
-    this->layout->addWidget(this->id);
-    this->layout->addWidget(this->hashCode);
-    this->layout->addWidget(this->nonce);
-}
 
 BlockWidget::BlockWidget(Block<BLOCK_SIZE> *_block, QWidget *parent)
-: block(_block), QWidget(parent)
+    : block(_block), QWidget(parent), ui(new Ui::BlockWidget)
 {
+    ui->setupUi(this);
     QString qId = QString::fromStdString(block->getId());
-    id = new BlockInputBox(qId, this);
+    ui->blockId->setText(qId);
     QString qNonce = QString::fromStdString(block->getNonce());
-    nonce = new BlockInputBox(qNonce, this);
+    ui->nonce->setText(qNonce);
     QString qPrev = QString::fromStdString(*block->getPrev());
-    prev = new BlockInputBox(qPrev, this);
+    ui->prev->setText(qPrev);
     QString qHashCode = QString::fromStdString(*block->getHashCode());
-    hashCode = new BlockInputBox(qHashCode, this);
+    ui->hash->setText(qHashCode);
     QString qData = QString::fromStdString(block->getData());
-    blockData = new BlockInputBox(qData, this);
-
-    this->layout = new QVBoxLayout(this);
-
-    this->layout->addWidget(id);
-    this->layout->addWidget(nonce);
-    this->layout->addWidget(blockData);
-    this->layout->addWidget(prev);
-    this->layout->addWidget(hashCode);
+    this->localFillCount = block->getFillCount();
+    for (int i = 0; i < this->localFillCount; ++i) {
+        EntryWidget *entry = new EntryWidget(i, block->datos[i]);
+        ui->entryDiv->addWidget(entry);
+    }
 }
 
 void BlockWidget::updateBlockData()
 {
-    cout << "New data:" << block->getData() << endl;
-    QString newData = QString::fromStdString(block->getData());
-    blockData->setText(newData);
+    for (int i = this->localFillCount; i < block->getFillCount(); ++i) {
+        EntryWidget *entry = new EntryWidget(i, block->datos[i]);
+        ui->entryDiv->addWidget(entry);
+    }
+    this->localFillCount = block->getFillCount();
 }

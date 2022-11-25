@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>BlockWidget</class>
+ <widget class="QWidget" name="BlockWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>420</width>
+    <height>324</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QHBoxLayout" name="horizontalLayout">
+   <item>
+    <widget class="QWidget" name="verticalDiv" native="true">
+     <property name="styleSheet">
+      <string notr="true">background-color: rgba(69, 69, 103, 120);
+color: white;</string>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout_10">
+      <property name="sizeConstraint">
+       <enum>QLayout::SetMinAndMaxSize</enum>
+      </property>
+      <item>
+       <layout class="QHBoxLayout" name="blockIdDiv">
+        <item>
+         <widget class="QLabel" name="blockIdLabel">
+          <property name="text">
+           <string>Block #</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="blockId">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="nonceDiv">
+        <item>
+         <widget class="QLabel" name="nonceLabel">
+          <property name="text">
+           <string>Nonce:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="nonce">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QVBoxLayout" name="entryDiv">
+        <item>
+         <widget class="QLabel" name="entriesLabel">
+          <property name="text">
+           <string>Data:</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="prevDiv">
+        <item>
+         <widget class="QLabel" name="prevLabel">
+          <property name="text">
+           <string>Prev:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="prev">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="hashDiv">
+        <item>
+         <widget class="QLabel" name="hashLabel">
+          <property name="text">
+           <string>Hash:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="hash">
+          <property name="text">
+           <string>0</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

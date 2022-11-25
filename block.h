@@ -5,6 +5,8 @@
 #include "entry.h"
 #include "string"
 
+class BlockWidget;
+
 template<size_t BLOCK_SIZE>
 class Block {
     size_t id = 0;
@@ -15,7 +17,7 @@ class Block {
 
     string *prev = nullptr;
     string *hashCode = nullptr;
-
+    friend class BlockWidget;
 public:
     Block() {
         // bloque genesis
