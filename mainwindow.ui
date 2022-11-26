@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1280</width>
-    <height>800</height>
+    <height>720</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -79,12 +79,12 @@ font-family: monospace;</string>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="generateTestDataButton">
+     <widget class="QPushButton" name="uploadFileButton">
       <property name="styleSheet">
        <string notr="true">background-color: rgb(108, 108, 162)</string>
       </property>
       <property name="text">
-       <string>Datos de prueba</string>
+       <string>Cargar archivo</string>
       </property>
      </widget>
     </item>
@@ -93,8 +93,8 @@ font-family: monospace;</string>
   <widget class="QWidget" name="horizontalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>1040</x>
-     <y>770</y>
+     <x>1030</x>
+     <y>690</y>
      <width>225</width>
      <height>21</height>
     </rect>
@@ -141,7 +141,7 @@ font-family: monospace;</string>
      <x>170</x>
      <y>20</y>
      <width>1091</width>
-     <height>741</height>
+     <height>671</height>
     </rect>
    </property>
    <property name="frameShape">
@@ -174,7 +174,7 @@ font-family: monospace;</string>
       <x>0</x>
       <y>0</y>
       <width>1091</width>
-      <height>741</height>
+      <height>671</height>
      </rect>
     </property>
     <property name="autoFillBackground">

@@ -7,6 +7,9 @@
 #include <QPushButton>
 #include <QDialog>
 #include "ui_mainwindow.h"
+#include <QFileDialog>
+#include <QStringList>
+#include "transactionentry.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QWidget(parent), ui(new Ui::MainWindow)
@@ -14,6 +17,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
     blockChain = new BlockChain<BLOCK_SIZE>();
     connect(ui->createEntryButton, &QPushButton::clicked, this, &MainWindow::onCreateBlockButtonClick);
+    connect(ui->uploadFileButton, SIGNAL(clicked()), this, SLOT(uploadDataFromFile()));
     ui->scrollArea->setWidget(ui->blockScrollAreaWidget);
 }
 
@@ -34,6 +38,54 @@ void MainWindow::onCreateBlockButtonClick()
     dialog->exec();
 }
 
+void MainWindow::redrawBlockChainOnFileUpload()
+{
+    auto *mainView = ui->horizontalBlockDiv;
+    auto itr = this->blockChain->begin();
+    while (itr != this->blockChain->end()) {
+        auto *block = *itr;
+        auto *blockWidget = new BlockWidget(block, this);
+        mainView->addWidget(blockWidget);
+        this->lastBlockInserted = blockWidget;
+        ++itr;
+    }
+}
+
+void MainWindow::uploadDataFromFile()
+{
+    cout << "Browsing files..." << endl;
+    QString filename = QFileDialog::getOpenFileName(this, tr("Open csv"), QDir::currentPath(), tr("CSV Files (*.csv)"));
+    QFile file(filename);
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+    auto upload_file = [&]() {
+        QTextStream in(&file);
+        // skip first line
+        in.readLine();
+        while (!in.atEnd()) {
+            QString line = in.readLine();
+            cout << line.toStdString() << endl;
+            QStringList args = line.split(",");
+            if (args.size() == 4) {
+                cout << "Parsing line..." << endl;
+                QString qEmisor = args.at(0);
+                QString qReceptor = args.at(1);
+                QString qMonto = args.at(2);
+                QString qFecha = args.at(3);
+                std::string emisor = qEmisor.toStdString();
+                std::string receptor = qReceptor.toStdString();
+                double monto = qMonto.toDouble();
+                time_t fecha = qFecha.toLongLong() / 1000;
+                auto oldSize = blockChain->size();
+                this->blockChain->insertEntry(new TransactionEntry(emisor, receptor, monto, fecha));
+            }
+        }
+        this->redrawBlockChainOnFileUpload();
+    };
+    TimedResult r = time_function(upload_file);
+    this->updateTime(r);
+}
+
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
 {
     auto *mainView = ui->horizontalBlockDiv;
@@ -46,8 +98,7 @@ void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
             this->lastBlockInserted = blockWidget;
         };
         TimedResult r = time_function(insert_block_widget);
-        QString timeText = QString::number(r.duration) + " ms";
-        ui->timeLabel->setText(timeText);
+        this->updateTime(r);
     }
     else {
         this->lastBlockInserted->updateBlockData();
@@ -55,3 +106,10 @@ void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
     cout << *blockChain << endl;
 }
 
+
+template<typename T>
+void MainWindow::updateTime(TimedResult<T> &r)
+{
+    QString timeText = QString::number(r.duration) + " ms";
+    ui->timeLabel->setText(timeText);
+}

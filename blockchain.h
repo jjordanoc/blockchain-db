@@ -11,11 +11,49 @@
 class MainWindow;
 
 template<size_t BLOCK_SIZE>
+class BlockChainIterator {
+    typedef Node<Block<BLOCK_SIZE> *> Node;
+    Node *current;
+public:
+    BlockChainIterator(Node *_current) : current(_current) {
+
+    }
+    void operator++() {
+        current = current->next;
+    }
+    void operator--() {
+        current = current->prev;
+    }
+    bool operator==(const BlockChainIterator &other) {
+        return current == other.current;
+    }
+    bool operator!=(const BlockChainIterator &other) {
+        return current != other.current;
+    }
+    Block<BLOCK_SIZE> *operator*() {
+        return current->data;
+    }
+    BlockChainIterator &operator=(BlockChainIterator &other) {
+        current = other.current;
+        return *this;
+    }
+};
+
+template<size_t BLOCK_SIZE>
 class BlockChain : protected CircularList<Block<BLOCK_SIZE> *> {
     friend class MainWindow;
+    typedef BlockChainIterator<BLOCK_SIZE> iterator;
 public:
     BlockChain() : CircularList<Block<BLOCK_SIZE> *>() {
         this->head->data = new Block<BLOCK_SIZE>();
+    }
+
+    iterator begin() {
+        return iterator{this->head->next};
+    }
+
+    iterator end() {
+        return iterator{this->head};
     }
 
     Block<BLOCK_SIZE> *insertEntry(Entry *entry) {

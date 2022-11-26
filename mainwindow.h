@@ -29,7 +29,11 @@ private:
     BlockChain<BLOCK_SIZE> *blockChain{};
     void onCreateBlockButtonClick();
     BlockWidget *lastBlockInserted{};
+    void redrawBlockChainOnFileUpload();
+    template<typename T>
+    void updateTime(TimedResult<T> &r);
 private slots:
     void redrawBlockChain(Block<BLOCK_SIZE> *);
+    void uploadDataFromFile();
 };
 #endif // MAINWINDOW_H

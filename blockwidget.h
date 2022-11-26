@@ -19,17 +19,11 @@ class BlockWidget : public QWidget
 public:
     explicit BlockWidget(Block<BLOCK_SIZE> *_block, QWidget *parent);
     void updateBlockData();
+    Block <BLOCK_SIZE> *block{};
 signals:
 private:
-//    QLabel *id{};
-//    QLabel *nonce{};
-//    QLabel *hashCode{};
-//    QLabel *prev{};
-//    QLabel *blockData{};
-    Block <BLOCK_SIZE> *block{};
     Ui::BlockWidget *ui{};
     int localFillCount = 0;
-//    QVBoxLayout *layout{};
 };
 
 #endif // BLOCKWIDGET_H
