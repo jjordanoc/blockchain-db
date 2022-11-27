@@ -12,10 +12,9 @@
 #include "transactionentry.h"
 
 MainWindow::MainWindow(QWidget *parent)
-    : QWidget(parent), ui(new Ui::MainWindow)
+    : QWidget(parent), ui(new Ui::MainWindow), blockChain(new BlockChain<BLOCK_SIZE>), blockChainIterator(blockChain->begin())
 {
     ui->setupUi(this);
-    blockChain = new BlockChain<BLOCK_SIZE>();
     connect(ui->createEntryButton, &QPushButton::clicked, this, &MainWindow::onCreateBlockButtonClick);
     connect(ui->uploadFileButton, SIGNAL(clicked()), this, SLOT(uploadDataFromFile()));
     ui->scrollArea->setWidget(ui->blockScrollAreaWidget);
@@ -41,14 +40,21 @@ void MainWindow::onCreateBlockButtonClick()
 void MainWindow::redrawBlockChainOnFileUpload()
 {
     auto *mainView = ui->horizontalBlockDiv;
-    auto itr = this->blockChain->begin();
-    while (itr != this->blockChain->end()) {
-        auto *block = *itr;
+    if (blockChainIterator == this->blockChain->end()) {
+        blockChainIterator = this->blockChain->begin();
+    }
+    else {
+        ++blockChainIterator;
+    }
+    while (blockChainIterator != this->blockChain->end()) {
+        cout << "Redrawing..." << endl;
+        auto *block = *blockChainIterator;
         auto *blockWidget = new BlockWidget(block, this);
         mainView->addWidget(blockWidget);
         this->lastBlockInserted = blockWidget;
-        ++itr;
+        ++blockChainIterator;
     }
+    --blockChainIterator;
 }
 
 void MainWindow::uploadDataFromFile()

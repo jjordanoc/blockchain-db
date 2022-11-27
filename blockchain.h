@@ -18,6 +18,9 @@ public:
     BlockChainIterator(Node *_current) : current(_current) {
 
     }
+    BlockChainIterator(BlockChainIterator &other) {
+        current = other.current;
+    }
     void operator++() {
         current = current->next;
     }
@@ -33,7 +36,7 @@ public:
     Block<BLOCK_SIZE> *operator*() {
         return current->data;
     }
-    BlockChainIterator &operator=(BlockChainIterator &other) {
+    BlockChainIterator operator=(const BlockChainIterator &other) {
         current = other.current;
         return *this;
     }

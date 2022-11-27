@@ -27,6 +27,7 @@ private:
     int height = 720;
     QScrollArea *scrollArea{};
     BlockChain<BLOCK_SIZE> *blockChain{};
+    BlockChain<BLOCK_SIZE>::iterator blockChainIterator;
     void onCreateBlockButtonClick();
     BlockWidget *lastBlockInserted{};
     void redrawBlockChainOnFileUpload();
