@@ -35,10 +35,12 @@ private:
     template<typename T>
     void updateTime(TimedResult<T> &r);
     const QString dialogStyle = "background-color: rgb(50, 50, 75); color: white;";
+    void clearBlockView();
 private slots:
     void redrawBlockChain(Block<BLOCK_SIZE> *);
     void uploadDataFromFile();
     void onUpdateEntryButtonClick();
     void updateEntryAtPosition(int blockId, int entryId);
+    void validateBlockChain();
 };
 #endif // MAINWINDOW_H

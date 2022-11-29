@@ -78,6 +78,16 @@ font-family: monospace;</string>
       </property>
      </widget>
     </item>
+    <item>
+     <widget class="QPushButton" name="mineButton">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(108, 108, 162)</string>
+      </property>
+      <property name="text">
+       <string>Minar</string>
+      </property>
+     </widget>
+    </item>
    </layout>
   </widget>
   <widget class="QWidget" name="horizontalLayoutWidget_2">

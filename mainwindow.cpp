@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->createEntryButton, &QPushButton::clicked, this, &MainWindow::onCreateBlockButtonClick);
     connect(ui->uploadFileButton, SIGNAL(clicked()), this, SLOT(uploadDataFromFile()));
     connect(ui->modifyEntryButton, SIGNAL(clicked()), this, SLOT(onUpdateEntryButtonClick()));
+    connect(ui->mineButton, SIGNAL(clicked()), this, SLOT(validateBlockChain()));
     ui->scrollArea->setWidget(ui->blockScrollAreaWidget);
 }
 
@@ -66,19 +67,7 @@ void MainWindow::redrawBlockChainOnFileUpload()
 void MainWindow::redrawBlockChainOnUpdate(int blockId, int entryId, Block<BLOCK_SIZE> *updatedBlock)
 {
     auto *mainView = ui->horizontalBlockDiv;
-    cout << "count:" << mainView->count() << endl;
-
-
-    for (int i = 0; i < mainView->count(); ++i) {
-        auto blockWidget = qobject_cast<BlockWidget*>(mainView->itemAt(i)->widget());
-        if (blockWidget != nullptr) {
-            blockWidget->hide();
-            blockWidget->deleteLater();
-        }
-        else {
-            cout << "Error" << endl;
-        }
-    }
+    this->clearBlockView();
     int i = 1;
     this->blockChainIterator = blockChain->begin();
     while (this->blockChainIterator != blockChain->end()) {
@@ -107,6 +96,21 @@ void MainWindow::redrawBlockChainOnUpdate(int blockId, int entryId, Block<BLOCK_
     }
     --blockChainIterator;
 
+}
+
+void MainWindow::clearBlockView()
+{
+    auto *mainView = ui->horizontalBlockDiv;
+    for (int i = 0; i < mainView->count(); ++i) {
+        auto blockWidget = qobject_cast<BlockWidget*>(mainView->itemAt(i)->widget());
+        if (blockWidget != nullptr) {
+            blockWidget->hide();
+            blockWidget->deleteLater();
+        }
+        else {
+            cout << "Error" << endl;
+        }
+    }
 }
 
 void MainWindow::uploadDataFromFile()
@@ -175,6 +179,27 @@ void MainWindow::updateEntryAtPosition(int blockId, int entryId)
     });
     updateEntryForm->show();
     dialog->exec();
+}
+
+void MainWindow::validateBlockChain()
+{
+    auto mine_blockchain = [&](){
+        this->blockChain->validate();
+        this->clearBlockView();
+        //  redraw all
+        auto *mainView = ui->horizontalBlockDiv;
+        this->blockChainIterator = blockChain->begin();
+        while (this->blockChainIterator != blockChain->end()) {
+            auto *block = *blockChainIterator;
+            auto *blockWidget = new BlockWidget(block, this);
+            mainView->addWidget(blockWidget);
+            this->lastBlockInserted = blockWidget;
+            ++(this->blockChainIterator);
+        }
+        --blockChainIterator;
+    };
+    TimedResult r = time_function(mine_blockchain);
+    this->updateTime(r);
 }
 
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)

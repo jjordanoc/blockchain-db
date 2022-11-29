@@ -38,34 +38,6 @@ void BlockWidget::updateBlockData()
     this->localFillCount = block->getFillCount();
 }
 
-void BlockWidget::refreshViewOnUpdate(int entryId)
-{
-//    for (int i = 0; i < this->localFillCount; ++i) {
-//        auto *entryWidget = qobject_cast<EntryWidget*>(ui->entryDiv->itemAt(i)->widget());
-//        if (entryWidget != nullptr) {
-//            entryWidget->deleteLater();
-//        }
-//        else {
-//            cout << "Error" << endl;
-//        }
-//    }
-//    QString qId = QString::fromStdString(block->getId());
-//    ui->blockId->setText(qId);
-//    QString qNonce = QString::fromStdString(block->getNonce());
-//    ui->nonce->setText(qNonce);
-//    QString qPrev = QString::fromStdString(*block->getPrev());
-//    ui->prev->setText(qPrev);
-//    QString qHashCode = QString::fromStdString(*block->getHashCode());
-//    ui->hash->setText(qHashCode);
-//    this->localFillCount = block->getFillCount();
-//    for (int i = 0; i < this->localFillCount; ++i) {
-//        EntryWidget *entry = new EntryWidget(i, block->datos[i]);
-//        ui->entryDiv->addWidget(entry);
-//    }
-    auto *entryWidget = qobject_cast<EntryWidget*>(ui->entryDiv->itemAt(entryId-1)->widget());
-    entryWidget->updateData(entryId, block->getEntry(entryId));
-}
-
 void BlockWidget::changeStyle(const QString &style)
 {
     ui->verticalDiv->setStyleSheet(style);
