@@ -68,7 +68,8 @@ void MainWindow::onCreateIndexButtonClick()
 {
     auto *dialog = new QDialog();
     dialog->setModal(true);
-    dialog->setGeometry(0, 0, 400, 400);
+    dialog->setGeometry(0, 0, 400, 200);
+    dialog->setStyleSheet(dialogStyle);
     cout << "Creating Index Form..." << endl;
     auto *createIndexForm = new CreateIndexForm(blockChain, compactTrie, dialog);
     createIndexForm->show();
@@ -79,7 +80,14 @@ void MainWindow::onCreateQueryButtonClick()
 {
     auto *dialog = new QDialog();
     dialog->setModal(true);
-    dialog->setGeometry(0, 0, 400, 400);
+    dialog->setGeometry(0, 0, 400, 200);
+    dialog->setStyleSheet(dialogStyle + "QHeaderView::section {\
+                          background-color:  rgb(108, 108, 162);\
+                          color: black;\
+                      }\
+                      QTableWidget {\
+                          background-color:   rgb(50, 50, 75);\
+                      }");
     cout << "Creating Query Form..." << endl;
     auto *createQueryForm = new QueryForm(dialog);
     connect(createQueryForm, SIGNAL(emitData(std::unordered_map<std::string, std::string>)), this, SLOT(applyFilter(std::unordered_map<std::string, std::string>)));
@@ -143,6 +151,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
     auto *dialog = new QDialog();
     dialog->setModal(true);
     dialog->setGeometry(0, 0, 550, 400);
+    dialog->setStyleSheet(dialogStyle);
     auto* querydisplayview = new QueryDisplayView(result, um, dialog);
     querydisplayview->show();
     dialog->exec();
@@ -256,7 +265,7 @@ void MainWindow::onUpdateEntryButtonClick()
 {
     auto *dialog = new QDialog();
     dialog->setModal(true);
-    dialog->setGeometry(0, 0, 400, 400);
+    dialog->setGeometry(0, 0, 400, 200);
     dialog->setStyleSheet(dialogStyle);
     auto *findEntryForm = new FindEntryForm(dialog);
     connect(findEntryForm, &FindEntryForm::foundEntry, this, [this, dialog](int blockId, int entryId) {
