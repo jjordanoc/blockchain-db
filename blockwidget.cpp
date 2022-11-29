@@ -25,6 +25,12 @@ BlockWidget::BlockWidget(Block<BLOCK_SIZE> *_block, QWidget *parent)
 
 void BlockWidget::updateBlockData()
 {
+    QString qNonce = QString::fromStdString(block->getNonce());
+    ui->nonce->setText(qNonce);
+    QString qPrev = QString::fromStdString(*block->getPrev());
+    ui->prev->setText(qPrev);
+    QString qHashCode = QString::fromStdString(*block->getHashCode());
+    ui->hash->setText(qHashCode);
     for (int i = this->localFillCount; i < block->getFillCount(); ++i) {
         EntryWidget *entry = new EntryWidget(i, block->datos[i]);
         ui->entryDiv->addWidget(entry);
