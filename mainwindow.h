@@ -8,6 +8,8 @@
 #include "blockchain.h"
 #include "globals.h"
 #include <QWidget>
+#include <QFuture>
+#include  <QFutureWatcher>
 
 namespace Ui {
 class MainWindow;
@@ -30,6 +32,7 @@ private:
     BlockChain<BLOCK_SIZE>::iterator blockChainIterator;
     void onCreateBlockButtonClick();
     BlockWidget *lastBlockInserted{};
+    QFutureWatcher<void> futureWatcher{};
     void redrawBlockChainOnFileUpload();
     void redrawBlockChainOnUpdate(int blockId, int entryId, Block<BLOCK_SIZE> *updatedBlock);
     template<typename T>
@@ -42,5 +45,6 @@ private slots:
     void onUpdateEntryButtonClick();
     void updateEntryAtPosition(int blockId, int entryId);
     void validateBlockChain();
+    void redrawBlockChainAfterMine();
 };
 #endif // MAINWINDOW_H
