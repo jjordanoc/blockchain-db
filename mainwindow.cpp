@@ -16,6 +16,7 @@
 #include <QStyleOption>
 #include <QFuture>
 #include <QtConcurrent>
+#include <QMovie>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -27,7 +28,13 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->modifyEntryButton, SIGNAL(clicked()), this, SLOT(onUpdateEntryButtonClick()));
     connect(ui->mineButton, SIGNAL(clicked()), this, SLOT(validateBlockChain()));
     connect(&this->futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::redrawBlockChainAfterMine);
+    connect(&this->futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::showWaitingIcon);
     ui->scrollArea->setWidget(ui->blockScrollAreaWidget);
+    QMovie *movie = new QMovie("C:/Users/rojot/OneDrive/Escritorio/algoritmos_y_estructuras_de_datos/repo/proyecto-sha256/mining.gif");
+    ui->miningLabel->setMovie(movie);
+    movie->start();
+    movie->setScaledSize(QSize(100, 100));
+    ui->miningLabel->hide();
 }
 
 MainWindow::~MainWindow()
@@ -200,6 +207,7 @@ void MainWindow::validateBlockChain()
 
 void MainWindow::redrawBlockChainAfterMine()
 {
+    ui->miningLabel->hide();
     cout << "Redrawing everything" << endl;
     this->clearBlockView();
     //  redraw all
@@ -214,6 +222,11 @@ void MainWindow::redrawBlockChainAfterMine()
         ++(this->blockChainIterator);
     }
     --blockChainIterator;
+}
+
+void MainWindow::showWaitingIcon()
+{
+   ui->miningLabel->show();
 }
 
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)

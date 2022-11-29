@@ -46,5 +46,6 @@ private slots:
     void updateEntryAtPosition(int blockId, int entryId);
     void validateBlockChain();
     void redrawBlockChainAfterMine();
+    void showWaitingIcon();
 };
 #endif // MAINWINDOW_H
