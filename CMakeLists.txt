@@ -29,6 +29,8 @@ set(PROJECT_SOURCES
         createblockform.h createblockform.cpp createblockform.ui
         mainwindow.ui blockwidget.ui
         entrywidget.h entrywidget.cpp entrywidget.ui
+        updateentryform.h updateentryform.cpp updateentryform.ui
+        findentryform.h findentryform.cpp findentryform.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

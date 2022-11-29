@@ -31,10 +31,14 @@ private:
     void onCreateBlockButtonClick();
     BlockWidget *lastBlockInserted{};
     void redrawBlockChainOnFileUpload();
+    void redrawBlockChainOnUpdate(int blockId, int entryId, Block<BLOCK_SIZE> *updatedBlock);
     template<typename T>
     void updateTime(TimedResult<T> &r);
+    const QString dialogStyle = "background-color: rgb(50, 50, 75); color: white;";
 private slots:
     void redrawBlockChain(Block<BLOCK_SIZE> *);
     void uploadDataFromFile();
+    void onUpdateEntryButtonClick();
+    void updateEntryAtPosition(int blockId, int entryId);
 };
 #endif // MAINWINDOW_H
