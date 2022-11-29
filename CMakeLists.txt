@@ -29,6 +29,10 @@ set(PROJECT_SOURCES
         createblockform.h createblockform.cpp createblockform.ui
         mainwindow.ui blockwidget.ui
         entrywidget.h entrywidget.cpp entrywidget.ui
+        createindexform.h createindexform.cpp createindexform.ui
+        compacttrie.h compacttrie.cpp
+        queryform.h queryform.cpp queryform.ui
+        querydisplayview.h querydisplayview.cpp querydisplayview.ui
         updateentryform.h updateentryform.cpp updateentryform.ui
         findentryform.h findentryform.cpp findentryform.ui
 )
