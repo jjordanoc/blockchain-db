@@ -191,6 +191,19 @@ font-family: monospace;</string>
     </layout>
    </widget>
   </widget>
+  <widget class="QLabel" name="miningLabel">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>280</y>
+     <width>141</width>
+     <height>141</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

@@ -14,14 +14,14 @@ class CreateIndexForm : public QWidget
     Q_OBJECT
 
 public:
-    explicit CreateIndexForm(BlockChain<BLOCK_SIZE> *_bc, CompactTrie *_ct, QWidget *parent = nullptr);
+    explicit CreateIndexForm(QWidget *parent = nullptr);
     ~CreateIndexForm();
-    BlockChain<BLOCK_SIZE> *bc;
-    CompactTrie *ct;
 private slots:
     void submitForm();
 private:
     Ui::CreateIndexForm *ui;
+signals:
+    void submittedForm(QString, QString);
 };
 
 #endif // CREATEINDEXFORM_H

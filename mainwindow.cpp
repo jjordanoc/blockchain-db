@@ -84,9 +84,6 @@ void MainWindow::onCreateQueryButtonClick()
 void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
 {
     cout << "applying filter..." << endl;
-    for (auto& [a, b] : um) {
-        cout << a << ": " <<b << endl;
-    }
 
     auto filter = um["filter"];
     auto type = um["type"];
