@@ -12,6 +12,8 @@
 #include <QWidget>
 #include <QFuture>
 #include  <QFutureWatcher>
+#include "heap.h"
+using namespace std;
 
 namespace Ui {
 class MainWindow;
@@ -41,11 +43,10 @@ private:
     void redrawBlockChainOnUpdate(int blockId, int entryId, Block<BLOCK_SIZE> *updatedBlock);
     template<typename T>
     void updateTime(TimedResult<T> &r);
-
-    // Data Structures
-    CompactTrie *compactTrie{};
     const QString dialogStyle = "background-color: rgb(50, 50, 75); color: white;";
     void clearBlockView();
+    // indexes
+    unordered_map<string, Index*> indexes;
 private slots:
     void redrawBlockChain(Block<BLOCK_SIZE> *);
     void applyFilter(std::unordered_map<std::string, std::string> um);
@@ -55,5 +56,6 @@ private slots:
     void validateBlockChain();
     void redrawBlockChainAfterMine();
     void showWaitingIcon();
+    void createIndexes(QString,QString);
 };
 #endif // MAINWINDOW_H

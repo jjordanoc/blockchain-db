@@ -35,6 +35,8 @@ set(PROJECT_SOURCES
         querydisplayview.h querydisplayview.cpp querydisplayview.ui
         updateentryform.h updateentryform.cpp updateentryform.ui
         findentryform.h findentryform.cpp findentryform.ui
+        heap.h
+        index.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

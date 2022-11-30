@@ -22,7 +22,7 @@
 #include <QFuture>
 #include <QtConcurrent>
 #include <QMovie>
-
+#include <functional>
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -43,11 +43,11 @@ MainWindow::MainWindow(QWidget *parent)
     movie->start();
     movie->setScaledSize(QSize(100, 100));
     ui->miningLabel->hide();
+    indexes = {{"Emisor", nullptr}, {"Receptor", nullptr}, {"Fecha", nullptr}, {"Monto", nullptr}};
 }
 
 MainWindow::~MainWindow()
 {
-    if(compactTrie != nullptr) delete compactTrie;
     delete blockChain;
     delete ui;
 }
@@ -71,7 +71,8 @@ void MainWindow::onCreateIndexButtonClick()
     dialog->setGeometry(0, 0, 400, 200);
     dialog->setStyleSheet(dialogStyle);
     cout << "Creating Index Form..." << endl;
-    auto *createIndexForm = new CreateIndexForm(blockChain, compactTrie, dialog);
+    auto *createIndexForm = new CreateIndexForm(dialog);
+    connect(createIndexForm, SIGNAL(submittedForm(QString,QString)), this, SLOT(createIndexes(QString,QString)));
     createIndexForm->show();
     dialog->exec();
 }
@@ -108,12 +109,12 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
 
     std::vector<Entry*> result;
     auto bcIter = blockChain->begin();
-    if(filter == "Receptor" || filter == "Emisor")
+    if (filter == "Receptor" || filter == "Emisor")
     {
         if(type == "Igual")
         {
             cout << "Equals..." << endl;
-            if(compactTrie == nullptr){
+            if(indexes[filter] == nullptr){
                 cout << "No compact Trie..." << endl;
                 while(bcIter != blockChain->end())
                 {
@@ -133,6 +134,9 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                     }
                     ++bcIter;
                 }
+            }
+            else if (indexes[filter]->type == "Hash") {
+
             }
         }
         else if (type == "Contiene")
@@ -303,7 +307,6 @@ void MainWindow::validateBlockChain()
         TimedResult r = time_function(mine);
         this->updateTime(r);
     });
-    // update view  when  the block chain has been  mined
     futureWatcher.setFuture(result);
 }
 
@@ -328,7 +331,76 @@ void MainWindow::redrawBlockChainAfterMine()
 
 void MainWindow::showWaitingIcon()
 {
-   ui->miningLabel->show();
+    ui->miningLabel->show();
+}
+
+void MainWindow::createIndexes(QString qStructure, QString qAttribute)
+{
+    string attribute =  qAttribute.toStdString();
+    string structure =  qStructure.toStdString();
+    if (indexes[attribute] != nullptr) {
+        delete indexes[attribute];
+    }
+    if (qStructure == "MaxHeap") {
+        if (attribute == "Emisor") {
+            auto cmp = [](const Entry *&e1, const Entry *&e2){
+                return ((TransactionEntry *)(e1))->emisor > ((TransactionEntry *)(e2))->emisor;
+            };
+            indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            return;
+        }
+        else if (attribute == "Receptor") {
+            auto cmp = [](const Entry *&e1, const Entry *&e2){
+                return ((TransactionEntry *)(e1))->emisor > ((TransactionEntry *)(e2))->emisor;
+            };
+            indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            return;
+        }
+        else if (attribute == "Monto") {
+            auto cmp = [](const Entry *&e1, const Entry *&e2){
+                return ((TransactionEntry *)(e1))->monto > ((TransactionEntry *)(e2))->monto;
+            };
+            indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            return;
+        }
+        else if (attribute == "Fecha") {
+            auto cmp = [](const Entry *&e1, const Entry *&e2){
+                return ((TransactionEntry *)(e1))->timestamp > ((TransactionEntry *)(e2))->timestamp;
+            };
+            indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            return;
+        }
+    }
+    else if (qStructure == "MinHeap") {
+        if (attribute == "Emisor") {
+            auto cmp = [](const Entry *&e1, const Entry *&e2){
+                return ((TransactionEntry *)(e1))->emisor < ((TransactionEntry *)(e2))->emisor;
+            };
+            indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            return;
+        }
+        else if (attribute == "Receptor") {
+            auto cmp = [](const Entry *&e1, const Entry *&e2){
+                return ((TransactionEntry *)(e1))->emisor < ((TransactionEntry *)(e2))->emisor;
+            };
+            indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            return;
+        }
+        else if (attribute == "Monto") {
+            auto cmp = [](const Entry *&e1, const Entry *&e2){
+                return ((TransactionEntry *)(e1))->monto < ((TransactionEntry *)(e2))->monto;
+            };
+            indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            return;
+        }
+        else if (attribute == "Fecha") {
+            auto cmp = [](const Entry *&e1, const Entry *&e2){
+                return ((TransactionEntry *)(e1))->timestamp < ((TransactionEntry *)(e2))->timestamp;
+            };
+            indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            return;
+        }
+    }
 }
 
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)

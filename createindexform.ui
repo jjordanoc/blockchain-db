@@ -42,7 +42,7 @@
         <widget class="QComboBox" name="structure">
          <item>
           <property name="text">
-           <string>Btree</string>
+           <string>BTree</string>
           </property>
          </item>
          <item>
@@ -62,7 +62,12 @@
          </item>
          <item>
           <property name="text">
-           <string>Heap</string>
+           <string>MaxHeap</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>MinHeap</string>
           </property>
          </item>
         </widget>
