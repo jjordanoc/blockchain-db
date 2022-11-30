@@ -10,29 +10,80 @@
 |           ![Joaquín](https://avatars.githubusercontent.com/u/83974213)            |                                  ![Renato](https://avatars.githubusercontent.com/u/83974266)                                   |              ![José](https://avatars.githubusercontent.com/u/83974741)              |                                              
 | <a href="https://github.com/jjordanoc" target="_blank">`github.com/jjordanoc`</a> |                <a href="https://github.com/RenatoCernades0107" target="_blank">`github.com/RenatoCernades`</a>                 | <a href="https://github.com/JoseChachi" target="_blank">`github.com/JoseChachi`</a> |
 
-[Lista de Actividades concluidas por cada integrante del grupo](https://github.com/orgs/utec-aed-2022-2/projects/4/views/1)
-
 ## Introducción
 
-En el presente proyecto se ha implementado una estructura de datos de Blockchain. En esta se realizarán operaciones de inserción, modificación y búsqueda. Para la implementación de esta estructura, se han seleccionado las estructuras de datos óptimas con sus respectivos algoritmos asociados para manejar una complejidad computacional y espacial razonable.  
+En el presente proyecto se implementó el gestor de transacciones BlockDB basado en Blockchain. Este permite realizar operaciones de inserción, modificación y búsqueda de transacciones bancarias. Para esto, se implementó una estructura de Blockchain basada en una lista circular  doblemente enlazada que soporta diferentes dominios de datos.
 
 ## Descripción del caso de estudio planteado por el grupo
 
-En el presente proyecto se estudiarán las transacciones de un banco ficticio que maneja un Blockchain local con la finalidad de asegurar sus datos.
+Se estudiarán las transacciones de un banco ficticio que maneja un Blockchain local con la finalidad de asegurar sus datos.
 
 ## Importancia del Blockchain en el dominio de datos elegido
 
-El Blockchain surge en el año 2008 con el objetivo de servir como un registro de contabilidad distribuido y seguro para la criptomoneda Bitcoin. Es así que el Blockchain desde sus orígenes está pensado para servir en aplicaciones financieras.
+Blockchain es un libro compartido e inmutable que facilita el proceso de  guardar transacciones y rastrear activos tanto tangibles como intangibles en una red de negocios. Practicamente todo puede ser rastreado y comercializado en una red de Blockchain, reduciendo el riesgo y disminuyendo el costo para todos los actores [3]. El Blockchain surge en el año 2008 con el objetivo de servir como un registro de contabilidad distribuido y seguro para la criptomoneda Bitcoin. Es así que el Blockchain desde sus orígenes está pensado para servir en aplicaciones financieras.
 
-## Estructura del blockchain
+![Blockchain](https://redclara.net/images/blockchain-lacnet-article.png)
+
+## Estructura del Blockchain
 
 Para la implementación del Blockchain se decidió utilizar una lista circular doblemente enlazada con centinela [1]. 
 Esta lista está compuesta por estructuras llamadas bloques, que son arreglos de tamaño fijo. Además, cuentan con un puntero a su propio código hash y un puntero al código hash del bloque anterior, de tal manera que, al alterarse el código hash del bloque anterior, esta actualización se ve reflejada también en el bloque actual.
-Los bloques tambien cuentan con un id, un entero positivo que indica el orden cronológico del bloque creado, y un nonce. El nonce se calcula al momento de minar el bloque como el menor entero positivo que produce por lo menos cuatro ceros al inicio del hash. Esta es la técnica de _proof of work_ que se implementó en el Blockchain.
+Los bloques tambien cuentan con un id, un entero positivo que indica el orden cronológico del bloque creado, y un nonce. 
 La integridad del contenido del Blockchain está garantizada por los métodos limitados que contamos para interactuar con la estructura: ``insertEntry``, ``hackEntry``, `searchEntry`, ``isValid`` y ``validate``. Las operaciones realizadas sobre el Blockchain pueden invalidarlo; sin embargo, se puede verificar la validez del Blockchain y validarlo, minando los bloques que haga falta.
+### Proof of work
+El nonce se calcula al momento de minar el bloque como el menor entero positivo que produce por lo menos cuatro ceros al inicio del hash. Esta es la técnica de _proof of work_ que se implementó en el Blockchain.
 
+## Estructuras de datos para la indexación
 
-### Análisis de la complejidad de los métodos del Blockchain
+Para optimizar las consultas hechas sobre el Blockchain se implementaron diferentes estructuras para indexar las entradas bajo algún atributo dado. En el caso de atributos no únicos, se utilizó agrupamiento. El usuario del gestor BlockDB debe crear los índices respectivos de acuerdo a las consultas que planea hacer con mayor frecuencia.
+
+A continuación se detallan las estructuras de datos usadas, comparando la complejidad promedio de cada operación con la de la búsqueda lineal sobre todas las entradas (n). Se muestra la tabla de la búsqueda lineal a continuación.
+
+|       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
+|:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
+| **Complejidad (caso promedio)** |      O(n)     |       O(n)      |       O(n)       |           O(n)          |       O(n)       |       O(n)       |
+
+### Heap
+
+En primer lugar, se implementó la indexación con Heap (max y min heap) para hallar en tiempo constante el valor máximo o mínimo del atributo deseado.
+
+|       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
+|:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
+| **Complejidad (caso promedio)** |      O(n)     |       O(n)      |       O(n)       |           O(n)          |       O(1) (max-heap)      |       O(1)  (min-heap)     |
+
+### Hash
+
+En segundo lugar, se implementó la indexación con Hash para optimizar las consultas por igualdad sobre algún atributo.
+
+|       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
+|:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
+| **Complejidad (caso promedio)** |      O(1)     |       O(n)      |       O(n)       |           O(n)          |       O(n)       |       O(n)       |
+
+### BST (AVL)
+
+En tercer lugar, se implementó la indexación con AVL para optimizar las consultas por igualdad y por rango. La optimización lograda para consultas por rango existe pero es limitada, y se considera preferible utilizar un B+Tree.
+
+|       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
+|:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
+| **Complejidad (caso promedio)** |      O(logn)     |       O(n)      |       O(n)       |           O(n)          |       O(logn)       |       O(logn)       |
+
+### BTree
+
+En cuarto lugar, se implementó la indexación con BTree para optimizar, al igual que con AVL, las consultas por igualdad y por rango. Para búsquedas por rango sería preferible utilizar un B+Tree.
+
+|       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
+|:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
+| **Complejidad (caso promedio)** |      O(log$_B$n)     |       O(n)      |       O(n)       |           O(n)          |       O(log$_B$n)       |       O(log$_B$n)       |
+
+### Trie (Patricia Trie)
+
+Finalmente, se implementó la indexación con Trie para optimizar las consultas sobre cadenas de caracteres.
+
+|       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
+|:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
+| **Complejidad (caso promedio)** |      O(w)     |       O(n)      |       O(w)       |           O(w)          |       O(n)       |       O(n)       |
+
+## Análisis de la complejidad de los métodos del Blockchain
 
 - ``void insertEntry(Entry *entry)``: Inserta un nuevo registro al último bloque disponible en el Blockchain. Si el último bloque está lleno, se procede a crear un nuevo bloque. 
 **Complejidad:** O(1), pues se emplea una estructura de tipo lista doblemente enlazada con nodo centinela, que es eficiente para la inserción al final.
@@ -44,14 +95,21 @@ La integridad del contenido del Blockchain está garantizada por los métodos li
 - **Complejidad:** O(n) donde n es la longitud del Blockchain, pues en el peor de los casos (si el bloque del final es el único invalido) se debe recorrer toda la estructura.
 - ``void validate()``: Mina los bloques no válidos.
 - **Complejidad:** O(k*n) donde n es la longitud del Blockchain y k es una constante aleatoria, esto se debe a que el cálculo del nonce para cada bloque tarda un tiempo aleatorio.
+  
 ## Conclusiones
 
 - La estructura de Blockchain es una buena opción para asegurar información sensible gracias al mecanismo de _proof of work_, especialmente si la cadena es de gran tamaño, pues dificulta su modificación.
 - La seguridad que brinda la estructura se puede mejorar si se utiliza como un registro distribuido, pues esto dificulta aún más hacer cambios en la cadena.
+- El uso de estructuras de datos óptimas para el problema reduce el tiempo al realizar operaciones sobre los datos, como se pudo observar al hacer las consultas.
+- El B+Tree sería la estructura óptima para realizar búsquedas por rangos.
 
 
 ## Bibliografía
 
 - [1] T. H. Cormen, C. E. Leiserson, R. L. Rivest, C. Stein, "Introduction to Algorithms". Cambridge, Massachusetts, USA, 2009 (3er ed.) [Online]. Available: https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf .[Accessed: Sep 24, 2022]
 - [2] OpenSSL, "Welcome to OpenSSL!", 1999. [Online]. Available: https://www.openssl.org/ .[Accessed: Oct 5, 2022]
+- [3] IBM, "What is blockchain technology?", 2022. [Online]. Available: https://www.ibm.com/es-es/topics/what-is-blockchain/ . [Accessed: Nov 30, 2022]
 
+## Anexos
+
+Enlace al Project Boards de GitHub: https://github.com/orgs/utec-aed-2022-2/projects/4
