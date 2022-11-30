@@ -34,7 +34,7 @@ TimedResult<Return> time_function(Fun &function, Args... args) {
     auto start = std::chrono::steady_clock::now();
     Return result = function(args...);
     auto end = std::chrono::steady_clock::now();
-    double duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+    double duration = chrono::duration_cast<chrono::microseconds>(end - start).count();
     return {result, duration};
 }
 
@@ -43,7 +43,7 @@ TimedResult<void> time_function(Fun &function, Args... args) {
     auto start = std::chrono::steady_clock::now();
     function(args...);
     auto end = std::chrono::steady_clock::now();
-    double duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+    double duration = chrono::duration_cast<chrono::microseconds>(end - start).count();
     return {duration};
 }
 

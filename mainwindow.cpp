@@ -73,6 +73,7 @@ void MainWindow::onCreateIndexButtonClick()
     dialog->setGeometry(0, 0, 400, 400);
     cout << "Creating Index Form..." << endl;
     auto *createIndexForm = new CreateIndexForm(dialog);
+    connect(createIndexForm, SIGNAL(submittedForm(QString, QString)), this, SLOT(createIndexes(QString,QString)));
     createIndexForm->show();
     dialog->exec();
 }
@@ -103,176 +104,324 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
     std::vector<Entry*> result;
     auto bcIter = blockChain->begin();
 
-    if(filter == "Receptor" || filter == "Emisor")
-    {
-        if(type == "Igual")
+    auto fun = [&](){
+        // ------------------- Atributos de texto ------------------------- //
+        if(filter == "Receptor" || filter == "Emisor")
         {
-            if(indexes[filter] == nullptr)
+            if(type == "Igual")
             {
-                while(bcIter != blockChain->end())
+                if(indexes[filter] == nullptr)
                 {
-                    Entry** entries = (*bcIter)->getEntries();
-                    for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                    while(bcIter != blockChain->end())
                     {
-                        cout << entries[i]->print() << endl;
-
-                        if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor == value1)
+                        Entry** entries = (*bcIter)->getEntries();
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
                         {
-                            result.push_back(entries[i]);
+                            cout << entries[i]->print() << endl;
+
+                            if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor == value1)
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor == value1)
+                            {
+                                result.push_back(entries[i]);
+                            }
                         }
-                        else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor == value1)
+                        ++bcIter;
+                    }
+                } else {
+                    cout << "using an structure for Emisor/Receptor Igual" << endl;
+
+                }
+            }
+            else if (type == "Contiene")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
                         {
-                            result.push_back(entries[i]);
+                            cout << entries[i]->print() << endl;
+
+                            if(filter == "Emisor" && stringMatching(dynamic_cast<TransactionEntry*>(entries[i])->emisor, value1))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Receptor" && stringMatching(dynamic_cast<TransactionEntry*>(entries[i])->receptor, value1))
+                            {
+                                result.push_back(entries[i]);
+                            }
                         }
+                        ++bcIter;
                     }
-                    ++bcIter;
                 }
-            } else {
-                cout << "using compact Trie" << endl;
-            }
-        }
-        else if (type == "Contiene")
-        {
-            cout << "Contain..." << endl;
-            while(bcIter != blockChain->end())
-            {
-                Entry** entries = (*bcIter)->getEntries();
-                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                else
                 {
-                    cout << entries[i]->print() << endl;
-
-                    if(filter == "Emisor" && stringMatching(dynamic_cast<TransactionEntry*>(entries[i])->emisor, value1))
-                    {
-                        result.push_back(entries[i]);
-                    }
-                    else if(filter == "Receptor" && stringMatching(dynamic_cast<TransactionEntry*>(entries[i])->receptor, value1))
-                    {
-                        result.push_back(entries[i]);
-                    }
+                    cout << "using an structure for Emisor/Receptor Contiene" << endl;
                 }
-                ++bcIter;
             }
-        }
-        else if(type == "Inicia con")
-        {
-            while(bcIter != blockChain->end())
+            else if(type == "Inicia con")
             {
-                Entry** entries = (*bcIter)->getEntries();
-                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                if(indexes[filter] == nullptr)
                 {
-                    cout << entries[i]->print() << endl;
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            cout << entries[i]->print() << endl;
 
-                    if(filter == "Emisor" && stringStart(dynamic_cast<TransactionEntry*>(entries[i])->emisor, value1))
-                    {
-                        result.push_back(entries[i]);
-                    }
-                    else if(filter == "Receptor" && stringStart(dynamic_cast<TransactionEntry*>(entries[i])->receptor, value1))
-                    {
-                        result.push_back(entries[i]);
+                            if(filter == "Emisor" && stringStart(dynamic_cast<TransactionEntry*>(entries[i])->emisor, value1))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Receptor" && stringStart(dynamic_cast<TransactionEntry*>(entries[i])->receptor, value1))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                        }
+                        ++bcIter;
                     }
                 }
-                ++bcIter;
+                else
+                {
+                    cout << "using an structure for Emisor/Receptor Inicia con" << endl;
+                }
             }
-        }
-    }
-
-    else if(filter == "Monto" || filter == "Fecha")
-    {
-        if(type == "Igual")
-        {
-            while(bcIter != blockChain->end())
+            else if (type == "Maximo")
             {
-                Entry** entries = (*bcIter)->getEntries();
-                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                if(indexes[filter] == nullptr)
                 {
-                    if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto == stod(value1))
+                    string cmp = "";
+                    Entry* tmpEntry;
+                    while(bcIter != blockChain->end())
                     {
-                        result.push_back(entries[i]);
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor > cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->emisor;
+                                cout << entries[i]->print() << endl;
+                                tmpEntry = entries[i];
+                            }
+                            else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor > cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->receptor;
+                                cout << entries[i]->print() << endl;
+                                tmpEntry = entries[i];
+                            }
+                        }
+                        ++bcIter;
                     }
-                    else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp == datetime1)
-                    {
-                        result.push_back(entries[i]);
-                    }
+                    if(tmpEntry != nullptr) result.push_back(tmpEntry);
                 }
-                ++bcIter;
+                else if(indexes[filter]->type == "MaxHeap")
+                {
+                    cout << "using an structure for Emisor/Receptor Maximo" << endl;
+                    auto cmp = [](Entry *e1, Entry *e2){
+                        return ((TransactionEntry *)(e1))->emisor > ((TransactionEntry *)(e2))->emisor;
+                    };
+
+                    result.push_back(((Heap<Entry *, decltype(cmp)>*)(indexes[filter]))->top());
+                }
             }
-        }
-        else if(type == "Maximo")
-        {
-            size_t cmp = std::numeric_limits<size_t>::min();
-            Entry* tmpEntry;
-            while(bcIter != blockChain->end())
+            else if (type == "Minimo")
             {
-                Entry** entries = (*bcIter)->getEntries();
-
-                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                if(indexes[filter] == nullptr)
                 {
-                    if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto > cmp)
+                    string cmp = string(16, 'z');
+                    Entry* tmpEntry;
+                    while(bcIter != blockChain->end())
                     {
-                        cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
-                        tmpEntry = entries[i];
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor < cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->emisor;
+                                tmpEntry = entries[i];
+                            }
+                            else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor < cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->receptor;
+                                tmpEntry = entries[i];
+                            }
+                        }
+                        ++bcIter;
                     }
-                    else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp >= datetime1)
-                    {
-                        cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
-                        tmpEntry = entries[i];
-                    }
+                    if(tmpEntry != nullptr) result.push_back(tmpEntry);
                 }
-                ++bcIter;
+                else
+                {
+                    cout << "using an structure for Emisor/Receptor Minimo" << endl;
+                }
             }
-            result.push_back(tmpEntry);
-        }
-        else if(type == "Minimo")
-        {
-            size_t cmp = std::numeric_limits<size_t>::max();
-            Entry* tmpEntry;
-            while(bcIter != blockChain->end())
+            else if(type == "Entre")
             {
-                Entry** entries = (*bcIter)->getEntries();
-
-                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                if(indexes[filter] == nullptr)
                 {
-                    if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto < cmp)
+                    while(bcIter != blockChain->end())
                     {
-                        cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
-                        tmpEntry = entries[i];
-                    }
-                    else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp < datetime1)
-                    {
-                        cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
-                        tmpEntry = entries[i];
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor >= value1
+                                    && dynamic_cast<TransactionEntry*>(entries[i])->emisor <= value2)
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor >= value1
+                                    && dynamic_cast<TransactionEntry*>(entries[i])->receptor <= value2)
+                            {
+                                result.push_back(entries[i]);
+                            }
+                        }
+                        ++bcIter;
                     }
                 }
-                ++bcIter;
+                else
+                {
+                    cout << "using an structure for Monto/Fecha Entre" << endl;
+                }
             }
-            result.push_back(tmpEntry);
         }
-        else if(type == "Entre")
+        // ------------------- Atributos numéricos ------------------------- //
+        else if(filter == "Monto" || filter == "Fecha")
         {
-            while(bcIter != blockChain->end())
+            if(type == "Igual")
             {
-                Entry** entries = (*bcIter)->getEntries();
-
-                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                if(indexes[filter] == nullptr)
                 {
-                    if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto >= stod(value1) && dynamic_cast<TransactionEntry*>(entries[i])->monto <= stod(value2))
+                    while(bcIter != blockChain->end())
                     {
-                        result.push_back(entries[i]);
-                    }
-                    else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp >= datetime1 && dynamic_cast<TransactionEntry*>(entries[i])->monto <= datetime2)
-                    {
-                        result.push_back(entries[i]);
+                        Entry** entries = (*bcIter)->getEntries();
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto == stod(value1))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp == datetime1)
+                            {
+                                result.push_back(entries[i]);
+                            }
+                        }
+                        ++bcIter;
                     }
                 }
-                ++bcIter;
+                else
+                {
+                    cout << "using an structure for Monto/Fecha Igual" << endl;
+                }
             }
+            else if(type == "Maximo")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    size_t cmp = std::numeric_limits<size_t>::min();
+                    Entry* tmpEntry;
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
 
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto > cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
+                                tmpEntry = entries[i];
+                            }
+                            else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp > cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->timestamp;
+                                tmpEntry = entries[i];
+                            }
+                        }
+                        ++bcIter;
+                    }
+                    if(tmpEntry != nullptr) result.push_back(tmpEntry);
+                }
+                else
+                {
+                    cout << "using an structure for Monto/Fecha Maximo" << endl;
+                }
+            }
+            else if(type == "Minimo")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    size_t cmp = std::numeric_limits<size_t>::max();
+                    Entry* tmpEntry;
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto < cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
+                                tmpEntry = entries[i];
+                            }
+                            else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp < cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->timestamp;
+                                tmpEntry = entries[i];
+                            }
+                        }
+                        ++bcIter;
+                    }
+                    if(tmpEntry != nullptr) result.push_back(tmpEntry);
+                }
+                else
+                {
+                    cout << "using an structure for Monto/Fecha Minimo" << endl;
+                }
+            }
+            else if(type == "Entre")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto >= stod(value1)
+                                    && dynamic_cast<TransactionEntry*>(entries[i])->monto <= stod(value2))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp >= datetime1
+                                    && dynamic_cast<TransactionEntry*>(entries[i])->timestamp <= datetime2)
+                            {
+                                result.push_back(entries[i]);
+                            }
+                        }
+                        ++bcIter;
+                    }
+                }
+                else
+                {
+                    cout << "using an structure for Monto/Fecha Entre" << endl;
+                }
+            }
         }
-    }
+    };
 
-    // Impreza
+    TimedResult r = time_function(fun);
+    this->updateTime(r);
+
     cout << "Termino el while" << endl;
-    for(auto e : result)
+    for(auto& e : result)
     {
         cout << e->print() << endl;
     }
@@ -464,15 +613,30 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
 {
     string attribute =  qAttribute.toStdString();
     string structure =  qStructure.toStdString();
+
     if (indexes[attribute] != nullptr) {
         delete indexes[attribute];
     }
+
     if (qStructure == "MaxHeap") {
         if (attribute == "Emisor") {
-            auto cmp = [](const Entry *&e1, const Entry *&e2){
+            auto cmp = [](Entry *e1, Entry *e2){
                 return ((TransactionEntry *)(e1))->emisor > ((TransactionEntry *)(e2))->emisor;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            indexes[attribute]->type = structure;
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    ((Heap<Entry *, decltype(cmp)>*)(indexes[attribute]))->push(entries[i]);
+                }
+                ++bcIter;
+            }
             return;
         }
         else if (attribute == "Receptor") {
@@ -527,6 +691,7 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
             return;
         }
     }
+
 }
 
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
@@ -554,6 +719,6 @@ void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
 template<typename T>
 void MainWindow::updateTime(TimedResult<T> &r)
 {
-    QString timeText = QString::number(r.duration) + " ms";
+    QString timeText = QString::number(r.duration) + " μs";
     ui->timeLabel->setText(timeText);
 }

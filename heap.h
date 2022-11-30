@@ -101,6 +101,11 @@ public:
         data.pop_back();
         heapify_down(data, 0);
     }
+
+    T top() {
+        if (data.empty()) return T{};
+        return data[0];
+    }
 };
 
 
