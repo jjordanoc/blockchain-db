@@ -37,6 +37,7 @@ set(PROJECT_SOURCES
         findentryform.h findentryform.cpp findentryform.ui
         heap.h
         index.h
+        avl.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

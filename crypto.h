@@ -9,6 +9,7 @@
 #include <sstream>
 #include <string>
 #include <chrono>
+#include <vector>
 using namespace std;
 
 #include <openssl/sha.h>
@@ -33,7 +34,7 @@ TimedResult<Return> time_function(Fun &function, Args... args) {
     auto start = std::chrono::steady_clock::now();
     Return result = function(args...);
     auto end = std::chrono::steady_clock::now();
-    double duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+    double duration = chrono::duration_cast<chrono::microseconds>(end - start).count();
     return {result, duration};
 }
 
@@ -42,8 +43,14 @@ TimedResult<void> time_function(Fun &function, Args... args) {
     auto start = std::chrono::steady_clock::now();
     function(args...);
     auto end = std::chrono::steady_clock::now();
-    double duration = chrono::duration_cast<chrono::milliseconds>(end - start).count();
+    double duration = chrono::duration_cast<chrono::microseconds>(end - start).count();
     return {duration};
 }
+
+vector<int> buildPositions(string pattern);
+
+bool stringMatching(const string &text, const string &pattern);
+
+bool stringStart(const string &text, const string &pattern);
 
 #endif//PROYECTO_SHA256_CRYPTO_H

@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "blockwidget.h"
-#include  <QCheckBox>
+#include <QCheckBox>
 #include <QTextEdit>
 #include <QVBoxLayout>
 #include "createblockform.h"
@@ -21,8 +21,10 @@
 #include <QStyleOption>
 #include <QFuture>
 #include <QtConcurrent>
+#include <limits>
 #include <QMovie>
 #include <functional>
+
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -38,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&this->futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::redrawBlockChainAfterMine);
     connect(&this->futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::showWaitingIcon);
     ui->scrollArea->setWidget(ui->blockScrollAreaWidget);
-    QMovie *movie = new QMovie("C:/Users/rojot/OneDrive/Escritorio/algoritmos_y_estructuras_de_datos/repo/proyecto-sha256/mining.gif");
+    QMovie *movie = new QMovie("C:/Users/renat/Downloads/giphy.gif");
     ui->miningLabel->setMovie(movie);
     movie->start();
     movie->setScaledSize(QSize(100, 100));
@@ -68,11 +70,10 @@ void MainWindow::onCreateIndexButtonClick()
 {
     auto *dialog = new QDialog();
     dialog->setModal(true);
-    dialog->setGeometry(0, 0, 400, 200);
-    dialog->setStyleSheet(dialogStyle);
+    dialog->setGeometry(0, 0, 400, 400);
     cout << "Creating Index Form..." << endl;
     auto *createIndexForm = new CreateIndexForm(dialog);
-    connect(createIndexForm, SIGNAL(submittedForm(QString,QString)), this, SLOT(createIndexes(QString,QString)));
+    connect(createIndexForm, SIGNAL(submittedForm(QString, QString)), this, SLOT(createIndexes(QString,QString)));
     createIndexForm->show();
     dialog->exec();
 }
@@ -81,14 +82,7 @@ void MainWindow::onCreateQueryButtonClick()
 {
     auto *dialog = new QDialog();
     dialog->setModal(true);
-    dialog->setGeometry(0, 0, 400, 200);
-    dialog->setStyleSheet(dialogStyle + "QHeaderView::section {\
-                          background-color:  rgb(108, 108, 162);\
-                          color: black;\
-                      }\
-                      QTableWidget {\
-                          background-color:   rgb(50, 50, 75);\
-                      }");
+    dialog->setGeometry(0, 0, 400, 400);
     cout << "Creating Query Form..." << endl;
     auto *createQueryForm = new QueryForm(dialog);
     connect(createQueryForm, SIGNAL(emitData(std::unordered_map<std::string, std::string>)), this, SLOT(applyFilter(std::unordered_map<std::string, std::string>)));
@@ -99,54 +93,350 @@ void MainWindow::onCreateQueryButtonClick()
 void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
 {
     cout << "applying filter..." << endl;
-    for (auto& [a, b] : um) {
-        cout << a << ": " <<b << endl;
-    }
 
     auto filter = um["filter"];
     auto type = um["type"];
     auto value1 = um["value1"];
+    auto value2 = um["value2"]; // 2do parametro del entre
+    auto datetime1 = stoull(um["datetime1"]);
+    auto datetime2 = stoull(um["datetime2"]); // 2do parametro del entre
 
     std::vector<Entry*> result;
     auto bcIter = blockChain->begin();
-    if (filter == "Receptor" || filter == "Emisor")
-    {
-        if(type == "Igual")
-        {
-            cout << "Equals..." << endl;
-            if(indexes[filter] == nullptr){
-                cout << "No compact Trie..." << endl;
-                while(bcIter != blockChain->end())
-                {
-                    cout << "While1....." << endl;
-                    cout << (*bcIter)->getData() << endl;
-                    Entry** entries = (*bcIter)->getEntries();
-                    for(int i = 0; i < (*bcIter)->getSize(); ++i)
-                    {
-                        cout << entries[i]->print() << endl;
 
-                        if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor == value1){
-                            result.push_back(entries[i]);
+    auto fun = [&](){
+        // ------------------- Atributos de texto ------------------------- //
+        if(filter == "Receptor" || filter == "Emisor")
+        {
+            if(type == "Igual")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            cout << entries[i]->print() << endl;
+
+                            if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor == value1)
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor == value1)
+                            {
+                                result.push_back(entries[i]);
+                            }
                         }
-                        else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor == value1){
-                            result.push_back(entries[i]);
-                        }
+                        ++bcIter;
                     }
-                    ++bcIter;
+                } else {
+                    cout << "using an structure for Emisor/Receptor Igual" << endl;
+
                 }
             }
-            else if (indexes[filter]->type == "Hash") {
+            else if (type == "Contiene")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            cout << entries[i]->print() << endl;
 
+                            if(filter == "Emisor" && stringMatching(dynamic_cast<TransactionEntry*>(entries[i])->emisor, value1))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Receptor" && stringMatching(dynamic_cast<TransactionEntry*>(entries[i])->receptor, value1))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                        }
+                        ++bcIter;
+                    }
+                }
+                else
+                {
+                    cout << "using an structure for Emisor/Receptor Contiene" << endl;
+                }
+            }
+            else if(type == "Inicia con")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            cout << entries[i]->print() << endl;
+
+                            if(filter == "Emisor" && stringStart(dynamic_cast<TransactionEntry*>(entries[i])->emisor, value1))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Receptor" && stringStart(dynamic_cast<TransactionEntry*>(entries[i])->receptor, value1))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                        }
+                        ++bcIter;
+                    }
+                }
+                else
+                {
+                    cout << "using an structure for Emisor/Receptor Inicia con" << endl;
+                }
+            }
+            else if (type == "Maximo")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    string cmp = "";
+                    Entry* tmpEntry;
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor > cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->emisor;
+                                cout << entries[i]->print() << endl;
+                                tmpEntry = entries[i];
+                            }
+                            else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor > cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->receptor;
+                                cout << entries[i]->print() << endl;
+                                tmpEntry = entries[i];
+                            }
+                        }
+                        ++bcIter;
+                    }
+                    if(tmpEntry != nullptr) result.push_back(tmpEntry);
+                }
+                else if(indexes[filter]->type == "MaxHeap")
+                {
+                    cout << "using an structure for Emisor/Receptor Maximo" << endl;
+                    auto cmp = [](Entry *e1, Entry *e2){
+                        return ((TransactionEntry *)(e1))->emisor > ((TransactionEntry *)(e2))->emisor;
+                    };
+
+                    result.push_back(((Heap<Entry *, decltype(cmp)>*)(indexes[filter]))->top());
+                }
+            }
+            else if (type == "Minimo")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    string cmp = string(16, 'z');
+                    Entry* tmpEntry;
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor < cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->emisor;
+                                tmpEntry = entries[i];
+                            }
+                            else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor < cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->receptor;
+                                tmpEntry = entries[i];
+                            }
+                        }
+                        ++bcIter;
+                    }
+                    if(tmpEntry != nullptr) result.push_back(tmpEntry);
+                }
+                else
+                {
+                    cout << "using an structure for Emisor/Receptor Minimo" << endl;
+                }
+            }
+            else if(type == "Entre")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor >= value1
+                                    && dynamic_cast<TransactionEntry*>(entries[i])->emisor <= value2)
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor >= value1
+                                    && dynamic_cast<TransactionEntry*>(entries[i])->receptor <= value2)
+                            {
+                                result.push_back(entries[i]);
+                            }
+                        }
+                        ++bcIter;
+                    }
+                }
+                else
+                {
+                    cout << "using an structure for Monto/Fecha Entre" << endl;
+                }
             }
         }
-        else if (type == "Contiene")
+        // ------------------- Atributos numéricos ------------------------- //
+        else if(filter == "Monto" || filter == "Fecha")
         {
-            cout << "Contain..." << endl;
+            if(type == "Igual")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto == stod(value1))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp == datetime1)
+                            {
+                                result.push_back(entries[i]);
+                            }
+                        }
+                        ++bcIter;
+                    }
+                }
+                else
+                {
+                    if(indexes[filter]->type == "AVL")
+                    {
+                        cout << "using ALV for Monto/Fecha Igual" << endl;
+                        auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2)
+                        {
+                            return k1->key > k2->key;
+                        };
+
+                        auto in = make_shared<IndexT<double>>(stod(value1));
+                        shared_ptr<IndexT<double>> indext = ((AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>*)(indexes[filter]))->search(in);
+
+                        for(auto& e : *(indext->values))
+                        {
+                            result.push_back(e);
+                        }
+                    }
+                }
+            }
+            else if(type == "Maximo")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    size_t cmp = std::numeric_limits<size_t>::min();
+                    Entry* tmpEntry;
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto > cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
+                                tmpEntry = entries[i];
+                            }
+                            else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp > cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->timestamp;
+                                tmpEntry = entries[i];
+                            }
+                        }
+                        ++bcIter;
+                    }
+                    if(tmpEntry != nullptr) result.push_back(tmpEntry);
+                }
+                else
+                {
+                    cout << "using an structure for Monto/Fecha Maximo" << endl;
+                }
+            }
+            else if(type == "Minimo")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    size_t cmp = std::numeric_limits<size_t>::max();
+                    Entry* tmpEntry;
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto < cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
+                                tmpEntry = entries[i];
+                            }
+                            else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp < cmp)
+                            {
+                                cmp = dynamic_cast<TransactionEntry*>(entries[i])->timestamp;
+                                tmpEntry = entries[i];
+                            }
+                        }
+                        ++bcIter;
+                    }
+                    if(tmpEntry != nullptr) result.push_back(tmpEntry);
+                }
+                else
+                {
+                    cout << "using an structure for Monto/Fecha Minimo" << endl;
+                }
+            }
+            else if(type == "Entre")
+            {
+                if(indexes[filter] == nullptr)
+                {
+                    while(bcIter != blockChain->end())
+                    {
+                        Entry** entries = (*bcIter)->getEntries();
+
+                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                        {
+                            if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto >= stod(value1)
+                                    && dynamic_cast<TransactionEntry*>(entries[i])->monto <= stod(value2))
+                            {
+                                result.push_back(entries[i]);
+                            }
+                            else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp >= datetime1
+                                    && dynamic_cast<TransactionEntry*>(entries[i])->timestamp <= datetime2)
+                            {
+                                result.push_back(entries[i]);
+                            }
+                        }
+                        ++bcIter;
+                    }
+                }
+                else
+                {
+                    cout << "using an structure for Monto/Fecha Entre" << endl;
+                }
+            }
         }
-    }
-    // Impreza
+    };
+
+    TimedResult r = time_function(fun);
+    this->updateTime(r);
+
     cout << "Termino el while" << endl;
-    for(auto e : result)
+    for(auto& e : result)
     {
         cout << e->print() << endl;
     }
@@ -155,7 +445,6 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
     auto *dialog = new QDialog();
     dialog->setModal(true);
     dialog->setGeometry(0, 0, 550, 400);
-    dialog->setStyleSheet(dialogStyle);
     auto* querydisplayview = new QueryDisplayView(result, um, dialog);
     querydisplayview->show();
     dialog->exec();
@@ -269,7 +558,7 @@ void MainWindow::onUpdateEntryButtonClick()
 {
     auto *dialog = new QDialog();
     dialog->setModal(true);
-    dialog->setGeometry(0, 0, 400, 200);
+    dialog->setGeometry(0, 0, 400, 400);
     dialog->setStyleSheet(dialogStyle);
     auto *findEntryForm = new FindEntryForm(dialog);
     connect(findEntryForm, &FindEntryForm::foundEntry, this, [this, dialog](int blockId, int entryId) {
@@ -307,6 +596,7 @@ void MainWindow::validateBlockChain()
         TimedResult r = time_function(mine);
         this->updateTime(r);
     });
+    // update view  when  the block chain has been  mined
     futureWatcher.setFuture(result);
 }
 
@@ -338,15 +628,30 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
 {
     string attribute =  qAttribute.toStdString();
     string structure =  qStructure.toStdString();
+
     if (indexes[attribute] != nullptr) {
         delete indexes[attribute];
     }
+
     if (qStructure == "MaxHeap") {
         if (attribute == "Emisor") {
-            auto cmp = [](const Entry *&e1, const Entry *&e2){
+            auto cmp = [](Entry *e1, Entry *e2){
                 return ((TransactionEntry *)(e1))->emisor > ((TransactionEntry *)(e2))->emisor;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            indexes[attribute]->type = structure;
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    ((Heap<Entry *, decltype(cmp)>*)(indexes[attribute]))->push(entries[i]);
+                }
+                ++bcIter;
+            }
             return;
         }
         else if (attribute == "Receptor") {
@@ -401,6 +706,62 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
             return;
         }
     }
+    else if (qStructure == "AVL")
+    {
+        if (attribute == "Emisor")
+        {
+
+        }
+        else if (attribute == "Receptor")
+        {
+
+        }
+        else if (attribute == "Monto")
+        {
+            auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2){
+                return k1->key > k2->key;
+            };
+            indexes[attribute] = new AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>(cmpMayor);
+            indexes[attribute]->type = structure;
+
+            cout << "ALV CREATED" << endl;
+
+            unordered_map<double, shared_ptr<IndexT<double>>> um;
+
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    double monto = ((TransactionEntry*)(entries[i]))->monto;
+                    if(um.find(monto) == um.end())
+                    {
+                        um[monto] = make_shared<IndexT<double>>(monto, entries[i]);
+                    }
+                    else
+                    {
+                        um[monto]->insert(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+            for(auto& e : um)
+            {
+                ((AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>*)(indexes[attribute]))->insert(e.second);
+            }
+            cout << "FINO termino avl" << endl;;
+            return;
+        }
+        else if (attribute == "Fecha")
+        {
+
+        }
+    }
+
 }
 
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
@@ -428,6 +789,6 @@ void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
 template<typename T>
 void MainWindow::updateTime(TimedResult<T> &r)
 {
-    QString timeText = QString::number(r.duration) + " ms";
+    QString timeText = QString::number(r.duration) + " μs";
     ui->timeLabel->setText(timeText);
 }
