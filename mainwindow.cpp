@@ -40,7 +40,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(&this->futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::redrawBlockChainAfterMine);
     connect(&this->futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::showWaitingIcon);
     ui->scrollArea->setWidget(ui->blockScrollAreaWidget);
-    QMovie *movie = new QMovie("C:/Users/renat/Downloads/giphy.gif");
+    QMovie *movie = new QMovie("C:/Users/rojot/OneDrive/Escritorio/algoritmos_y_estructuras_de_datos/repo/proyecto-sha256/mining.gif");
     ui->miningLabel->setMovie(movie);
     movie->start();
     movie->setScaledSize(QSize(100, 100));
@@ -131,9 +131,22 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                         }
                         ++bcIter;
                     }
-                } else {
-                    cout << "using an structure for Emisor/Receptor Igual" << endl;
+                }
+                else if(indexes[filter]->type == "AVL")
+                {
+                    cout << "using ALV for Emisor/Receptor Igual" << endl;
+                    auto cmpMayor = [&](shared_ptr<IndexT<string>> k1, shared_ptr<IndexT<string>> k2)
+                    {
+                        return k1->key > k2->key;
+                    };
 
+                    auto in = make_shared<IndexT<string>>(value1);
+                    shared_ptr<IndexT<string>> indext = ((AVLTree<shared_ptr<IndexT<string>>, decltype(cmpMayor)>*)(indexes[filter]))->search(in);
+
+                    for(auto& e : *(indext->values))
+                    {
+                        result.push_back(e);
+                    }
                 }
             }
             // Contiene

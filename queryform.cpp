@@ -7,6 +7,13 @@ QueryForm::QueryForm(QWidget *parent) :
 {
     ui->setupUi(this);
     connect(ui->buttonBox, SIGNAL(accepted()), this, SLOT(submitForm()));
+    connect(ui->filtro,SIGNAL(currentTextChanged(const QString&)),this,SLOT(updateInputsOnFiltroChange(const QString&)));
+    connect(ui->tipo,SIGNAL(currentTextChanged(const QString&)),this,SLOT(updateInputsOnTipoChange(const QString&)));
+    ui->dateTimeEdit->hide();
+    ui->dateTimeEdit_2->hide();
+    ui->lineEdit->hide();
+    this->currentFiltro = "Emisor";
+    this->currentTipo = "Igual";
 }
 
 void QueryForm::submitForm()
@@ -33,6 +40,50 @@ void QueryForm::submitForm()
     };
 
     emit emitData(um);
+}
+
+void QueryForm::updateInputsOnFiltroChange(const QString &filtro)
+{
+    this->currentFiltro = filtro;
+    this->updateUiOnAnyChange();
+}
+
+void QueryForm::updateInputsOnTipoChange(const QString &tipo)
+{
+    this->currentTipo = tipo;
+    this->updateUiOnAnyChange();
+}
+
+void QueryForm::updateUiOnAnyChange()
+{
+    std::cout << "updating ui for tipo:" << currentTipo.toStdString() << " filtro " << currentFiltro.toStdString() << std::endl;
+    if (currentTipo == "Entre"){
+        // si es monto
+        if (currentFiltro == "Fecha") {
+            ui->dateTimeEdit->show();
+            ui->dateTimeEdit_2->show();
+            ui->texto->hide();
+            ui->lineEdit->hide();
+        }
+        else {
+            ui->dateTimeEdit->hide();
+            ui->dateTimeEdit_2->hide();
+            ui->texto->show();
+            ui->lineEdit->show();
+        }
+    }
+    else {
+        ui->dateTimeEdit_2->hide();
+        ui->lineEdit->hide();
+        if (currentFiltro == "Fecha") {
+            ui->dateTimeEdit->show();
+            ui->texto->hide();
+        }
+        else {
+            ui->dateTimeEdit->hide();
+            ui->texto->show();
+        }
+    }
 }
 
 QueryForm::~QueryForm()
