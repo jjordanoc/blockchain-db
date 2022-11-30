@@ -71,6 +71,11 @@ public:
     {
         remove(this->root, value);
     }
+    vector<T> range_search(T a, T b) {
+        vector<T> result;
+        _range_search(root, a, b, result);
+        return result;
+    }
 
     ~AVLTree(){
         if(this->root != nullptr){
@@ -79,6 +84,21 @@ public:
     }
 
 private:
+    void _range_search(NodeBT *&node, T start, T end, vector<T> &result){
+
+        if (node == nullptr) return;
+        bool startEq = !compare(node->data, start) && !compare(start, node->data);
+        bool endEq = !compare(node->data, end) && !compare(end, node->data);
+        if (compare(node->data, start)) {
+            _range_search(node->left, start, end, result);
+        }
+        if ((compare(node->data, start) || startEq) && (compare(end, node->data) || endEq)) {
+            result.push_back(node->data);
+        }
+        if (compare(end, node->data)) {
+            _range_search(node->right, start, end, result);
+        }
+    }
     void _display_preorder(NodeBT *node, string &result) {
         if (node == nullptr) return;
         result += to_string(node->data) + " ";

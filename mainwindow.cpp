@@ -108,6 +108,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
         // ------------------- Atributos de texto ------------------------- //
         if(filter == "Receptor" || filter == "Emisor")
         {
+            // Igual
             if(type == "Igual")
             {
                 if(indexes[filter] == nullptr)
@@ -135,6 +136,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
 
                 }
             }
+            // Contiene
             else if (type == "Contiene")
             {
                 if(indexes[filter] == nullptr)
@@ -163,6 +165,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                     cout << "using an structure for Emisor/Receptor Contiene" << endl;
                 }
             }
+            // Inicia con
             else if(type == "Inicia con")
             {
                 if(indexes[filter] == nullptr)
@@ -191,6 +194,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                     cout << "using an structure for Emisor/Receptor Inicia con" << endl;
                 }
             }
+            // Maximo
             else if (type == "Maximo")
             {
                 if(indexes[filter] == nullptr)
@@ -229,7 +233,22 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
 
                     result.push_back(((Heap<Entry *, decltype(cmp)>*)(indexes[filter]))->top());
                 }
+                else if (indexes[filter]->type == "AVL") {
+                    cout << "using AVL for Emisor/Receptor Maximo" << endl;
+                    auto cmpMayor = [&](shared_ptr<IndexT<string>> k1, shared_ptr<IndexT<string>> k2)
+                    {
+                        return k1->key > k2->key;
+                    };
+
+                    shared_ptr<IndexT<string>> indext = ((AVLTree<shared_ptr<IndexT<string>>, decltype(cmpMayor)>*)(indexes[filter]))->maxValue();
+
+                    for(auto& e : *(indext->values))
+                    {
+                        result.push_back(e);
+                    }
+                }
             }
+            // Minimo
             else if (type == "Minimo")
             {
                 if(indexes[filter] == nullptr)
@@ -256,6 +275,29 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                         ++bcIter;
                     }
                     if(tmpEntry != nullptr) result.push_back(tmpEntry);
+                }
+                else if(indexes[filter]->type == "MinHeap")
+                {
+                    cout << "using an structure for Emisor/Receptor Minimo" << endl;
+                    auto cmp = [](Entry *e1, Entry *e2){
+                        return ((TransactionEntry *)(e1))->emisor < ((TransactionEntry *)(e2))->emisor;
+                    };
+
+                    result.push_back(((Heap<Entry *, decltype(cmp)>*)(indexes[filter]))->top());
+                }
+                else if (indexes[filter]->type == "AVL") {
+                    cout << "using AVL for Emisor/Receptor Minimo" << endl;
+                    auto cmpMayor = [&](shared_ptr<IndexT<string>> k1, shared_ptr<IndexT<string>> k2)
+                    {
+                        return k1->key > k2->key;
+                    };
+
+                    shared_ptr<IndexT<string>> indext = ((AVLTree<shared_ptr<IndexT<string>>, decltype(cmpMayor)>*)(indexes[filter]))->minValue();
+
+                    for(auto& e : *(indext->values))
+                    {
+                        result.push_back(e);
+                    }
                 }
                 else
                 {
@@ -295,6 +337,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
         // ------------------- Atributos numéricos ------------------------- //
         else if(filter == "Monto" || filter == "Fecha")
         {
+            // Igual
             if(type == "Igual")
             {
                 if(indexes[filter] == nullptr)
@@ -316,9 +359,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                         ++bcIter;
                     }
                 }
-                else
-                {
-                    if(indexes[filter]->type == "AVL")
+                else if(indexes[filter]->type == "AVL")
                     {
                         cout << "using ALV for Monto/Fecha Igual" << endl;
                         auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2)
@@ -334,8 +375,8 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                             result.push_back(e);
                         }
                     }
-                }
             }
+            // Maximo
             else if(type == "Maximo")
             {
                 if(indexes[filter] == nullptr)
@@ -363,11 +404,41 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                     }
                     if(tmpEntry != nullptr) result.push_back(tmpEntry);
                 }
+                else if(indexes[filter]->type == "MaxHeap")
+                {
+                    cout << "using an structure for Monto/Fecha Maximo" << endl;
+                    if (filter == "Monto") {
+                        auto cmp = [](Entry *e1, Entry *e2){
+                            return ((TransactionEntry *)(e1))->monto > ((TransactionEntry *)(e2))->monto;
+                        };
+                        result.push_back(((Heap<Entry *, decltype(cmp)>*)(indexes[filter]))->top());
+                    }
+                    else if (filter == "Fecha") {
+                        auto cmp = [](Entry *e1, Entry *e2){
+                            return ((TransactionEntry *)(e1))->timestamp > ((TransactionEntry *)(e2))->timestamp;
+                        };
+                        result.push_back(((Heap<Entry *, decltype(cmp)>*)(indexes[filter]))->top());
+                    }
+                }
+                else if (indexes[filter]->type == "AVL") {
+                    cout << "using ALV for Monto/Fecha Maximo" << endl;
+                    auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2)
+                    {
+                        return k1->key > k2->key;
+                    };
+                    shared_ptr<IndexT<double>> indext = ((AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>*)(indexes[filter]))->maxValue();
+
+                    for(auto& e : *(indext->values))
+                    {
+                        result.push_back(e);
+                    }
+                }
                 else
                 {
                     cout << "using an structure for Monto/Fecha Maximo" << endl;
                 }
             }
+            // Minimo
             else if(type == "Minimo")
             {
                 if(indexes[filter] == nullptr)
@@ -395,11 +466,41 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                     }
                     if(tmpEntry != nullptr) result.push_back(tmpEntry);
                 }
+                else if(indexes[filter]->type == "MinHeap")
+                {
+                    cout << "using an structure for Monto/Fecha Minimo" << endl;
+                    if (filter == "Monto") {
+                        auto cmp = [](Entry *e1, Entry *e2){
+                            return ((TransactionEntry *)(e1))->monto < ((TransactionEntry *)(e2))->monto;
+                        };
+                        result.push_back(((Heap<Entry *, decltype(cmp)>*)(indexes[filter]))->top());
+                    }
+                    else if (filter == "Fecha") {
+                        auto cmp = [](Entry *e1, Entry *e2){
+                            return ((TransactionEntry *)(e1))->timestamp < ((TransactionEntry *)(e2))->timestamp;
+                        };
+                        result.push_back(((Heap<Entry *, decltype(cmp)>*)(indexes[filter]))->top());
+                    }
+                }
+                else if (indexes[filter]->type == "AVL") {
+                    cout << "using ALV for Monto/Fecha Minimo" << endl;
+                    auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2)
+                    {
+                        return k1->key > k2->key;
+                    };
+                    shared_ptr<IndexT<double>> indext = ((AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>*)(indexes[filter]))->minValue();
+
+                    for(auto& e : *(indext->values))
+                    {
+                        result.push_back(e);
+                    }
+                }
                 else
                 {
                     cout << "using an structure for Monto/Fecha Minimo" << endl;
                 }
             }
+            // Entre
             else if(type == "Entre")
             {
                 if(indexes[filter] == nullptr)
@@ -424,6 +525,25 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                         ++bcIter;
                     }
                 }
+                else if(indexes[filter]->type == "AVL")
+                    {
+                        cout << "using ALV for Monto/Fecha Entre" << endl;
+                        auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2)
+                        {
+                            return k1->key > k2->key;
+                        };
+
+                        auto a = make_shared<IndexT<double>>(stod(value1));
+                        auto b = make_shared<IndexT<double>>(stod(value2));
+                        vector<shared_ptr<IndexT<double>>> indext = ((AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>*)(indexes[filter]))->range_search(a, b);
+                        for (auto &v_e : indext) {
+                            for(auto& e : *(v_e->values))
+                            {
+                                result.push_back(e);
+                            }
+                        }
+
+                    }
                 else
                 {
                     cout << "using an structure for Monto/Fecha Entre" << endl;
