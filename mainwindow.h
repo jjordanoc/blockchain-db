@@ -5,14 +5,19 @@
 #include <QHBoxLayout>
 #include <QGridLayout>
 #include <QScrollArea>
+#include <QFuture>
+#include <QFutureWatcher>
+#include <QWidget>
+
+#include "globals.h"
+
 #include "blockchain.h"
 #include "compacttrie.h"
-#include "globals.h"
-#include <unordered_map>
-#include <QWidget>
-#include <QFuture>
-#include  <QFutureWatcher>
+#include "avl.h"
 #include "heap.h"
+
+#include <unordered_map>
+
 using namespace std;
 
 namespace Ui {

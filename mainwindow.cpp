@@ -318,7 +318,22 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else
                 {
-                    cout << "using an structure for Monto/Fecha Igual" << endl;
+                    if(indexes[filter]->type == "AVL")
+                    {
+                        cout << "using ALV for Monto/Fecha Igual" << endl;
+                        auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2)
+                        {
+                            return k1->key > k2->key;
+                        };
+
+                        auto in = make_shared<IndexT<double>>(stod(value1));
+                        shared_ptr<IndexT<double>> indext = ((AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>*)(indexes[filter]))->search(in);
+
+                        for(auto& e : *(indext->values))
+                        {
+                            result.push_back(e);
+                        }
+                    }
                 }
             }
             else if(type == "Maximo")
@@ -689,6 +704,61 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
             return;
+        }
+    }
+    else if (qStructure == "AVL")
+    {
+        if (attribute == "Emisor")
+        {
+
+        }
+        else if (attribute == "Receptor")
+        {
+
+        }
+        else if (attribute == "Monto")
+        {
+            auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2){
+                return k1->key > k2->key;
+            };
+            indexes[attribute] = new AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>(cmpMayor);
+            indexes[attribute]->type = structure;
+
+            cout << "ALV CREATED" << endl;
+
+            unordered_map<double, shared_ptr<IndexT<double>>> um;
+
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    double monto = ((TransactionEntry*)(entries[i]))->monto;
+                    if(um.find(monto) == um.end())
+                    {
+                        um[monto] = make_shared<IndexT<double>>(monto, entries[i]);
+                    }
+                    else
+                    {
+                        um[monto]->insert(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+            for(auto& e : um)
+            {
+                ((AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>*)(indexes[attribute]))->insert(e.second);
+            }
+            cout << "FINO termino avl" << endl;;
+            return;
+        }
+        else if (attribute == "Fecha")
+        {
+
         }
     }
 
