@@ -51,4 +51,6 @@ vector<int> buildPositions(string pattern);
 
 bool stringMatching(const string &text, const string &pattern);
 
+bool stringStart(const string &text, const string &pattern);
+
 #endif//PROYECTO_SHA256_CRYPTO_H

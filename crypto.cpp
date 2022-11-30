@@ -44,7 +44,12 @@ bool stringMatching(const string &text, const string &pattern) {
     return false;
 }
 
-
+bool stringStart(const string &text, const string &pattern){
+    for (int i = 0; i < pattern.size(); ++i) {
+        if(text[i] != pattern[i]) return false;
+    }
+    return true;
+}
 
 
 

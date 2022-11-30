@@ -148,6 +148,27 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 ++bcIter;
             }
         }
+        else if(type == "Inicia con")
+        {
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    cout << entries[i]->print() << endl;
+
+                    if(filter == "Emisor" && stringStart(dynamic_cast<TransactionEntry*>(entries[i])->emisor, value1))
+                    {
+                        result.push_back(entries[i]);
+                    }
+                    else if(filter == "Receptor" && stringStart(dynamic_cast<TransactionEntry*>(entries[i])->receptor, value1))
+                    {
+                        result.push_back(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+        }
     }
 
     else if(filter == "Monto" || filter == "Fecha")
