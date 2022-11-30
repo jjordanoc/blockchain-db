@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>QueryForm</class>
+ <widget class="QWidget" name="QueryForm">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>400</width>
+    <height>300</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QLabel" name="label">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>130</y>
+     <width>81</width>
+     <height>16</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Filtrar por</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="filtro">
+   <property name="geometry">
+    <rect>
+     <x>90</x>
+     <y>130</y>
+     <width>69</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Emisor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Receptor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Monto</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Fecha</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QComboBox" name="tipo">
+   <property name="geometry">
+    <rect>
+     <x>170</x>
+     <y>130</y>
+     <width>69</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <item>
+    <property name="text">
+     <string>Igual</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Menor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Mayor</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Contiene</string>
+    </property>
+   </item>
+   <item>
+    <property name="text">
+     <string>Entre</string>
+    </property>
+   </item>
+  </widget>
+  <widget class="QDialogButtonBox" name="buttonBox">
+   <property name="geometry">
+    <rect>
+     <x>210</x>
+     <y>260</y>
+     <width>156</width>
+     <height>24</height>
+    </rect>
+   </property>
+   <property name="standardButtons">
+    <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+   </property>
+  </widget>
+  <widget class="QLineEdit" name="texto">
+   <property name="geometry">
+    <rect>
+     <x>250</x>
+     <y>130</y>
+     <width>113</width>
+     <height>22</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

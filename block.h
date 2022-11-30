@@ -8,6 +8,37 @@
 class BlockWidget;
 
 template<size_t BLOCK_SIZE>
+class BlockIterator{
+    Entry **datos;
+    int current = 0;
+public:
+    BlockIterator(Entry **_datos, int _current):datos(_datos),current(_current){}
+    BlockIterator(BlockIterator<BLOCK_SIZE> &bi){
+        datos = bi.datos;
+        current = bi.current;
+    }
+    void operator++(){
+        ++current;
+    }
+    void operator--(){
+        --current;
+    }
+    bool operator==(const BlockIterator<BLOCK_SIZE> &bi){
+        return current == bi.current;
+    }
+    bool operator!=(const BlockIterator<BLOCK_SIZE> &bi){
+        return current != bi.current;
+    }
+    Entry* operator*(){
+        return datos[current];
+    }
+    BlockIterator operator=(const BlockIterator &other) {
+        current = other.current;
+        return *this;
+    }
+};
+
+template<size_t BLOCK_SIZE>
 class Block {
     size_t id = 0;
     size_t nonce = 0;
@@ -18,6 +49,7 @@ class Block {
     string *prev = nullptr;
     string *hashCode = nullptr;
     friend class BlockWidget;
+    typedef BlockIterator<BLOCK_SIZE> iterator;
 public:
     Block() {
         // bloque genesis
@@ -32,6 +64,21 @@ public:
         rehash();
     };
 
+    iterator begin(){
+        return iterator(datos, 0);
+    }
+
+    iterator end(){
+        return iterator(datos, fillCount-1);
+    }
+
+    Entry **getEntries(){
+        return datos;
+    }
+
+    size_t getSize(){
+        return fillCount;
+    }
 
     void mine() {
         // require the hash to have at least 4 leading zeros

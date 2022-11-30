@@ -12,8 +12,7 @@ using namespace std;
 
 class EntryWidget;
 
-class TransactionEntry : public Entry {
-private:
+struct TransactionEntry : public Entry {
     string emisor;
     string receptor;
     double monto{};
