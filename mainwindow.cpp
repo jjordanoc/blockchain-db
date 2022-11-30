@@ -15,6 +15,13 @@
 #include <QTableWidget>
 #include <memory.h>
 #include "transactionentry.h"
+#include "findentryform.h"
+#include "updateentryform.h"
+#include <QPainter>
+#include <QStyleOption>
+#include <QFuture>
+#include <QtConcurrent>
+
 
 
 MainWindow::MainWindow(QWidget *parent)
@@ -25,6 +32,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->createIndexButton, &QPushButton::clicked, this, &MainWindow::onCreateIndexButtonClick);
     connect(ui->queryButton, &QPushButton::clicked, this, &MainWindow::onCreateQueryButtonClick);
     connect(ui->uploadFileButton, SIGNAL(clicked()), this, SLOT(uploadDataFromFile()));
+    connect(ui->modifyEntryButton, SIGNAL(clicked()), this, SLOT(onUpdateEntryButtonClick()));
+    connect(ui->mineButton, SIGNAL(clicked()), this, SLOT(validateBlockChain()));
+    connect(&this->futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::redrawBlockChainAfterMine);
     ui->scrollArea->setWidget(ui->blockScrollAreaWidget);
 }
 
@@ -40,6 +50,7 @@ void MainWindow::onCreateBlockButtonClick()
     auto *dialog = new QDialog();
     dialog->setModal(true);
     dialog->setGeometry(0, 0, 400, 400);
+    dialog->setStyleSheet(dialogStyle);
     auto *createBlockForm = new CreateBlockForm(blockChain, dialog);
     connect(createBlockForm, SIGNAL(updatedBlockChain(Block<BLOCK_SIZE>*)), this, SLOT(redrawBlockChain(Block<BLOCK_SIZE>*)));
     createBlockForm->show();
@@ -150,6 +161,55 @@ void MainWindow::redrawBlockChainOnFileUpload()
     --blockChainIterator;
 }
 
+void MainWindow::redrawBlockChainOnUpdate(int blockId, int entryId, Block<BLOCK_SIZE> *updatedBlock)
+{
+    auto *mainView = ui->horizontalBlockDiv;
+    this->clearBlockView();
+    int i = 1;
+    this->blockChainIterator = blockChain->begin();
+    while (this->blockChainIterator != blockChain->end()) {
+        auto *block = *blockChainIterator;
+        auto *blockWidget = new BlockWidget(block, this);
+        if (i == blockId) {
+            // paint and update block
+            cout << "repainting" << endl;
+            blockWidget->changeStyle("background-color: rgba(103, 69, 69, 120)");
+            blockWidget->repaint();
+        }
+        else if (i > blockId) {
+            // repaint
+            cout << "repainting" << endl;
+            blockWidget->changeStyle("background-color: rgba(103, 69, 69, 120)");
+            blockWidget->repaint();
+        }
+        else {
+            blockWidget->changeStyle("background-color: rgba(69, 69, 103, 120)");
+            blockWidget->repaint();
+        }
+        mainView->addWidget(blockWidget);
+        this->lastBlockInserted = blockWidget;
+        ++(this->blockChainIterator);
+        ++i;
+    }
+    --blockChainIterator;
+
+}
+
+void MainWindow::clearBlockView()
+{
+    auto *mainView = ui->horizontalBlockDiv;
+    for (int i = 0; i < mainView->count(); ++i) {
+        auto blockWidget = qobject_cast<BlockWidget*>(mainView->itemAt(i)->widget());
+        if (blockWidget != nullptr) {
+            blockWidget->hide();
+            blockWidget->deleteLater();
+        }
+        else {
+            cout << "Error" << endl;
+        }
+    }
+}
+
 void MainWindow::uploadDataFromFile()
 {
     cout << "Browsing files..." << endl;
@@ -185,6 +245,70 @@ void MainWindow::uploadDataFromFile()
     this->updateTime(r);
 }
 
+void MainWindow::onUpdateEntryButtonClick()
+{
+    auto *dialog = new QDialog();
+    dialog->setModal(true);
+    dialog->setGeometry(0, 0, 400, 400);
+    dialog->setStyleSheet(dialogStyle);
+    auto *findEntryForm = new FindEntryForm(dialog);
+    connect(findEntryForm, &FindEntryForm::foundEntry, this, [this, dialog](int blockId, int entryId) {
+        dialog->accept();
+        this->updateEntryAtPosition(blockId, entryId);
+    });
+    findEntryForm->show();
+    dialog->exec();
+}
+
+void MainWindow::updateEntryAtPosition(int blockId, int entryId)
+{
+    auto *dialog = new QDialog();
+    dialog->setModal(true);
+    dialog->setGeometry(0, 0, 600, 500);
+    dialog->setStyleSheet(dialogStyle);
+    auto *updateEntryForm = new UpdateEntryForm(dialog);
+    connect(updateEntryForm, &UpdateEntryForm::updatedEntryValue, this, [blockId, entryId, this, dialog](Entry *newEntry){
+        // update blockchain
+        dialog->accept();
+        auto *updatedBlock = this->blockChain->hackEntry(blockId, entryId, newEntry);
+        this->redrawBlockChainOnUpdate(blockId, entryId, updatedBlock);
+        cout << *(this->blockChain) << endl;
+    });
+    updateEntryForm->show();
+    dialog->exec();
+}
+
+void MainWindow::validateBlockChain()
+{
+    QFuture<void> result = QtConcurrent::run([this](){
+        auto mine = [&](){
+            this->blockChain->validate();
+        };
+        TimedResult r = time_function(mine);
+        this->updateTime(r);
+    });
+    // update view  when  the block chain has been  mined
+    futureWatcher.setFuture(result);
+}
+
+void MainWindow::redrawBlockChainAfterMine()
+{
+    cout << "Redrawing everything" << endl;
+    this->clearBlockView();
+    //  redraw all
+    auto *mainView = ui->horizontalBlockDiv;
+    this->blockChainIterator = blockChain->begin();
+    while (this->blockChainIterator != blockChain->end()) {
+        auto *block = *blockChainIterator;
+        auto *blockWidget = new BlockWidget(block, this);
+        blockWidget->changeStyle("background-color: rgba(69, 69, 103, 120)");
+        mainView->addWidget(blockWidget);
+        this->lastBlockInserted = blockWidget;
+        ++(this->blockChainIterator);
+    }
+    --blockChainIterator;
+}
+
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
 {
     auto *mainView = ui->horizontalBlockDiv;
@@ -195,6 +319,7 @@ void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)
             auto *blockWidget = new BlockWidget(block, this);
             mainView->addWidget(blockWidget);
             this->lastBlockInserted = blockWidget;
+            ++blockChainIterator;
         };
         TimedResult r = time_function(insert_block_widget);
         this->updateTime(r);

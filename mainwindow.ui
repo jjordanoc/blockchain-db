@@ -49,16 +49,6 @@ font-family: monospace;</string>
      </widget>
     </item>
     <item>
-     <widget class="QPushButton" name="deleteEntryButton">
-      <property name="styleSheet">
-       <string notr="true">background-color: rgb(108, 108, 162);</string>
-      </property>
-      <property name="text">
-       <string>Eliminar transacción</string>
-      </property>
-     </widget>
-    </item>
-    <item>
      <widget class="QPushButton" name="queryButton">
       <property name="styleSheet">
        <string notr="true">background-color: rgb(108, 108, 162)</string>
@@ -85,6 +75,16 @@ font-family: monospace;</string>
       </property>
       <property name="text">
        <string>Cargar archivo</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="mineButton">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(108, 108, 162)</string>
+      </property>
+      <property name="text">
+       <string>Minar</string>
       </property>
      </widget>
     </item>

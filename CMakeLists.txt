@@ -16,8 +16,8 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 find_package(OpenSSL REQUIRED)
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets Concurrent)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets Concurrent)
 
 set(PROJECT_SOURCES
         main.cpp
@@ -33,6 +33,8 @@ set(PROJECT_SOURCES
         compacttrie.h compacttrie.cpp
         queryform.h queryform.cpp queryform.ui
         querydisplayview.h querydisplayview.cpp querydisplayview.ui
+        updateentryform.h updateentryform.cpp updateentryform.ui
+        findentryform.h findentryform.cpp findentryform.ui
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -58,7 +60,7 @@ else()
     endif()
 endif()
 
-target_link_libraries(proyecto-sha256-ui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets)
+target_link_libraries(proyecto-sha256-ui PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Concurrent)
 target_link_libraries(proyecto-sha256-ui PRIVATE OpenSSL::SSL OpenSSL::Crypto)
 
 set_target_properties(proyecto-sha256-ui PROPERTIES

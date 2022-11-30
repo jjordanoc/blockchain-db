@@ -20,7 +20,8 @@ public:
     explicit BlockWidget(Block<BLOCK_SIZE> *_block, QWidget *parent);
     void updateBlockData();
     Block <BLOCK_SIZE> *block{};
-signals:
+    void refreshViewOnUpdate(int entryId);
+    void changeStyle(const QString &style);
 private:
     Ui::BlockWidget *ui{};
     int localFillCount = 0;

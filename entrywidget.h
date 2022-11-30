@@ -15,6 +15,7 @@ class EntryWidget : public QWidget
 public:
     explicit EntryWidget(QWidget *parent = nullptr);
     explicit EntryWidget(int entryId, Entry *entry, QWidget *parent = nullptr);
+    void updateData(int entryId, Entry *entry);
     ~EntryWidget();
 
 private:

@@ -33,6 +33,9 @@ public:
     bool operator!=(const BlockChainIterator &other) {
         return current != other.current;
     }
+    Block<BLOCK_SIZE> *operator->() {
+        return &(current->data);
+    }
     Block<BLOCK_SIZE> *operator*() {
         return current->data;
     }
@@ -67,10 +70,11 @@ public:
         return this->head->prev->data;
     }
 
-    void hackEntry(int blockId, int entryId, Entry *entry) {
+    Block<BLOCK_SIZE> *hackEntry(int blockId, int entryId, Entry *entry) {
         if (entryId <= 0 || entryId > BLOCK_SIZE || blockId <= 0 || blockId > this->size()) throw runtime_error("Invalid arguments");
         Block<BLOCK_SIZE> *block = (*this)[blockId - 1];
         block->updateEntry(entryId - 1, entry);
+        return block;
     }
 
     Entry *searchEntry(int blockId, int entryId) {// search for read only entry
