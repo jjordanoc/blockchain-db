@@ -21,6 +21,7 @@
 #include <QStyleOption>
 #include <QFuture>
 #include <QtConcurrent>
+#include <limits>
 
 
 
@@ -90,41 +91,159 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
     auto filter = um["filter"];
     auto type = um["type"];
     auto value1 = um["value1"];
+    auto value2 = um["value2"]; // 2do parametro del entre
+    auto datetime1 = stoull(um["datetime1"]);
+    auto datetime2 = stoull(um["datetime2"]); // 2do parametro del entre
 
     std::vector<Entry*> result;
     auto bcIter = blockChain->begin();
+
     if(filter == "Receptor" || filter == "Emisor")
     {
         if(type == "Igual")
         {
-            cout << "Equals..." << endl;
-            if(compactTrie == nullptr){
-                cout << "No compact Trie..." << endl;
+            if(compactTrie == nullptr)
+            {
                 while(bcIter != blockChain->end())
                 {
-                    cout << "While1....." << endl;
-                    cout << (*bcIter)->getData() << endl;
                     Entry** entries = (*bcIter)->getEntries();
                     for(int i = 0; i < (*bcIter)->getSize(); ++i)
                     {
                         cout << entries[i]->print() << endl;
 
-                        if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor == value1){
+                        if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor == value1)
+                        {
                             result.push_back(entries[i]);
                         }
-                        else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor == value1){
+                        else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor == value1)
+                        {
                             result.push_back(entries[i]);
                         }
                     }
                     ++bcIter;
                 }
+            } else {
+                cout << "using compact Trie" << endl;
             }
         }
         else if (type == "Contiene")
         {
             cout << "Contain..." << endl;
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    cout << entries[i]->print() << endl;
+
+                    if(filter == "Emisor" && stringMatching(dynamic_cast<TransactionEntry*>(entries[i])->emisor, value1))
+                    {
+                        result.push_back(entries[i]);
+                    }
+                    else if(filter == "Receptor" && stringMatching(dynamic_cast<TransactionEntry*>(entries[i])->receptor, value1))
+                    {
+                        result.push_back(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
         }
     }
+
+    else if(filter == "Monto" || filter == "Fecha")
+    {
+        if(type == "Igual")
+        {
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto == stod(value1))
+                    {
+                        result.push_back(entries[i]);
+                    }
+                    else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp == datetime1)
+                    {
+                        result.push_back(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+        }
+        else if(type == "Maximo")
+        {
+            size_t cmp = std::numeric_limits<size_t>::min();
+            Entry* tmpEntry;
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto > cmp)
+                    {
+                        cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
+                        tmpEntry = entries[i];
+                    }
+                    else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp >= datetime1)
+                    {
+                        cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
+                        tmpEntry = entries[i];
+                    }
+                }
+                ++bcIter;
+            }
+            result.push_back(tmpEntry);
+        }
+        else if(type == "Minimo")
+        {
+            size_t cmp = std::numeric_limits<size_t>::max();
+            Entry* tmpEntry;
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto < cmp)
+                    {
+                        cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
+                        tmpEntry = entries[i];
+                    }
+                    else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp < datetime1)
+                    {
+                        cmp = dynamic_cast<TransactionEntry*>(entries[i])->monto;
+                        tmpEntry = entries[i];
+                    }
+                }
+                ++bcIter;
+            }
+            result.push_back(tmpEntry);
+        }
+        else if(type == "Entre")
+        {
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    if(filter == "Monto" && dynamic_cast<TransactionEntry*>(entries[i])->monto >= stod(value1) && dynamic_cast<TransactionEntry*>(entries[i])->monto <= stod(value2))
+                    {
+                        result.push_back(entries[i]);
+                    }
+                    else if(filter == "Fecha" && dynamic_cast<TransactionEntry*>(entries[i])->timestamp >= datetime1 && dynamic_cast<TransactionEntry*>(entries[i])->monto <= datetime2)
+                    {
+                        result.push_back(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+        }
+    }
+
     // Impreza
     cout << "Termino el while" << endl;
     for(auto e : result)
