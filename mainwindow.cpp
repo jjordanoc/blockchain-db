@@ -233,6 +233,25 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                         ++bcIter;
                     }
                 }
+                else if(indexes[filter]->type == "Trie")
+                {
+                    cout << "TRIE for Emisor/Receptor Igual" << endl;
+
+                    auto cmp = [](IndexT<string>& i) -> string& {
+                            return i.key;
+                    };
+
+                    IndexT<string> request(value1);
+                    cout << boolalpha << ((CompactTrie<IndexT<string>, decltype(cmp)>*)(indexes[filter]))->find(request) << endl;
+                    auto res = ((CompactTrie<IndexT<string>, decltype(cmp)>*)(indexes[filter]))->searchStartWith(request);
+
+                    for (auto& e : res) {
+                        for(auto& k : *(e.values))
+                        {
+                            result.push_back(k);
+                        }
+                    }
+                }
                 else
                 {
                     cout << "Unimplemented structure " << indexes[filter]->type << endl;
@@ -390,6 +409,27 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                             result.push_back(e);
                         }
                     }
+                else if(indexes[filter]->type == "Hash")
+                {
+                    if(filter == "Monto")
+                    {
+                        cout << "HASH for Emisor/Receptor Igual" << endl;
+                        auto indext = ((ChainHash<double, IndexT<double>>*)(indexes[filter]))->get(stod(value1));
+                        for(auto& e : *(indext.values))
+                        {
+                            result.push_back(e);
+                        }
+                    }
+                    else if(filter == "Fecha")
+                    {
+                        cout << "HASH for Emisor/Receptor Igual" << endl;
+                        auto indext = ((ChainHash<size_t, IndexT<size_t>>*)(indexes[filter]))->get(datetime1);
+                        for(auto& e : *(indext.values))
+                        {
+                            result.push_back(e);
+                        }
+                    }
+                }
                 else {
                     cout << "Unimplemented structure " << indexes[filter]->type << endl;
                 }
@@ -1170,7 +1210,7 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
             };
 
             indexes[attribute] = new CompactTrie<IndexT<string>, decltype(cmp)>(cmp);
-
+            indexes[attribute]->type = structure;
 
             cout << "TRIE CREATED" << endl;
 
@@ -1225,6 +1265,7 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
         if (attribute == "Emisor")
         {
             indexes[attribute] = new ChainHash<string, IndexT<string>>();
+            indexes[attribute]->type = structure;
 
             cout << "HASH CREATED" << endl;
 
@@ -1251,20 +1292,104 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
 
             cout << "HASH FINISIMO TERMINO" << endl;
 
-            indexes[attribute]->type = structure;
+
             return;
         }
         else if (attribute == "Receptor")
         {
+            indexes[attribute] = new ChainHash<string, IndexT<string>>();
+            indexes[attribute]->type = structure;
 
+            cout << "HASH CREATED" << endl;
+
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    string str = ((TransactionEntry*)(entries[i]))->receptor;
+                    if(!((ChainHash<string, IndexT<string>>*)(indexes[attribute]))->find(str))
+                    {
+                        (*((ChainHash<string, IndexT<string>>*)(indexes[attribute]))).insert(str, IndexT<string>(str, entries[i]));
+                    }
+                    else
+                    {
+                        (*((ChainHash<string, IndexT<string>>*)(indexes[attribute]))).getRef(str).insert(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+            cout << "HASH FINISIMO TERMINO" << endl;
+
+            return;
         }
         else if (attribute == "Monto")
         {
+            indexes[attribute] = new ChainHash<double, IndexT<double>>();
+            indexes[attribute]->type = structure;
 
+            cout << "HASH CREATED" << endl;
+
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    double atr = ((TransactionEntry*)(entries[i]))->monto;
+                    if(!((ChainHash<double, IndexT<double>>*)(indexes[attribute]))->find(atr))
+                    {
+                        (*((ChainHash<double, IndexT<double>>*)(indexes[attribute]))).insert(atr, IndexT<double>(atr, entries[i]));
+                    }
+                    else
+                    {
+                        (*((ChainHash<double, IndexT<double>>*)(indexes[attribute]))).getRef(atr).insert(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+            cout << "HASH FINISIMO TERMINO" << endl;
+
+            return;
         }
         else if (attribute == "Fecha")
         {
+            indexes[attribute] = new ChainHash<size_t, IndexT<size_t>>();
+            indexes[attribute]->type = structure;
 
+            cout << "HASH CREATED" << endl;
+
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    size_t atr = ((TransactionEntry*)(entries[i]))->timestamp;
+                    if(!((ChainHash<size_t, IndexT<size_t>>*)(indexes[attribute]))->find(atr))
+                    {
+                        (*((ChainHash<size_t, IndexT<size_t>>*)(indexes[attribute]))).insert(atr, IndexT<size_t>(atr, entries[i]));
+                    }
+                    else
+                    {
+                        (*((ChainHash<size_t, IndexT<size_t>>*)(indexes[attribute]))).getRef(atr).insert(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+            cout << "HASH FINISIMO TERMINO" << endl;
+
+            return;
         }
     }
 }

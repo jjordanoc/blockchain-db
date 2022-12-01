@@ -18,26 +18,16 @@ vector<int> buildPositions(string pattern) {
     return positions;
 }
 
+
 bool stringMatching(const string &text, const string &pattern) {
     int n = text.length();
     int m = pattern.length();
-    vector<int> positions = buildPositions(pattern);
-    int i = 0;
-    while (i < n - m) {
-        int j = m - 1;
-        while (j >= 0 && pattern[j] == text[i + j] && i + j < n) {
-            j--;
+    for (int j = 0; j < n - m; ++j) {
+        int i = 0;
+        while (pattern[i] == text[i + j] && i < m) {
+            ++i;
         }
-        if (j >= 0) {
-            int off = j - positions[text[i + j]];
-            if (off < 0) {
-                i += m;
-            }
-            else {
-                i += off;
-            }
-
-        } else {
+        if (i == m) {
             return true;
         }
     }
