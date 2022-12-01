@@ -13,6 +13,7 @@ QueryForm::QueryForm(QWidget *parent) :
     ui->dateTimeEdit_2->hide();
     ui->lineEdit->hide();
     ui->label_2->hide();
+    ui->montoCheckBox->show();
     this->currentFiltro = "Emisor";
     this->currentTipo = "Igual";
 }
@@ -74,6 +75,7 @@ void QueryForm::updateUiOnAnyChange()
             ui->texto->show();
             ui->lineEdit->show();
         }
+        ui->montoCheckBox->hide();
     }
     else if (currentTipo == "Maximo" || currentTipo == "Minimo") {
         ui->label_2->hide();
@@ -81,8 +83,15 @@ void QueryForm::updateUiOnAnyChange()
         ui->lineEdit->hide();
         ui->texto->hide();
         ui->dateTimeEdit->hide();
+        ui->montoCheckBox->hide();
     }
     else {
+        if (currentTipo == "Igual" && (currentFiltro == "Receptor" || currentFiltro == "Emisor")) {
+            ui->montoCheckBox->show();
+        }
+        else {
+            ui->montoCheckBox->hide();
+        }
         ui->label_2->hide();
         ui->dateTimeEdit_2->hide();
         ui->lineEdit->hide();
