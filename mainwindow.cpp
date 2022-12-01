@@ -765,6 +765,13 @@ void MainWindow::onUpdateEntryButtonClick()
 
 void MainWindow::updateEntryAtPosition(int blockId, int entryId)
 {
+    if(blockId > blockChain->size() ||  blockChain->back()->getFillCount() < entryId){
+        ui->label_2->setText(QString::fromStdString("Last action: No valid position in the Blockchain"));
+        ui->label_2->setStyleSheet(QString::fromStdString("QLabel { background-color: rgb(50, 50, 75); color : red; }"));
+        return;
+    }
+    ui->label_2->setText(QString::fromStdString("No error registered"));
+    ui->label_2->setStyleSheet(QString::fromStdString("QLabel { background-color: rgb(50, 50, 75); color : black; }"));
     auto *dialog = new QDialog();
     dialog->setModal(true);
     dialog->setGeometry(0, 0, 600, 500);
@@ -819,6 +826,30 @@ void MainWindow::deleteEntryAtPosition(int blockId, int entryId)
                     auto remKey = make_shared<IndexT<double>>(casted->timestamp);
                     auto remNode = tree->search(remKey);
                     (*remNode).values->remove(entry);
+                }
+            }
+        }
+        else if (index->type == "Hash") {
+            if (attribute == "Emisor" || attribute == "Receptor") {
+                auto *hash = ((ChainHash<string, IndexT<string>>*)(index));
+                if (attribute == "Emisor") {
+                    auto remNode = hash->get(casted->emisor);
+                    remNode.values->remove(entry);
+                }
+                else if (attribute == "Receptor") {
+                    auto remNode = hash->get(casted->receptor);
+                    remNode.values->remove(entry);
+                }
+            }
+            else {
+                auto *hash = ((ChainHash<double, IndexT<double>>*)(index));
+                if (attribute == "Monto") {
+                    auto remNode = hash->get(casted->monto);
+                    remNode.values->remove(entry);
+                }
+                else if (attribute == "Fecha") {
+                    auto remNode = hash->get(casted->timestamp);
+                    remNode.values->remove(entry);
                 }
             }
         }
