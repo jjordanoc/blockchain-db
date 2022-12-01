@@ -131,9 +131,27 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                         }
                         ++bcIter;
                     }
-                } else {
-                    cout << "using an structure for Emisor/Receptor Igual" << endl;
+                }
+                else if (indexes[filter]->type == "Trie")
+                {
+                    cout << "using TRIE for Emisor/Receptor Igual" << endl;
+                    auto get = [](IndexT<string>& i) -> string& {
+                            return i.key;
+                    };
 
+                    auto request = IndexT<string>(value1);
+                    auto indext = ((CompactTrie<IndexT<string>, decltype(get)>*)(indexes[filter]))->searchEqual(request);
+
+//                    indext.values->front()->print();
+                }
+                else if (indexes[filter]->type == "Hash")
+                {
+                    cout << "using HASH for Emisor/Receptor Igual" << endl;
+                    auto indext = ((ChainHash<string, IndexT<string>>*)(indexes[filter]))->get(value1);
+                    for (auto& e : *(indext.values))
+                    {
+                        result.push_back(e);
+                    }
                 }
             }
             // Contiene
@@ -556,10 +574,6 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
     this->updateTime(r);
 
     cout << "Termino el while" << endl;
-    for(auto& e : result)
-    {
-        cout << e->print() << endl;
-    }
 
     cout << "Showing dialog..." << endl;
     auto *dialog = new QDialog();
@@ -881,7 +895,111 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
 
         }
     }
+    else if (qStructure == "Trie")
+    {
+        if (attribute == "Emisor")
+        {
+            auto cmp = [](IndexT<string>& i) -> string& {
+                    return i.key;
+            };
 
+            indexes[attribute] = new CompactTrie<IndexT<string>, decltype(cmp)>(cmp);
+
+
+            cout << "TRIE CREATED" << endl;
+
+            unordered_map<string, IndexT<string>> um;
+
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    string str = ((TransactionEntry*)(entries[i]))->emisor;
+                    if(um.find(str) == um.end())
+                    {
+                        um[str] = IndexT<string>(str, entries[i]);
+                    }
+                    else
+                    {
+                        um[str].insert(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+            for(auto& e : um)
+            {
+                ((CompactTrie<IndexT<string>, decltype(cmp)>*)(indexes[attribute]))->insert(e.second);
+            }
+            cout << "TRIE FINISIMO TERMINO" << endl;
+
+            indexes[attribute]->type = structure;
+            return;
+        }
+        else if (attribute == "Receptor")
+        {
+
+        }
+        else if (attribute == "Monto")
+        {
+
+        }
+        else if (attribute == "Fecha")
+        {
+
+        }
+    }
+    else if (qStructure == "Hash")
+    {
+        if (attribute == "Emisor")
+        {
+            indexes[attribute] = new ChainHash<string, IndexT<string>>();
+
+            cout << "HASH CREATED" << endl;
+
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    string str = ((TransactionEntry*)(entries[i]))->emisor;
+                    if(!((ChainHash<string, IndexT<string>>*)(indexes[attribute]))->find(str))
+                    {
+                        (*((ChainHash<string, IndexT<string>>*)(indexes[attribute]))).insert(str, IndexT<string>(str, entries[i]));
+                    }
+                    else
+                    {
+                        (*((ChainHash<string, IndexT<string>>*)(indexes[attribute]))).getRef(str).insert(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+            cout << "HASH FINISIMO TERMINO" << endl;
+
+            indexes[attribute]->type = structure;
+            return;
+        }
+        else if (attribute == "Receptor")
+        {
+
+        }
+        else if (attribute == "Monto")
+        {
+
+        }
+        else if (attribute == "Fecha")
+        {
+
+        }
+    }
 }
 
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)

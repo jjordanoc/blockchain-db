@@ -15,6 +15,7 @@
 #include "compacttrie.h"
 #include "avl.h"
 #include "heap.h"
+#include "hash.h"
 
 #include <unordered_map>
 

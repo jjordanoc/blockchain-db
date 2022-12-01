@@ -30,7 +30,7 @@ set(PROJECT_SOURCES
         mainwindow.ui blockwidget.ui
         entrywidget.h entrywidget.cpp entrywidget.ui
         createindexform.h createindexform.cpp createindexform.ui
-        compacttrie.h compacttrie.cpp
+        compacttrie.h
         queryform.h queryform.cpp queryform.ui
         querydisplayview.h querydisplayview.cpp querydisplayview.ui
         updateentryform.h updateentryform.cpp updateentryform.ui
@@ -38,6 +38,7 @@ set(PROJECT_SOURCES
         heap.h
         index.h
         avl.h
+        hash.h
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

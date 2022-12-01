@@ -26,8 +26,7 @@ struct IndexT {
         values->push_front(entry);
     };
     IndexT(const T& key, forward_list<Entry*>* value): key(key), values(values){};
-    ~IndexT(){
-    }
+    ~IndexT(){}
 };
 
 #endif // INDEX_H
