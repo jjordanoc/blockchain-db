@@ -102,6 +102,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
     auto value2 = um["value2"]; // 2do parametro del entre
     auto datetime1 = stoull(um["datetime1"]);
     auto datetime2 = stoull(um["datetime2"]); // 2do parametro del entre
+    auto aggregation = stoi(um["aggregate"]);
 
     std::vector<Entry*> result;
     auto bcIter = blockChain->begin();
@@ -544,6 +545,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
     TimedResult r = time_function(fun);
     this->updateTime(r);
 
+
     cout << "Termino el while" << endl;
     for(auto& e : result)
     {
@@ -554,6 +556,25 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
     auto *dialog = new QDialog();
     dialog->setModal(true);
     dialog->setGeometry(0, 0, 550, 400);
+    if (aggregation) {
+        double total = 0;
+        for(auto& e : result)
+        {
+            total += ((TransactionEntry*)(e))->monto;
+        }
+        auto firstResult = ((TransactionEntry*)(result[0]));
+        string usuario;
+        if (filter == "Emisor") {
+            usuario = firstResult->emisor;
+        }
+        else {
+            usuario = firstResult->receptor;
+        }
+        auto* aggregatedView = new QueryDisplayView(usuario, total, dialog);
+        aggregatedView->show();
+        dialog->exec();
+        return;
+    }
     auto* querydisplayview = new QueryDisplayView(result, um, dialog);
     querydisplayview->show();
     dialog->exec();

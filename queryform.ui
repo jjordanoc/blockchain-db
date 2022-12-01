@@ -170,6 +170,19 @@ font-family: monospace;</string>
     <string>y</string>
    </property>
   </widget>
+  <widget class="QCheckBox" name="montoCheckBox">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>140</y>
+     <width>131</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Totalizar monto</string>
+   </property>
+  </widget>
  </widget>
  <resources/>
  <connections/>

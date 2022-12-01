@@ -26,10 +26,11 @@ void QueryForm::submitForm()
     std::string value2 = ui->lineEdit->text().toStdString();
     time_t datetime1 = ui->dateTimeEdit->dateTime().toSecsSinceEpoch();
     time_t datetime2 = ui->dateTimeEdit_2->dateTime().toSecsSinceEpoch();
-
+    bool aggregate = ui->montoCheckBox->isChecked();
     std::cout << "filtrar por: " << filter << std::endl;
     std::cout << "tipo: " << type << std::endl;
     std::cout << "valor: " << value1 << std::endl;
+    std::cout << "agregar: " << std::to_string(aggregate) << std::endl;
 
     std::unordered_map<std::string, std::string> um = {
         std::make_pair("filter", filter),
@@ -37,7 +38,8 @@ void QueryForm::submitForm()
         std::make_pair("value1", value1),
         std::make_pair("value2", value2),
         std::make_pair("datetime1", std::to_string(datetime1)),
-        std::make_pair("datetime2", std::to_string(datetime2))
+        std::make_pair("datetime2", std::to_string(datetime2)),
+        std::make_pair("aggregate", std::to_string(aggregate))
     };
 
     emit emitData(um);
