@@ -118,6 +118,26 @@ Finalmente, se implementó la indexación con Trie para optimizar las consultas 
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
 | **Complejidad (caso promedio)** |      O($w$)     |       O(n)      |       O($w$)       |           O($n*w*p$)          |       O(n)       |       O(n)       |
 
+### Tabla comparación de tiempos (sin índices)
+
+| Comparación | Igual | Mínimo | Máximo | Contiene | Inicia con | Entre |
+|:-----------:|:-----:|:------:|:------:|:--------:|:----------:|:-----:|
+|   Emisor    | 5129  |  157   |  172   |   7138   |    5562    |   X   |
+|  Receptor   | 5387  |  156   |  177   |   7047   |    6360    |   X   |
+|    Monto    |  524  |  168   |  136   |    X     |     X      |  823  |
+|    Fecha    |  177  |  135   |  156   |    X     |     X      |  165  |
+
+### Tabla comparación de tiempos (con índices)
+
+Para cada caso se ha decidido crear un índice con la estructura que soporta la operación en el mejor tiempo computacional. En el caso de Igual se ha decidido usar un Hash; mínimo y máximo, un heap; inicia con, un Patricia trie; entre, un AVL.
+
+| Comparación | Igual | Mínimo | Máximo | Contiene | Inicia con | Entre |
+|:-----------:|:-----:|:------:|:------:|:--------:|:----------:|:-----:|
+|   Emisor    |  10   |   5    |   5    |    X     |     0      |   X   |
+|  Receptor   |   0   |   5    |   6    |    X     |     0      |   X   |
+|    Monto    |   0   |   6    |   4    |    X     |     X      |  105  |
+|    Fecha    |   0   |   6    |   5    |    X     |     X      |  14   |
+
 ## Análisis de la complejidad de los métodos del Blockchain
 
 - ``void insertEntry(Entry *entry)``: Inserta un nuevo registro al último bloque disponible en el Blockchain. Si el último bloque está lleno, se procede a crear un nuevo bloque.

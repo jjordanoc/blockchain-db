@@ -183,7 +183,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
             // Contiene
             else if (type == "Contiene")
             {
-                if(indexes[filter] == nullptr || (indexes[filter] != nullptr && indexes[filter]->type != "Trie"))
+                if(1)
                 {
                     while(bcIter != blockChain->end())
                     {
