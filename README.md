@@ -14,6 +14,8 @@
 
 En el presente proyecto se implementó el gestor de transacciones BlockDB basado en Blockchain. Este permite realizar operaciones de inserción, modificación y búsqueda de transacciones bancarias. Para esto, se implementó una estructura de Blockchain basada en una lista circular  doblemente enlazada que soporta diferentes dominios de datos.
 
+![Introduction](images/example.png)    
+
 ## Objetivos
 
 - Objetivo principal: Implementar un sistema gestor de transacciones basado en Blockchain que soporte consultas eficientes, indexando los valores por medio de estructuras de datos.
@@ -22,7 +24,7 @@ En el presente proyecto se implementó el gestor de transacciones BlockDB basado
   - Elaborar una interfaz gráfica para interactuar con la estructura.
   - Indexar las transacciones con una estructura de datos.
 
-![Introduction](images/example.png)    
+
 
 ## Descripción del caso de estudio planteado por el grupo
 
@@ -64,13 +66,13 @@ El nonce se calcula al momento de minar el bloque como el menor entero positivo 
 
 Para optimizar las consultas hechas sobre el Blockchain se implementaron diferentes estructuras para indexar las entradas bajo algún atributo dado. En el caso de atributos no únicos, se utilizó agrupamiento. El usuario del gestor BlockDB debe crear los índices respectivos de acuerdo a las consultas que planea hacer con mayor frecuencia.
 
-A continuación se detallan las estructuras de datos usadas, comparando la complejidad promedio de cada operación con la de la búsqueda lineal sobre todas las $n$ entradas. Cuando el índice no se encuentra disponible o es irrelevante, se emplea el procedimiento de filtrado lineal, cuya tabla de complejidades se muestra a continuación.
+A continuación se detallan las estructuras de datos usadas, comparando la complejidad promedio de cada operación con la de la búsqueda lineal sobre todas las n entradas. Cuando el índice no se encuentra disponible o es irrelevante, se emplea el procedimiento de filtrado lineal, cuya tabla de complejidades se muestra a continuación.
 
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |      O(n)     |       O(n)      |       O($n*w$)       |           O($n*w*p$)          |       O(n)       |       O(n)       |
+| **Complejidad (caso promedio)** |      O(n)     |       O(n)      |       O(n*w)       |           O(n*w*p)          |       O(n)       |       O(n)       |
 
-$p$ es el tamaño de X (generalmente menor que $w$) y $w$ es el tamaño promedio de las cadenas del atributo.
+p es el tamaño de X (generalmente menor que w) y w es el tamaño promedio de las cadenas del atributo.
 
 ### Heap
 
@@ -84,7 +86,7 @@ Siempre actualiza sus elementos a como se inserten o eliminen si es necesario pa
 
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |      O(n)     |       O(n)      |       O($n*w$)       |           O($n*w*p$)          |      O(1) (max-heap)       |      O(1)  (min-heap)       |
+| **Complejidad (caso promedio)** |      O(n)     |       O(n)      |       O(n*w)       |           O(n*w*p)          |      O(1) (max-heap)       |      O(1)  (min-heap)       |
 
 ### Hash
 
@@ -97,7 +99,7 @@ Este método nos ayuda a evitar colisiones dentro de la misma estructura. Esto e
 
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |      O(1)     |       O(n)      |       O($n*w$)       |           O($n*w*p$)          |       O(n)       |       O(n)       |
+| **Complejidad (caso promedio)** |      O(1)     |       O(n)      |       O(n*w)       |           O(n*w*p)          |       O(n)       |       O(n)       |
 
 ### BST (AVL)
 
@@ -111,7 +113,7 @@ La optimización lograda para consultas por rango existe pero es limitada, y se 
 
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |      O(logn)    |       O(n)      |       O($n*w$)       |           O($n*w*p$)          |       O(logn)       |        O(logn)       |
+| **Complejidad (caso promedio)** |      O(logn)    |       O(n)      |       O(n*w)       |           O(n*w*p)          |       O(logn)       |        O(logn)       |
 
 
 ### Trie (Patricia Trie)
@@ -124,7 +126,7 @@ Finalmente, se implementó la indexación con Trie para optimizar las consultas 
 
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |      O($w$)     |       O(n)      |       O($w$)       |           O($n*w*p$)          |       O(n)       |       O(n)       |
+| **Complejidad (caso promedio)** |      O(w)     |       O(n)      |       O(w)       |           O(n*w*p)          |       O(n)       |       O(n)       |
 
 ### Tabla comparación de tiempos en microsegundos (sin índices)
 
