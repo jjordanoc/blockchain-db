@@ -10,6 +10,18 @@
     <height>720</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>1280</width>
+    <height>720</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1280</width>
+    <height>720</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>BlockDB</string>
   </property>
@@ -103,7 +115,7 @@ font-family: monospace;</string>
   <widget class="QWidget" name="horizontalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>1030</x>
+     <x>930</x>
      <y>690</y>
      <width>225</width>
      <height>21</height>
@@ -219,7 +231,7 @@ font-family: monospace;</string>
     <rect>
      <x>10</x>
      <y>690</y>
-     <width>281</width>
+     <width>151</width>
      <height>21</height>
     </rect>
    </property>
@@ -229,6 +241,9 @@ font-family: monospace;</string>
      <pointsize>8</pointsize>
      <bold>true</bold>
     </font>
+   </property>
+   <property name="styleSheet">
+    <string notr="true"/>
    </property>
    <property name="text">
     <string>No error registered</string>
