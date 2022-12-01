@@ -18,8 +18,13 @@ public:
     ~QueryForm();
 private:
     Ui::QueryForm *ui;
+    QString currentFiltro;
+    QString currentTipo;
 private slots:
     void submitForm();
+    void updateInputsOnFiltroChange(const QString &);
+    void updateInputsOnTipoChange(const QString &);
+    void updateUiOnAnyChange();
 signals:
     void emitData(std::unordered_map<std::string, std::string>);
 };

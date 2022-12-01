@@ -6,17 +6,22 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>429</width>
-    <height>320</height>
+    <width>500</width>
+    <height>300</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(50, 50, 75);
+color: white;
+font-family: monospace;</string>
+  </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>20</x>
+     <x>50</x>
      <y>70</y>
      <width>81</width>
      <height>16</height>
@@ -29,7 +34,7 @@
   <widget class="QComboBox" name="filtro">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>120</x>
      <y>70</y>
      <width>69</width>
      <height>22</height>
@@ -59,7 +64,7 @@
   <widget class="QComboBox" name="tipo">
    <property name="geometry">
     <rect>
-     <x>80</x>
+     <x>120</x>
      <y>100</y>
      <width>69</width>
      <height>22</height>
@@ -99,7 +104,7 @@
   <widget class="QDialogButtonBox" name="buttonBox">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>320</x>
      <y>260</y>
      <width>156</width>
      <height>24</height>
@@ -112,7 +117,7 @@
   <widget class="QLineEdit" name="texto">
    <property name="geometry">
     <rect>
-     <x>160</x>
+     <x>200</x>
      <y>100</y>
      <width>113</width>
      <height>22</height>
@@ -122,8 +127,8 @@
   <widget class="QDateTimeEdit" name="dateTimeEdit">
    <property name="geometry">
     <rect>
-     <x>160</x>
-     <y>120</y>
+     <x>200</x>
+     <y>100</y>
      <width>111</width>
      <height>22</height>
     </rect>
@@ -132,8 +137,8 @@
   <widget class="QDateTimeEdit" name="dateTimeEdit_2">
    <property name="geometry">
     <rect>
-     <x>310</x>
-     <y>120</y>
+     <x>350</x>
+     <y>100</y>
      <width>111</width>
      <height>22</height>
     </rect>
@@ -142,7 +147,7 @@
   <widget class="QLineEdit" name="lineEdit">
    <property name="geometry">
     <rect>
-     <x>310</x>
+     <x>350</x>
      <y>100</y>
      <width>113</width>
      <height>22</height>
@@ -152,14 +157,30 @@
   <widget class="QLabel" name="label_2">
    <property name="geometry">
     <rect>
-     <x>290</x>
+     <x>330</x>
      <y>100</y>
      <width>21</width>
      <height>16</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true"/>
+   </property>
    <property name="text">
     <string>y</string>
+   </property>
+  </widget>
+  <widget class="QCheckBox" name="montoCheckBox">
+   <property name="geometry">
+    <rect>
+     <x>120</x>
+     <y>140</y>
+     <width>131</width>
+     <height>26</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Totalizar monto</string>
    </property>
   </widget>
  </widget>

@@ -16,7 +16,6 @@ QueryDisplayView::QueryDisplayView(std::vector<Entry*>& entries, std::unordered_
     ui->tipo->setText(QString::fromStdString(um["type"]));
     ui->valor->setText(QString::fromStdString(um["value1"]));
 
-    cout << "Colocando la tabla...." << endl;
     for(int i = 0; i < entries.size(); ++i)
     {
         cout << i << endl;
@@ -26,7 +25,22 @@ QueryDisplayView::QueryDisplayView(std::vector<Entry*>& entries, std::unordered_
         table->setItem(i, 2, new QTableWidgetItem(QString::fromStdString(to_string(entry->monto))));
         table->setItem(i, 3, new QTableWidgetItem(QString::fromStdString(entry->getDate())));
     }
-    cout << "Se termino de colocar la tabla...." << endl;
+}
+
+QueryDisplayView::QueryDisplayView(const string &usuario, double aggregate, QWidget *parent) : QWidget(parent), ui(new Ui::QueryDisplayView) {
+     ui->setupUi(this);
+
+     auto* table = ui->tableWidget;
+     table->setRowCount(1);
+
+     ui->filtro->setText(tr(""));
+     ui->valor->setText(tr(""));
+     ui->tipo->setText(tr("Monto total"));
+
+     table->setItem(0, 0, new QTableWidgetItem(QString::fromStdString(usuario)));
+     table->setItem(0, 1, new QTableWidgetItem(tr("-")));
+     table->setItem(0, 2, new QTableWidgetItem(QString::number(aggregate)));
+     table->setItem(0, 3, new QTableWidgetItem(tr("-")));
 }
 
 QueryDisplayView::~QueryDisplayView()
