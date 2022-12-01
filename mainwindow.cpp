@@ -151,6 +151,15 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                         result.push_back(e);
                     }
                 }
+                else if(indexes[filter]->type == "Hash")
+                {
+                    cout << "HASH for Emisor/Receptor Igual" << endl;
+                    auto indext = ((ChainHash<string, IndexT<string>>*)(indexes[filter]))->get(value1);
+                    for(auto& e : *(indext.values))
+                    {
+                        result.push_back(e);
+                    }
+                }
             }
             // Contiene
             else if (type == "Contiene")
