@@ -169,12 +169,12 @@ Para cada caso se ha decidido crear un índice con la estructura que soporta la 
 - La seguridad que brinda la estructura se puede mejorar si se utiliza como un registro distribuido, pues esto dificulta aún más hacer cambios en la cadena.
 - El uso de estructuras de datos óptimas para el problema reduce el tiempo al realizar operaciones sobre los datos, como se pudo observar al hacer las consultas.
 - El B+Tree sería la estructura óptima para realizar búsquedas por rangos.
-- El Patricia trie fue la mejor estructura para indexar texto y buscar por igualdad o por patrón, dando una acceso constante en todos los casos. Esta la siguiente gráfica se verán reflejados los resultados haciendo una busqueda por patrón.
+- El Patricia trie fue la mejor estructura para indexar texto y buscar por igualdad o por patrón, dando una acceso constante en todos los casos. En la gráfica se verán reflejados los resultados haciendo una busqueda por patrón.
 
 <div style="text-align: center;">
   <img src="images\grafico2" width="500">
+  <p>Figura 9: Gráfica de comparación del tiempo de consulta con el uso y sin uso de índices con el Patricia trie.</p>
 </div>
-
 
 ## Bibliografía
 
