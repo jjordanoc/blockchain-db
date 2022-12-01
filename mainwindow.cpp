@@ -161,6 +161,24 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                         result.push_back(e);
                     }
                 }
+                else if(indexes[filter]->type == "Trie")
+                {
+                    cout << "TRIE for Emisor/Receptor Igual" << endl;
+
+                    auto cmp = [](IndexT<string>& i) -> string& {
+                            return i.key;
+                    };
+
+                    IndexT<string> request(value1);
+                    cout << boolalpha << ((CompactTrie<IndexT<string>, decltype(cmp)>*)(indexes[filter]))->find(request) << endl;
+                    IndexT<string> res = ((CompactTrie<IndexT<string>, decltype(cmp)>*)(indexes[filter]))->searchEqual(request);
+                    cout << boolalpha << (*(res.values)).empty() << endl;
+                    for(const auto& e : *(res.values))
+                    {
+                        cout << e << endl;
+                        result.push_back(e);
+                    }
+                }
             }
             // Contiene
             else if (type == "Contiene")
@@ -1148,6 +1166,7 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
 
             for(auto& e : um)
             {
+                cout << "1-" << e.second.values->empty() << endl;
                 ((CompactTrie<IndexT<string>, decltype(cmp)>*)(indexes[attribute]))->insert(e.second);
             }
             cout << "TRIE FINISIMO TERMINO" << endl;

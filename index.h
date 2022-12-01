@@ -19,8 +19,18 @@ struct IndexT {
         if(values == nullptr) values = new forward_list<Entry*>();
         values->push_front(dt);
     }
-    IndexT() = default;
-    IndexT(const T& key):key(key){};
+    IndexT(){
+        values = new forward_list<Entry*>();
+    };
+    IndexT(const IndexT& other){
+        cout << "4-" << other.values->empty() << endl;
+        key = other.key;
+        values = other.values;
+        cout << "5-" << this->values->empty() << endl;
+    }
+    IndexT(const T& key):key(key){
+        values = new forward_list<Entry*>();
+    };
     IndexT(const T& key, Entry* entry):key(key){
         values = new forward_list<Entry*>();
         values->push_front(entry);
