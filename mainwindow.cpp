@@ -70,7 +70,8 @@ void MainWindow::onCreateIndexButtonClick()
 {
     auto *dialog = new QDialog();
     dialog->setModal(true);
-    dialog->setGeometry(0, 0, 400, 400);
+    dialog->setGeometry(0, 0, 400, 300);
+    dialog->setStyleSheet(dialogStyle);
     cout << "Creating Index Form..." << endl;
     auto *createIndexForm = new CreateIndexForm(dialog);
     connect(createIndexForm, SIGNAL(submittedForm(QString, QString)), this, SLOT(createIndexes(QString,QString)));
@@ -82,7 +83,8 @@ void MainWindow::onCreateQueryButtonClick()
 {
     auto *dialog = new QDialog();
     dialog->setModal(true);
-    dialog->setGeometry(0, 0, 400, 400);
+    dialog->setGeometry(0, 0, 500, 300);
+    dialog->setStyleSheet(dialogStyle);
     cout << "Creating Query Form..." << endl;
     auto *createQueryForm = new QueryForm(dialog);
     connect(createQueryForm, SIGNAL(emitData(std::unordered_map<std::string, std::string>)), this, SLOT(applyFilter(std::unordered_map<std::string, std::string>)));
@@ -111,7 +113,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
             // Igual
             if(type == "Igual")
             {
-                if(indexes[filter] == nullptr)
+                if(indexes[filter] == nullptr || (indexes[filter] != nullptr && indexes[filter]->type != "AVL" && indexes[filter]->type != "Hash" && indexes[filter]->type != "BTree" && indexes[filter]->type != "Trie"))
                 {
                     while(bcIter != blockChain->end())
                     {
@@ -134,7 +136,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else if(indexes[filter]->type == "AVL")
                 {
-                    cout << "using ALV for Emisor/Receptor Igual" << endl;
+                    cout << "AVL for Emisor/Receptor Igual" << endl;
                     auto cmpMayor = [&](shared_ptr<IndexT<string>> k1, shared_ptr<IndexT<string>> k2)
                     {
                         return k1->key > k2->key;
@@ -152,7 +154,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
             // Contiene
             else if (type == "Contiene")
             {
-                if(indexes[filter] == nullptr)
+                if(indexes[filter] == nullptr || (indexes[filter] != nullptr && indexes[filter]->type != "Trie"))
                 {
                     while(bcIter != blockChain->end())
                     {
@@ -175,13 +177,13 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else
                 {
-                    cout << "using an structure for Emisor/Receptor Contiene" << endl;
+                    cout << "Unimplemented structure " << indexes[filter]->type << endl;
                 }
             }
             // Inicia con
             else if(type == "Inicia con")
             {
-                if(indexes[filter] == nullptr)
+                if(indexes[filter] == nullptr || (indexes[filter] != nullptr && indexes[filter]->type != "Trie"))
                 {
                     while(bcIter != blockChain->end())
                     {
@@ -204,13 +206,13 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else
                 {
-                    cout << "using an structure for Emisor/Receptor Inicia con" << endl;
+                    cout << "Unimplemented structure " << indexes[filter]->type << endl;
                 }
             }
             // Maximo
             else if (type == "Maximo")
             {
-                if(indexes[filter] == nullptr)
+                if(indexes[filter] == nullptr || (indexes[filter] != nullptr && indexes[filter]->type != "MaxHeap" && indexes[filter]->type != "AVL" && indexes[filter]->type != "BTree"))
                 {
                     string cmp = "";
                     Entry* tmpEntry;
@@ -239,7 +241,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else if(indexes[filter]->type == "MaxHeap")
                 {
-                    cout << "using an structure for Emisor/Receptor Maximo" << endl;
+                    cout << "MaxHeap for Emisor/Receptor Maximo" << endl;
                     auto cmp = [](Entry *e1, Entry *e2){
                         return ((TransactionEntry *)(e1))->emisor > ((TransactionEntry *)(e2))->emisor;
                     };
@@ -247,7 +249,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                     result.push_back(((Heap<Entry *, decltype(cmp)>*)(indexes[filter]))->top());
                 }
                 else if (indexes[filter]->type == "AVL") {
-                    cout << "using AVL for Emisor/Receptor Maximo" << endl;
+                    cout << "AVL for Emisor/Receptor Maximo" << endl;
                     auto cmpMayor = [&](shared_ptr<IndexT<string>> k1, shared_ptr<IndexT<string>> k2)
                     {
                         return k1->key > k2->key;
@@ -264,7 +266,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
             // Minimo
             else if (type == "Minimo")
             {
-                if(indexes[filter] == nullptr)
+                if(indexes[filter] == nullptr || (indexes[filter] != nullptr && indexes[filter]->type != "MinHeap" && indexes[filter]->type != "AVL" && indexes[filter]->type != "BTree"))
                 {
                     string cmp = string(16, 'z');
                     Entry* tmpEntry;
@@ -291,7 +293,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else if(indexes[filter]->type == "MinHeap")
                 {
-                    cout << "using an structure for Emisor/Receptor Minimo" << endl;
+                    cout << "MinHeap for Emisor/Receptor Minimo" << endl;
                     auto cmp = [](Entry *e1, Entry *e2){
                         return ((TransactionEntry *)(e1))->emisor < ((TransactionEntry *)(e2))->emisor;
                     };
@@ -299,7 +301,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                     result.push_back(((Heap<Entry *, decltype(cmp)>*)(indexes[filter]))->top());
                 }
                 else if (indexes[filter]->type == "AVL") {
-                    cout << "using AVL for Emisor/Receptor Minimo" << endl;
+                    cout << "AVL for Emisor/Receptor Minimo" << endl;
                     auto cmpMayor = [&](shared_ptr<IndexT<string>> k1, shared_ptr<IndexT<string>> k2)
                     {
                         return k1->key > k2->key;
@@ -314,36 +316,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else
                 {
-                    cout << "using an structure for Emisor/Receptor Minimo" << endl;
-                }
-            }
-            else if(type == "Entre")
-            {
-                if(indexes[filter] == nullptr)
-                {
-                    while(bcIter != blockChain->end())
-                    {
-                        Entry** entries = (*bcIter)->getEntries();
-
-                        for(int i = 0; i < (*bcIter)->getSize(); ++i)
-                        {
-                            if(filter == "Emisor" && dynamic_cast<TransactionEntry*>(entries[i])->emisor >= value1
-                                    && dynamic_cast<TransactionEntry*>(entries[i])->emisor <= value2)
-                            {
-                                result.push_back(entries[i]);
-                            }
-                            else if(filter == "Receptor" && dynamic_cast<TransactionEntry*>(entries[i])->receptor >= value1
-                                    && dynamic_cast<TransactionEntry*>(entries[i])->receptor <= value2)
-                            {
-                                result.push_back(entries[i]);
-                            }
-                        }
-                        ++bcIter;
-                    }
-                }
-                else
-                {
-                    cout << "using an structure for Monto/Fecha Entre" << endl;
+                    cout << "Unimplemented structure " << indexes[filter]->type << endl;
                 }
             }
         }
@@ -353,7 +326,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
             // Igual
             if(type == "Igual")
             {
-                if(indexes[filter] == nullptr)
+                if(indexes[filter] == nullptr || (indexes[filter] != nullptr && indexes[filter]->type != "AVL" && indexes[filter]->type != "Hash" && indexes[filter]->type != "BTree" && indexes[filter]->type != "Trie"))
                 {
                     while(bcIter != blockChain->end())
                     {
@@ -374,7 +347,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else if(indexes[filter]->type == "AVL")
                     {
-                        cout << "using ALV for Monto/Fecha Igual" << endl;
+                        cout << "AVL for Monto/Fecha Igual" << endl;
                         auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2)
                         {
                             return k1->key > k2->key;
@@ -388,11 +361,14 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                             result.push_back(e);
                         }
                     }
+                else {
+                    cout << "Unimplemented structure " << indexes[filter]->type << endl;
+                }
             }
             // Maximo
             else if(type == "Maximo")
             {
-                if(indexes[filter] == nullptr)
+                if(indexes[filter] == nullptr || (indexes[filter] != nullptr && indexes[filter]->type != "AVL" && indexes[filter]->type != "MaxHeap" && indexes[filter]->type != "BTree"))
                 {
                     size_t cmp = std::numeric_limits<size_t>::min();
                     Entry* tmpEntry;
@@ -419,7 +395,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else if(indexes[filter]->type == "MaxHeap")
                 {
-                    cout << "using an structure for Monto/Fecha Maximo" << endl;
+                    cout << "MaxHeap for Monto/Fecha Maximo" << endl;
                     if (filter == "Monto") {
                         auto cmp = [](Entry *e1, Entry *e2){
                             return ((TransactionEntry *)(e1))->monto > ((TransactionEntry *)(e2))->monto;
@@ -434,7 +410,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                     }
                 }
                 else if (indexes[filter]->type == "AVL") {
-                    cout << "using ALV for Monto/Fecha Maximo" << endl;
+                    cout << "AVL for Monto/Fecha Maximo" << endl;
                     auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2)
                     {
                         return k1->key > k2->key;
@@ -448,13 +424,13 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else
                 {
-                    cout << "using an structure for Monto/Fecha Maximo" << endl;
+                    cout << "Unimplemented structure " << indexes[filter]->type << endl;
                 }
             }
             // Minimo
             else if(type == "Minimo")
             {
-                if(indexes[filter] == nullptr)
+                if(indexes[filter] == nullptr || (indexes[filter] != nullptr && indexes[filter]->type != "AVL" && indexes[filter]->type != "MinHeap" && indexes[filter]->type != "BTree"))
                 {
                     size_t cmp = std::numeric_limits<size_t>::max();
                     Entry* tmpEntry;
@@ -481,7 +457,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else if(indexes[filter]->type == "MinHeap")
                 {
-                    cout << "using an structure for Monto/Fecha Minimo" << endl;
+                    cout << "MinHeap for Monto/Fecha Minimo" << endl;
                     if (filter == "Monto") {
                         auto cmp = [](Entry *e1, Entry *e2){
                             return ((TransactionEntry *)(e1))->monto < ((TransactionEntry *)(e2))->monto;
@@ -496,7 +472,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                     }
                 }
                 else if (indexes[filter]->type == "AVL") {
-                    cout << "using ALV for Monto/Fecha Minimo" << endl;
+                    cout << "AVL for Monto/Fecha Minimo" << endl;
                     auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2)
                     {
                         return k1->key > k2->key;
@@ -510,13 +486,13 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                 }
                 else
                 {
-                    cout << "using an structure for Monto/Fecha Minimo" << endl;
+                    cout << "Unimplemented structure " << indexes[filter]->type << endl;
                 }
             }
             // Entre
             else if(type == "Entre")
             {
-                if(indexes[filter] == nullptr)
+                if(indexes[filter] == nullptr || (indexes[filter] != nullptr && indexes[filter]->type != "AVL" && indexes[filter]->type != "BTree"))
                 {
                     while(bcIter != blockChain->end())
                     {
@@ -559,7 +535,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
                     }
                 else
                 {
-                    cout << "using an structure for Monto/Fecha Entre" << endl;
+                    cout << "Unimplemented structure " << indexes[filter]->type << endl;
                 }
             }
         }
@@ -767,6 +743,7 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
     }
 
     if (qStructure == "MaxHeap") {
+        cout << "Creating MaxHeap on " << attribute << endl;
         if (attribute == "Emisor") {
             auto cmp = [](Entry *e1, Entry *e2){
                 return ((TransactionEntry *)(e1))->emisor > ((TransactionEntry *)(e2))->emisor;
@@ -788,66 +765,231 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
             return;
         }
         else if (attribute == "Receptor") {
-            auto cmp = [](const Entry *&e1, const Entry *&e2){
-                return ((TransactionEntry *)(e1))->emisor > ((TransactionEntry *)(e2))->emisor;
+            auto cmp = [](Entry *e1, Entry *e2){
+                return ((TransactionEntry *)(e1))->receptor > ((TransactionEntry *)(e2))->receptor;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            indexes[attribute]->type = structure;
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    ((Heap<Entry *, decltype(cmp)>*)(indexes[attribute]))->push(entries[i]);
+                }
+                ++bcIter;
+            }
             return;
         }
         else if (attribute == "Monto") {
-            auto cmp = [](const Entry *&e1, const Entry *&e2){
+            auto cmp = [](Entry *e1, Entry *e2){
                 return ((TransactionEntry *)(e1))->monto > ((TransactionEntry *)(e2))->monto;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            indexes[attribute]->type = structure;
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    ((Heap<Entry *, decltype(cmp)>*)(indexes[attribute]))->push(entries[i]);
+                }
+                ++bcIter;
+            }
             return;
         }
         else if (attribute == "Fecha") {
-            auto cmp = [](const Entry *&e1, const Entry *&e2){
+            auto cmp = [](Entry *e1, Entry *e2){
                 return ((TransactionEntry *)(e1))->timestamp > ((TransactionEntry *)(e2))->timestamp;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            indexes[attribute]->type = structure;
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    ((Heap<Entry *, decltype(cmp)>*)(indexes[attribute]))->push(entries[i]);
+                }
+                ++bcIter;
+            }
             return;
         }
     }
     else if (qStructure == "MinHeap") {
+        cout << "Creating MinHeap on " << attribute << endl;
         if (attribute == "Emisor") {
-            auto cmp = [](const Entry *&e1, const Entry *&e2){
+            auto cmp = [](Entry *e1, Entry *e2){
                 return ((TransactionEntry *)(e1))->emisor < ((TransactionEntry *)(e2))->emisor;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            indexes[attribute]->type = structure;
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    ((Heap<Entry *, decltype(cmp)>*)(indexes[attribute]))->push(entries[i]);
+                }
+                ++bcIter;
+            }
             return;
         }
         else if (attribute == "Receptor") {
-            auto cmp = [](const Entry *&e1, const Entry *&e2){
-                return ((TransactionEntry *)(e1))->emisor < ((TransactionEntry *)(e2))->emisor;
+            auto cmp = [](Entry *e1, Entry *e2){
+                return ((TransactionEntry *)(e1))->receptor < ((TransactionEntry *)(e2))->receptor;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            indexes[attribute]->type = structure;
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    ((Heap<Entry *, decltype(cmp)>*)(indexes[attribute]))->push(entries[i]);
+                }
+                ++bcIter;
+            }
             return;
         }
         else if (attribute == "Monto") {
-            auto cmp = [](const Entry *&e1, const Entry *&e2){
+            auto cmp = [](Entry *e1, Entry *e2){
                 return ((TransactionEntry *)(e1))->monto < ((TransactionEntry *)(e2))->monto;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            indexes[attribute]->type = structure;
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    ((Heap<Entry *, decltype(cmp)>*)(indexes[attribute]))->push(entries[i]);
+                }
+                ++bcIter;
+            }
             return;
         }
         else if (attribute == "Fecha") {
-            auto cmp = [](const Entry *&e1, const Entry *&e2){
+            auto cmp = [](Entry *e1, Entry *e2){
                 return ((TransactionEntry *)(e1))->timestamp < ((TransactionEntry *)(e2))->timestamp;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
+            indexes[attribute]->type = structure;
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    ((Heap<Entry *, decltype(cmp)>*)(indexes[attribute]))->push(entries[i]);
+                }
+                ++bcIter;
+            }
             return;
         }
     }
     else if (qStructure == "AVL")
     {
+        cout << "Creating AVL on " << attribute << endl;
         if (attribute == "Emisor")
         {
+            auto cmpMayor = [&](shared_ptr<IndexT<string>> k1, shared_ptr<IndexT<string>> k2){
+                return k1->key > k2->key;
+            };
+            indexes[attribute] = new AVLTree<shared_ptr<IndexT<string>>, decltype(cmpMayor)>(cmpMayor);
+            indexes[attribute]->type = structure;
 
+            cout << "ALV CREATED" << endl;
+
+            unordered_map<string, shared_ptr<IndexT<string>>> um;
+
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    string emisor = ((TransactionEntry*)(entries[i]))->emisor;
+                    if(um.find(emisor) == um.end())
+                    {
+                        um[emisor] = make_shared<IndexT<string>>(emisor, entries[i]);
+                    }
+                    else
+                    {
+                        um[emisor]->insert(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+            for(auto& e : um)
+            {
+                ((AVLTree<shared_ptr<IndexT<string>>, decltype(cmpMayor)>*)(indexes[attribute]))->insert(e.second);
+            }
+            cout << "FINO termino avl" << endl;;
+            return;
         }
         else if (attribute == "Receptor")
         {
+            auto cmpMayor = [&](shared_ptr<IndexT<string>> k1, shared_ptr<IndexT<string>> k2){
+                return k1->key > k2->key;
+            };
+            indexes[attribute] = new AVLTree<shared_ptr<IndexT<string>>, decltype(cmpMayor)>(cmpMayor);
+            indexes[attribute]->type = structure;
 
+            cout << "ALV CREATED" << endl;
+
+            unordered_map<string, shared_ptr<IndexT<string>>> um;
+
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    string receptor = ((TransactionEntry*)(entries[i]))->receptor;
+                    if(um.find(receptor) == um.end())
+                    {
+                        um[receptor] = make_shared<IndexT<string>>(receptor, entries[i]);
+                    }
+                    else
+                    {
+                        um[receptor]->insert(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+            for(auto& e : um)
+            {
+                ((AVLTree<shared_ptr<IndexT<string>>, decltype(cmpMayor)>*)(indexes[attribute]))->insert(e.second);
+            }
+            cout << "FINO termino avl" << endl;;
+            return;
         }
         else if (attribute == "Monto")
         {
@@ -891,7 +1033,43 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
         }
         else if (attribute == "Fecha")
         {
+            auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2){
+                return k1->key > k2->key;
+            };
+            indexes[attribute] = new AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>(cmpMayor);
+            indexes[attribute]->type = structure;
 
+            cout << "ALV CREATED" << endl;
+
+            unordered_map<double, shared_ptr<IndexT<double>>> um;
+
+            auto bcIter = blockChain->begin();
+
+            while(bcIter != blockChain->end())
+            {
+                Entry** entries = (*bcIter)->getEntries();
+
+                for(int i = 0; i < (*bcIter)->getSize(); ++i)
+                {
+                    double fecha = ((TransactionEntry*)(entries[i]))->timestamp;
+                    if(um.find(fecha) == um.end())
+                    {
+                        um[fecha] = make_shared<IndexT<double>>(fecha, entries[i]);
+                    }
+                    else
+                    {
+                        um[fecha]->insert(entries[i]);
+                    }
+                }
+                ++bcIter;
+            }
+
+            for(auto& e : um)
+            {
+                ((AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>*)(indexes[attribute]))->insert(e.second);
+            }
+            cout << "FINO termino avl" << endl;;
+            return;
         }
     }
 

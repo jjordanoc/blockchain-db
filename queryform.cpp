@@ -12,6 +12,7 @@ QueryForm::QueryForm(QWidget *parent) :
     ui->dateTimeEdit->hide();
     ui->dateTimeEdit_2->hide();
     ui->lineEdit->hide();
+    ui->label_2->hide();
     this->currentFiltro = "Emisor";
     this->currentTipo = "Igual";
 }
@@ -58,7 +59,7 @@ void QueryForm::updateUiOnAnyChange()
 {
     std::cout << "updating ui for tipo:" << currentTipo.toStdString() << " filtro " << currentFiltro.toStdString() << std::endl;
     if (currentTipo == "Entre"){
-        // si es monto
+        ui->label_2->show();
         if (currentFiltro == "Fecha") {
             ui->dateTimeEdit->show();
             ui->dateTimeEdit_2->show();
@@ -72,7 +73,15 @@ void QueryForm::updateUiOnAnyChange()
             ui->lineEdit->show();
         }
     }
+    else if (currentTipo == "Maximo" || currentTipo == "Minimo") {
+        ui->label_2->hide();
+        ui->dateTimeEdit_2->hide();
+        ui->lineEdit->hide();
+        ui->texto->hide();
+        ui->dateTimeEdit->hide();
+    }
     else {
+        ui->label_2->hide();
         ui->dateTimeEdit_2->hide();
         ui->lineEdit->hide();
         if (currentFiltro == "Fecha") {
