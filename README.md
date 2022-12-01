@@ -120,7 +120,7 @@ Finalmente, se implementó la indexación con Trie para optimizar las consultas 
 
 |                                                                     ![Trie](images/trie.jpg)                                                                      |
 |:-----------------------------------------------------------------------------------------------------------------------------------------------------------------:|
-| *Figura 9: Un Patricia Trie almacenando distintas palabras. Los nodos en color verde indican el término de una palabra, es decir, una palabra en el diccionario.* |
+| *Figura 8: Un Patricia Trie almacenando distintas palabras. Los nodos en color verde indican el término de una palabra, es decir, una palabra en el diccionario.* |
 
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
@@ -137,14 +137,15 @@ Finalmente, se implementó la indexación con Trie para optimizar las consultas 
 
 ### Tabla comparación de tiempos (con índices)
 
-Para cada caso se ha decidido crear un índice con la estructura que soporta la operación en el mejor tiempo computacional. En el caso de Igual se ha decidido usar un Hash; mínimo y máximo, un heap; inicia con, un Patricia trie; entre, un AVL.
+Para cada caso se ha decidido crear un índice con la estructura que soporta la operación en el mejor tiempo computacional. En el caso de igual se ha decidido usar un Hash; mínimo y máximo, un heap; inicia con, un Patricia trie; entre, un AVL.
 
 | Comparación | Igual | Mínimo | Máximo | Contiene | Inicia con | Entre |
 |:-----------:|:-----:|:------:|:------:|:--------:|:----------:|:-----:|
-|   Emisor    |  10   |   5    |   5    |    X     |     0      |   X   |
-|  Receptor   |   0   |   5    |   6    |    X     |     0      |   X   |
-|    Monto    |   0   |   6    |   4    |    X     |     X      |  105  |
-|    Fecha    |   0   |   6    |   5    |    X     |     X      |  14   |
+|    Emisor   |   10  |    5   |    5   |     X    |     19     |   X   |
+|   Receptor  |   11  |    5   |    6   |     X    |     16     |   X   |
+|    Monto    |   27  |    6   |    4   |     X    |      X     |  105  |
+|    Fecha    |   ?   |    6   |    5   |     X    |      X     |   14  |
+
 
 ## Análisis de la complejidad de los métodos del Blockchain
 
@@ -176,3 +177,21 @@ Para cada caso se ha decidido crear un índice con la estructura que soporta la 
 ## Anexos
 
 Enlace al Project Boards de GitHub: https://github.com/orgs/utec-aed-2022-2/projects/4
+
+### Test de prueba de la aplicación
+
+|                              ![](images/test1)                               |
+|:----------------------------------------------------------------------------:|
+| *Figura 9: Testeando sin índice la búsqueda inicia con Skyb sobre el emisor* |
+
+|                      ![](images/test2)                      |
+|:-----------------------------------------------------------:|
+| *Figura 10: Testeando el índice maxheap sobre fecha máxima* |
+
+|                          ![](images/test3)                          |
+|:-------------------------------------------------------------------:|
+| *Figura 11: Testeando el índice hash sobre emisor igual a Explorer* |
+
+|                                      ![](images/test4)                                       |
+|                                     :-----------------:                                      |
+| *Figura 12: Modificación de un registro en el Blockchain. Los bloques afectados se resaltan* |
