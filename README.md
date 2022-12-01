@@ -148,11 +148,7 @@ Para cada caso se ha decidido crear un índice con la estructura que soporta la 
 |    Monto    |   27  |    6   |    4   |     X    |      X     |  105  |
 |    Fecha    |   ?   |    6   |    5   |     X    |      X     |   14  |
 
-### Gráficos de comparación
 
-![Grafico1](images/grafico1)
-
-![Grafico2](images/grafico2)
 
 ## Análisis de la complejidad de los métodos del Blockchain
 
@@ -173,8 +169,13 @@ Para cada caso se ha decidido crear un índice con la estructura que soporta la 
 - La seguridad que brinda la estructura se puede mejorar si se utiliza como un registro distribuido, pues esto dificulta aún más hacer cambios en la cadena.
 - El uso de estructuras de datos óptimas para el problema reduce el tiempo al realizar operaciones sobre los datos, como se pudo observar al hacer las consultas.
 - El B+Tree sería la estructura óptima para realizar búsquedas por rangos.
+- El Patricia trie fue la mejor estructura para indexar texto y buscar por igualdad o por patrón, dando una acceso constante en todos los casos. Esta la siguiente gráfica se verán reflejados los resultados haciendo una busqueda por patrón.
 
-![](https://img.freepik.com/vector-gratis/ilustracion-concepto-seguridad-personas-sosteniendo-cadena_53876-43028.jpg?w=2000)
+<div style="text-align: center;">
+  <img src="images\grafico2" width="500">
+</div>
+
+
 ## Bibliografía
 
 - [1] T. H. Cormen, C. E. Leiserson, R. L. Rivest, C. Stein, "Introduction to Algorithms". Cambridge, Massachusetts, USA, 2009 (3er ed.) [Online]. Available: https://sd.blackball.lv/library/Introduction_to_Algorithms_Third_Edition_(2009).pdf .[Accessed: Sep 24, 2022]
