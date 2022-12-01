@@ -24,7 +24,7 @@ font-family: monospace;</string>
      <x>10</x>
      <y>70</y>
      <width>151</width>
-     <height>193</height>
+     <height>231</height>
     </rect>
    </property>
    <layout class="QVBoxLayout" name="buttonLayout">
@@ -45,6 +45,16 @@ font-family: monospace;</string>
       </property>
       <property name="text">
        <string>Modificar transacción</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="deleteEntryButton">
+      <property name="styleSheet">
+       <string notr="true">background-color: rgb(108, 108, 162)</string>
+      </property>
+      <property name="text">
+       <string>Eliminar transacción</string>
       </property>
      </widget>
     </item>
@@ -195,7 +205,7 @@ font-family: monospace;</string>
    <property name="geometry">
     <rect>
      <x>20</x>
-     <y>280</y>
+     <y>320</y>
      <width>141</width>
      <height>141</height>
     </rect>
