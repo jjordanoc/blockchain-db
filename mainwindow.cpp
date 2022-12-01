@@ -782,6 +782,30 @@ void MainWindow::deleteEntryAtPosition(int blockId, int entryId)
                 }
             }
         }
+        else if (index->type == "Hash") {
+            if (attribute == "Emisor" || attribute == "Receptor") {
+                auto *hash = ((ChainHash<string, IndexT<string>>*)(index));
+                if (attribute == "Emisor") {
+                    auto remNode = hash->get(casted->emisor);
+                    remNode.values->remove(entry);
+                }
+                else if (attribute == "Receptor") {
+                    auto remNode = hash->get(casted->receptor);
+                    remNode.values->remove(entry);
+                }
+            }
+            else {
+                auto *hash = ((ChainHash<double, IndexT<double>>*)(index));
+                if (attribute == "Monto") {
+                    auto remNode = hash->get(casted->monto);
+                    remNode.values->remove(entry);
+                }
+                else if (attribute == "Fecha") {
+                    auto remNode = hash->get(casted->timestamp);
+                    remNode.values->remove(entry);
+                }
+            }
+        }
     }
 }
 
