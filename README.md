@@ -65,7 +65,7 @@ En primer lugar, se implementó la indexación con Heap (max y min heap) para ha
 Siempre actualiza sus elementos a como se inserten o eliminen si es necesario para seguir la consistencia de la estructura. [1]
 
 
-|                                                              ![Heap](images/heap.jpg)                                                              |
+|                                                               ![Heap](images/heap.JPG)                                                               |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------:|
 | *Figura 5: Representación gráfica de un Max-heap. (a) es en forma de árbol, mientras que (b) mantiene un forma de arreglo. Imagen extraída de [1]* |
 

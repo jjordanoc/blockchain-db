@@ -697,6 +697,13 @@ void MainWindow::onUpdateEntryButtonClick()
 
 void MainWindow::updateEntryAtPosition(int blockId, int entryId)
 {
+    if(blockId > blockChain->size() ||  blockChain->back()->getFillCount() < entryId){
+        ui->label_2->setText(QString::fromStdString("Last action: No valid position in the Blockchain"));
+        ui->label_2->setStyleSheet(QString::fromStdString("QLabel { background-color: rgb(50, 50, 75); color : red; }"));
+        return;
+    }
+    ui->label_2->setText(QString::fromStdString("No error registered"));
+    ui->label_2->setStyleSheet(QString::fromStdString("QLabel { background-color: rgb(50, 50, 75); color : black; }"));
     auto *dialog = new QDialog();
     dialog->setModal(true);
     dialog->setGeometry(0, 0, 600, 500);
