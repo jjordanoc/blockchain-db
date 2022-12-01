@@ -14,10 +14,13 @@
 
 En el presente proyecto se implementó el gestor de transacciones BlockDB basado en Blockchain. Este permite realizar operaciones de inserción, modificación y búsqueda de transacciones bancarias. Para esto, se implementó una estructura de Blockchain basada en una lista circular  doblemente enlazada que soporta diferentes dominios de datos.
 
+![Introduction](images/example.png)    
+
 ## Descripción del caso de estudio planteado por el grupo
 
-En un sistema bancario, se necesita guardar registros a una base de datos donde cada uno simula una transacción.
-Esta comprende de emisor, receptor, monto y fecha de la transacción realizada. Se estudiarán las transacciones de un banco ficticio que maneja un Blockchain local con la finalidad de asegurar sus datos. Además, se realizarán consultas con respecto a los atributos de los datos almacenados.
+En un sistema bancario, se necesita guardar registros a una base de datos donde cada uno simula una transacción. Esta comprende información del emisor, receptor, monto y fecha de la transacción realizada. Se estudiarán las transacciones de un banco ficticio que maneja un Blockchain local con la finalidad de asegurar sus datos. Además, se realizarán consultas con respecto a los atributos de los datos almacenados.
+
+![Entry](images/entry.png)
 
 ## Importancia del Blockchain en el dominio de datos elegido
 
@@ -53,11 +56,13 @@ El nonce se calcula al momento de minar el bloque como el menor entero positivo 
 
 Para optimizar las consultas hechas sobre el Blockchain se implementaron diferentes estructuras para indexar las entradas bajo algún atributo dado. En el caso de atributos no únicos, se utilizó agrupamiento. El usuario del gestor BlockDB debe crear los índices respectivos de acuerdo a las consultas que planea hacer con mayor frecuencia.
 
-A continuación se detallan las estructuras de datos usadas, comparando la complejidad promedio de cada operación con la de la búsqueda lineal sobre todas las entradas (n). Se muestra la tabla de la búsqueda lineal a continuación.
+A continuación se detallan las estructuras de datos usadas, comparando la complejidad promedio de cada operación con la de la búsqueda lineal sobre todas las $n$ entradas. Cuando el índice no se encuentra disponible o es irrelevante, se emplea el procedimiento de filtrado lineal, cuya tabla de complejidades se muestra a continuación.
 
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |      O(n)     |       O(n)      |       O(n)       |           O(n)          |       O(n)       |       O(n)       |
+| **Complejidad (caso promedio)** |      O(n)     |       O(n)      |       O($n*w$)       |           O($n*w*p$)          |       O(n)       |       O(n)       |
+
+$p$ es el tamaño de X (generalmente menor que $w$) y $w$ es el tamaño promedio de las cadenas del atributo.
 
 ### Heap
 
@@ -65,13 +70,13 @@ En primer lugar, se implementó la indexación con Heap (max y min heap) para ha
 Siempre actualiza sus elementos a como se inserten o eliminen si es necesario para seguir la consistencia de la estructura. [1]
 
 
-|                                                              ![Heap](images/heap.jpg)                                                              |
+|                                                              ![Heap](images/heap.JPG)                                                              |
 |:--------------------------------------------------------------------------------------------------------------------------------------------------:|
 | *Figura 5: Representación gráfica de un Max-heap. (a) es en forma de árbol, mientras que (b) mantiene un forma de arreglo. Imagen extraída de [1]* |
 
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |      O(n)     |       O(n)      |       O(n)       |           O(n)          |       O(1) (max-heap)      |       O(1)  (min-heap)     |
+| **Complejidad (caso promedio)** |      O(n)     |       O(n)      |       O($n*w$)       |           O($n*w*p$)          |      O(1) (max-heap)       |      O(1)  (min-heap)       |
 
 ### Hash
 
@@ -82,15 +87,15 @@ Este método nos ayuda a evitar colisiones dentro de la misma estructura. Esto e
 |:------------------------------------------------------------------------------------------------------------------------------------------------------------:|
 | *Figura 6: Representación gráfica de un hash con chaining. Se está empleando listas doblemente enlazadas como estructura de soporte. Imagen extraída de [1]* |
 
-
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |      O(1)     |       O(n)      |       O(n)       |           O(n)          |       O(n)       |       O(n)       |
+| **Complejidad (caso promedio)** |      O(1)     |       O(n)      |       O($n*w$)       |           O($n*w*p$)          |       O(n)       |       O(n)       |
 
 ### BST (AVL)
 
-En tercer lugar, se implementó la indexación con AVL para optimizar las consultas por igualdad y por rango. La optimización lograda para consultas por rango existe pero es limitada, y se considera preferible utilizar un B+Tree. Esta estructura sigue las propiedades de un BST solo que mantiene su estructura balanceada mediante métodos llamados rotaciones.
-Estas rotaciones son efectuadas debido a un criterio de balanceo que está definido por las alturas del subárbol izquierdo y derecho por cada nodo. [1]
+En tercer lugar, se implementó la indexación con AVL para optimizar las consultas por igualdad y por rango. Esta estructura sigue las propiedades de un BST solo que mantiene su estructura balanceada mediante métodos llamados rotaciones. Estas rotaciones son efectuadas debido a un criterio de balanceo que está definido por las alturas del subárbol izquierdo y derecho por cada nodo [1]. 
+La optimización lograda para consultas por rango existe pero es limitada, y se considera preferible utilizar un B+Tree. 
+
 
 |                                        ![AVL](images/avl.JPG)                                        |
 |:----------------------------------------------------------------------------------------------------:|
@@ -98,20 +103,8 @@ Estas rotaciones son efectuadas debido a un criterio de balanceo que está defin
 
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |      O(logn)     |       O(n)      |       O(n)       |           O(n)          |       O(logn)       |       O(logn)       |
+| **Complejidad (caso promedio)** |      O(logn)    |       O(n)      |       O($n*w$)       |           O($n*w*p$)          |       O(logn)       |        O(logn)       |
 
-### BTree
-
-En cuarto lugar, se implementó la indexación con BTree para optimizar, al igual que con AVL, las consultas por igualdad y por rango. Para búsquedas por rango sería preferible utilizar un B+Tree. Esta estructura simula un BST solo que optimiza de mejor manera el complejidad espacial y ligeramente el tiempo computacional. [1]
-
-|                                 ![Btree](images/btree.JPG)                                  |
-|:-------------------------------------------------------------------------------------------:|
-| *Figura 8: Un árbol BTree con elementos como letras del abecedario. Imagen extraída de [1]* |
-
-
-|       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
-|:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |  O(log_B(n))  |       O(n)      |       O(n)       |           O(n)          |   O(log_B(n))    |   O(log_B(n))    |
 
 ### Trie (Patricia Trie)
 
@@ -123,7 +116,7 @@ Finalmente, se implementó la indexación con Trie para optimizar las consultas 
 
 |       **Tipo de consulta**      | **Igual a X** | **Entre X y Y** | **Inicia con X** | **Está contenido en X** | **Máximo valor** | **Mínimo valor** |
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
-| **Complejidad (caso promedio)** |      O(w)     |       O(n)      |       O(w)       |           O(w)          |       O(n)       |       O(n)       |
+| **Complejidad (caso promedio)** |      O($w$)     |       O(n)      |       O($w$)       |           O($n*w*p$)          |       O(n)       |       O(n)       |
 
 ## Análisis de la complejidad de los métodos del Blockchain
 
