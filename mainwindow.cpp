@@ -718,9 +718,42 @@ void MainWindow::deleteEntryAtPosition(int blockId, int entryId)
 {
     // delete entry from all indexes
     Entry *entry = this->blockChain->searchEntry(blockId, entryId);
+    TransactionEntry *casted = (TransactionEntry*) entry;
     for (auto &[attribute, index] : indexes) {
+        if (index == nullptr) continue;
         if (index->type == "AVL") {
-//            (AVLTree<shared_ptr<IndexT<string>>, decltype()>*)
+            if (attribute == "Emisor" || attribute == "Receptor") {
+                auto cmpMayor = [&](shared_ptr<IndexT<string>> k1, shared_ptr<IndexT<string>> k2){
+                    return k1->key > k2->key;
+                };
+                auto *tree = ((AVLTree<shared_ptr<IndexT<string>>, decltype(cmpMayor)>*)(index));
+                if (attribute == "Emisor") {
+                    auto remKey = make_shared<IndexT<string>>(casted->emisor);
+                    auto remNode = tree->search(remKey);
+                    (*remNode).values->remove(entry);
+                }
+                else if (attribute == "Receptor") {
+                    auto remKey = make_shared<IndexT<string>>(casted->receptor);
+                    auto remNode = tree->search(remKey);
+                    (*remNode).values->remove(entry);
+                }
+            }
+            else {
+                auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2){
+                    return k1->key > k2->key;
+                };
+                auto *tree = ((AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>*)(index));
+                if (attribute == "Monto") {
+                    auto remKey = make_shared<IndexT<double>>(casted->monto);
+                    auto remNode = tree->search(remKey);
+                    (*remNode).values->remove(entry);
+                }
+                else if (attribute == "Fecha") {
+                    auto remKey = make_shared<IndexT<double>>(casted->timestamp);
+                    auto remNode = tree->search(remKey);
+                    (*remNode).values->remove(entry);
+                }
+            }
         }
     }
 }
