@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->mineButton, SIGNAL(clicked()), this, SLOT(validateBlockChain()));
     connect(&this->futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::redrawBlockChainAfterMine);
     connect(&this->futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::showWaitingIcon);
+    connect(ui->deleteEntryButton, SIGNAL(clicked()), this, SLOT(onDeleteEntryButtonClick()));
     ui->scrollArea->setWidget(ui->blockScrollAreaWidget);
     QMovie *movie = new QMovie("C:/Users/rojot/OneDrive/Escritorio/algoritmos_y_estructuras_de_datos/repo/proyecto-sha256/mining.gif");
     ui->miningLabel->setMovie(movie);
@@ -556,7 +557,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
     auto *dialog = new QDialog();
     dialog->setModal(true);
     dialog->setGeometry(0, 0, 550, 400);
-    if (aggregation) {
+    if (aggregation && !result.empty()) {
         double total = 0;
         for(auto& e : result)
         {
@@ -717,6 +718,17 @@ void MainWindow::updateEntryAtPosition(int blockId, int entryId)
     dialog->exec();
 }
 
+void MainWindow::deleteEntryAtPosition(int blockId, int entryId)
+{
+    // delete entry from all indexes
+    Entry *entry = this->blockChain->searchEntry(blockId, entryId);
+    for (auto &[attribute, index] : indexes) {
+        if (index->type == "AVL") {
+//            (AVLTree<shared_ptr<IndexT<string>>, decltype()>*)
+        }
+    }
+}
+
 void MainWindow::validateBlockChain()
 {
     QFuture<void> result = QtConcurrent::run([this](){
@@ -806,7 +818,7 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
             return;
         }
         else if (attribute == "Monto") {
-            auto cmp = [](Entry *e1, Entry *e2){
+            std::function<bool(Entry*,Entry*)> cmp = [](Entry *e1, Entry *e2){
                 return ((TransactionEntry *)(e1))->monto > ((TransactionEntry *)(e2))->monto;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
@@ -1094,6 +1106,21 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
         }
     }
 
+}
+
+void MainWindow::onDeleteEntryButtonClick()
+{
+    auto *dialog = new QDialog();
+    dialog->setModal(true);
+    dialog->setGeometry(0, 0, 400, 400);
+    dialog->setStyleSheet(dialogStyle);
+    auto *findEntryForm = new FindEntryForm(dialog);
+    connect(findEntryForm, &FindEntryForm::foundEntry, this, [this, dialog](int blockId, int entryId) {
+        dialog->accept();
+        this->deleteEntryAtPosition(blockId, entryId);
+    });
+    findEntryForm->show();
+    dialog->exec();
 }
 
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)

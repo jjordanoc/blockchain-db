@@ -76,6 +76,7 @@ void QueryForm::updateUiOnAnyChange()
             ui->lineEdit->show();
         }
         ui->montoCheckBox->hide();
+        ui->montoCheckBox->setCheckState(Qt::CheckState::Unchecked);
     }
     else if (currentTipo == "Maximo" || currentTipo == "Minimo") {
         ui->label_2->hide();
@@ -84,6 +85,7 @@ void QueryForm::updateUiOnAnyChange()
         ui->texto->hide();
         ui->dateTimeEdit->hide();
         ui->montoCheckBox->hide();
+        ui->montoCheckBox->setCheckState(Qt::CheckState::Unchecked);
     }
     else {
         if (currentTipo == "Igual" && (currentFiltro == "Receptor" || currentFiltro == "Emisor")) {
@@ -91,6 +93,7 @@ void QueryForm::updateUiOnAnyChange()
         }
         else {
             ui->montoCheckBox->hide();
+            ui->montoCheckBox->setCheckState(Qt::CheckState::Unchecked);
         }
         ui->label_2->hide();
         ui->dateTimeEdit_2->hide();

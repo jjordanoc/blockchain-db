@@ -58,9 +58,11 @@ private slots:
     void uploadDataFromFile();
     void onUpdateEntryButtonClick();
     void updateEntryAtPosition(int blockId, int entryId);
+    void deleteEntryAtPosition(int blockId, int entryId);
     void validateBlockChain();
     void redrawBlockChainAfterMine();
     void showWaitingIcon();
     void createIndexes(QString,QString);
+    void onDeleteEntryButtonClick();
 };
 #endif // MAINWINDOW_H
