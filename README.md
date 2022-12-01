@@ -126,7 +126,7 @@ Finalmente, se implementó la indexación con Trie para optimizar las consultas 
 |:-------------------------------:|:-------------:|:---------------:|:----------------:|:-----------------------:|:----------------:|:----------------:|
 | **Complejidad (caso promedio)** |      O($w$)     |       O(n)      |       O($w$)       |           O($n*w*p$)          |       O(n)       |       O(n)       |
 
-### Tabla comparación de tiempos (sin índices)
+### Tabla comparación de tiempos en microsegundos (sin índices)
 
 | Comparación | Igual | Mínimo | Máximo | Contiene | Inicia con | Entre |
 |:-----------:|:-----:|:------:|:------:|:--------:|:----------:|:-----:|
@@ -135,7 +135,7 @@ Finalmente, se implementó la indexación con Trie para optimizar las consultas 
 |    Monto    |  524  |  168   |  136   |    X     |     X      |  823  |
 |    Fecha    |  177  |  135   |  156   |    X     |     X      |  165  |
 
-### Tabla comparación de tiempos (con índices)
+### Tabla comparación de tiempos en microsegundos (con índices)
 
 Para cada caso se ha decidido crear un índice con la estructura que soporta la operación en el mejor tiempo computacional. En el caso de igual se ha decidido usar un Hash; mínimo y máximo, un heap; inicia con, un Patricia trie; entre, un AVL.
 
@@ -146,6 +146,11 @@ Para cada caso se ha decidido crear un índice con la estructura que soporta la 
 |    Monto    |   27  |    6   |    4   |     X    |      X     |  105  |
 |    Fecha    |   ?   |    6   |    5   |     X    |      X     |   14  |
 
+### Gráficos de comparación
+
+![Grafico1](images/grafico1)
+
+![Grafico2](images/grafico2)
 
 ## Análisis de la complejidad de los métodos del Blockchain
 
