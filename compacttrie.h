@@ -32,7 +32,8 @@ class CompactTrie : public Index {
             children = std::vector<Node*>(SIZE_ALPHABET, nullptr);
             n = 0;
         }
-        explicit Node(T s, bool b):key(std::move(s)),endWord(b) {
+        explicit Node(T s, bool b):key(s),endWord(b) {
+            cout << "3-" << key.values->empty() << endl;
             children = std::vector<Node*>(256, nullptr);
             n = 0;
         };
@@ -98,8 +99,8 @@ private:
     {
         // Caso base: Cuando primera letra del key no está en el nodo
         Node* child = node->children[get(key)[0]];
+        cout << "2-" << key.values->empty() << endl;
         if(child == nullptr){
-
             // Se inserta la llave
             node->children[get(key)[0]] = new Node(key, true);
 
@@ -111,7 +112,8 @@ private:
         }
 
         // Compara con cada letra del nodo hijo con la key
-        T newKey;
+        T newKey(key);
+        get(newKey) = "";
         int i = 0;
 
         // Caso 1: La key es igual o más grande que la key del hijo
@@ -140,7 +142,10 @@ private:
                     newNode->children[get(child->key)[0]] = child;
 
                     // Se crea un nuevo nodo con lo que resta de la key y agrega como hijo del nuevo nodo
-                    newNode->children[get(key)[i]] = new Node(T(get(key).substr(i)), true);
+                    T nwNd(key);
+                    get(nwNd) = get(key).substr(i);
+
+                    newNode->children[get(key)[i]] = new Node(nwNd, true);
 
                     // NewNode deja de ser hoja
                     newNode->isLeaf = false;
@@ -163,7 +168,8 @@ private:
             /* En este punto, la key del hijo coincide completamente con la key, pero aún faltan letras de la key.
              * Se llama recursivamente la función para insertar lo que resta de la llave.
              */
-            T a(get(key).substr(i));
+            T a(key);
+            get(a) = get(key).substr(i);
             insert(child, a);
         }
 
@@ -188,7 +194,9 @@ private:
                     newNode->children[get(child->key)[0]] = child;
 
                     // Se crea un nuevo nodo con lo que resta de la key y agrega como hijo del nuevo nodo
-                    newNode->children[get(key)[i]] = new Node(T(get(key).substr(i)), true);
+                    T nwNd(key);
+                    get(nwNd) = get(key).substr(i);
+                    newNode->children[get(key)[i]] = new Node(nwNd, true);
 
                     // NewNode deja de ser hoja
                     newNode->isLeaf = false;
@@ -262,7 +270,8 @@ private:
                 /* La key del hijo coincide totalmente con la key a remover, por ello, se llama recursivamente
                  * para seguir buscando la llave
                  */
-                T a(get(key).substr(i));
+                T a(key);
+                get(a) = get(key).substr(i);
                 remove(child, a);
             }
 
@@ -284,7 +293,8 @@ private:
                 if(child->children[j] != nullptr) break;
             }
 
-            T keyAcum;
+            T keyAcum(key);
+            get(keyAcum) = "";
             // Mientras no encontremos un endWord, buscamos hasta el último nodo que se puede compactar
             while (!tmpChild->endWord){
 
@@ -352,7 +362,8 @@ private:
                         return false;
                     }
                 }
-                T a(get(key).substr(i));
+                T a(key);
+                get(a) = get(key).substr(i);
                 return find(child, a);
             }
             else {
@@ -384,7 +395,8 @@ private:
                         return T{};
                     }
                 }
-                T a(get(key).substr(i));
+                T a(key);
+                get(a) = get(key).substr(i);
                 return searchEqual(child, a);
             }
             else {
@@ -424,7 +436,8 @@ private:
                         return;
                     }
                 }
-                T a(get(key).substr(i));
+                T a(key);
+                get(a) = get(key).substr(i);
                 searchStartWith(child, result, a);
                 return;
             }

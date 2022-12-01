@@ -39,6 +39,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->mineButton, SIGNAL(clicked()), this, SLOT(validateBlockChain()));
     connect(&this->futureWatcher, &QFutureWatcher<void>::finished, this, &MainWindow::redrawBlockChainAfterMine);
     connect(&this->futureWatcher, &QFutureWatcher<void>::started, this, &MainWindow::showWaitingIcon);
+    connect(ui->deleteEntryButton, SIGNAL(clicked()), this, SLOT(onDeleteEntryButtonClick()));
     ui->scrollArea->setWidget(ui->blockScrollAreaWidget);
     QMovie *movie = new QMovie("C:/Users/rojot/OneDrive/Escritorio/algoritmos_y_estructuras_de_datos/repo/proyecto-sha256/mining.gif");
     ui->miningLabel->setMovie(movie);
@@ -148,6 +149,33 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
 
                     for(auto& e : *(indext->values))
                     {
+                        result.push_back(e);
+                    }
+                }
+                else if(indexes[filter]->type == "Hash")
+                {
+                    cout << "HASH for Emisor/Receptor Igual" << endl;
+                    auto indext = ((ChainHash<string, IndexT<string>>*)(indexes[filter]))->get(value1);
+                    for(auto& e : *(indext.values))
+                    {
+                        result.push_back(e);
+                    }
+                }
+                else if(indexes[filter]->type == "Trie")
+                {
+                    cout << "TRIE for Emisor/Receptor Igual" << endl;
+
+                    auto cmp = [](IndexT<string>& i) -> string& {
+                            return i.key;
+                    };
+
+                    IndexT<string> request(value1);
+                    cout << boolalpha << ((CompactTrie<IndexT<string>, decltype(cmp)>*)(indexes[filter]))->find(request) << endl;
+                    IndexT<string> res = ((CompactTrie<IndexT<string>, decltype(cmp)>*)(indexes[filter]))->searchEqual(request);
+                    cout << boolalpha << (*(res.values)).empty() << endl;
+                    for(const auto& e : *(res.values))
+                    {
+                        cout << e << endl;
                         result.push_back(e);
                     }
                 }
@@ -552,7 +580,7 @@ void MainWindow::applyFilter(std::unordered_map<std::string, std::string> um)
     auto *dialog = new QDialog();
     dialog->setModal(true);
     dialog->setGeometry(0, 0, 550, 400);
-    if (aggregation) {
+    if (aggregation && !result.empty()) {
         double total = 0;
         for(auto& e : result)
         {
@@ -720,6 +748,74 @@ void MainWindow::updateEntryAtPosition(int blockId, int entryId)
     dialog->exec();
 }
 
+void MainWindow::deleteEntryAtPosition(int blockId, int entryId)
+{
+    // delete entry from all indexes
+    Entry *entry = this->blockChain->searchEntry(blockId, entryId);
+    TransactionEntry *casted = (TransactionEntry*) entry;
+    for (auto &[attribute, index] : indexes) {
+        if (index == nullptr) continue;
+        if (index->type == "AVL") {
+            if (attribute == "Emisor" || attribute == "Receptor") {
+                auto cmpMayor = [&](shared_ptr<IndexT<string>> k1, shared_ptr<IndexT<string>> k2){
+                    return k1->key > k2->key;
+                };
+                auto *tree = ((AVLTree<shared_ptr<IndexT<string>>, decltype(cmpMayor)>*)(index));
+                if (attribute == "Emisor") {
+                    auto remKey = make_shared<IndexT<string>>(casted->emisor);
+                    auto remNode = tree->search(remKey);
+                    (*remNode).values->remove(entry);
+                }
+                else if (attribute == "Receptor") {
+                    auto remKey = make_shared<IndexT<string>>(casted->receptor);
+                    auto remNode = tree->search(remKey);
+                    (*remNode).values->remove(entry);
+                }
+            }
+            else {
+                auto cmpMayor = [&](shared_ptr<IndexT<double>> k1, shared_ptr<IndexT<double>> k2){
+                    return k1->key > k2->key;
+                };
+                auto *tree = ((AVLTree<shared_ptr<IndexT<double>>, decltype(cmpMayor)>*)(index));
+                if (attribute == "Monto") {
+                    auto remKey = make_shared<IndexT<double>>(casted->monto);
+                    auto remNode = tree->search(remKey);
+                    (*remNode).values->remove(entry);
+                }
+                else if (attribute == "Fecha") {
+                    auto remKey = make_shared<IndexT<double>>(casted->timestamp);
+                    auto remNode = tree->search(remKey);
+                    (*remNode).values->remove(entry);
+                }
+            }
+        }
+        else if (index->type == "Hash") {
+            if (attribute == "Emisor" || attribute == "Receptor") {
+                auto *hash = ((ChainHash<string, IndexT<string>>*)(index));
+                if (attribute == "Emisor") {
+                    auto remNode = hash->get(casted->emisor);
+                    remNode.values->remove(entry);
+                }
+                else if (attribute == "Receptor") {
+                    auto remNode = hash->get(casted->receptor);
+                    remNode.values->remove(entry);
+                }
+            }
+            else {
+                auto *hash = ((ChainHash<double, IndexT<double>>*)(index));
+                if (attribute == "Monto") {
+                    auto remNode = hash->get(casted->monto);
+                    remNode.values->remove(entry);
+                }
+                else if (attribute == "Fecha") {
+                    auto remNode = hash->get(casted->timestamp);
+                    remNode.values->remove(entry);
+                }
+            }
+        }
+    }
+}
+
 void MainWindow::validateBlockChain()
 {
     QFuture<void> result = QtConcurrent::run([this](){
@@ -809,7 +905,7 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
             return;
         }
         else if (attribute == "Monto") {
-            auto cmp = [](Entry *e1, Entry *e2){
+            std::function<bool(Entry*,Entry*)> cmp = [](Entry *e1, Entry *e2){
                 return ((TransactionEntry *)(e1))->monto > ((TransactionEntry *)(e2))->monto;
             };
             indexes[attribute] = new Heap<Entry *, decltype(cmp)>(this->blockChain->size(), cmp);
@@ -1134,6 +1230,7 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
 
             for(auto& e : um)
             {
+                cout << "1-" << e.second.values->empty() << endl;
                 ((CompactTrie<IndexT<string>, decltype(cmp)>*)(indexes[attribute]))->insert(e.second);
             }
             cout << "TRIE FINISIMO TERMINO" << endl;
@@ -1201,6 +1298,21 @@ void MainWindow::createIndexes(QString qStructure, QString qAttribute)
 
         }
     }
+}
+
+void MainWindow::onDeleteEntryButtonClick()
+{
+    auto *dialog = new QDialog();
+    dialog->setModal(true);
+    dialog->setGeometry(0, 0, 400, 400);
+    dialog->setStyleSheet(dialogStyle);
+    auto *findEntryForm = new FindEntryForm(dialog);
+    connect(findEntryForm, &FindEntryForm::foundEntry, this, [this, dialog](int blockId, int entryId) {
+        dialog->accept();
+        this->deleteEntryAtPosition(blockId, entryId);
+    });
+    findEntryForm->show();
+    dialog->exec();
 }
 
 void MainWindow::redrawBlockChain(Block<BLOCK_SIZE> *block)

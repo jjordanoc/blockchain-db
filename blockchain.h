@@ -79,7 +79,7 @@ public:
 
     Entry *searchEntry(int blockId, int entryId) {// search for read only entry
         if (entryId <= 0 || entryId > BLOCK_SIZE || blockId <= 0 || blockId > this->size()) throw runtime_error("Invalid arguments");
-        return ((*this)[blockId - 1])->getEntry(entryId);
+        return ((*this)[blockId - 1])->getEntry(entryId-1);
     }
 
     bool isValid() {
