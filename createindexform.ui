@@ -42,11 +42,6 @@
         <widget class="QComboBox" name="structure">
          <item>
           <property name="text">
-           <string>BTree</string>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>AVL</string>
           </property>
          </item>

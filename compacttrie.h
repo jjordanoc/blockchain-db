@@ -33,7 +33,6 @@ class CompactTrie : public Index {
             n = 0;
         }
         explicit Node(T s, bool b):key(s),endWord(b) {
-            cout << "3-" << key.values->empty() << endl;
             children = std::vector<Node*>(256, nullptr);
             n = 0;
         };
@@ -99,7 +98,6 @@ private:
     {
         // Caso base: Cuando primera letra del key no está en el nodo
         Node* child = node->children[get(key)[0]];
-        cout << "2-" << key.values->empty() << endl;
         if(child == nullptr){
             // Se inserta la llave
             node->children[get(key)[0]] = new Node(key, true);
@@ -112,7 +110,7 @@ private:
         }
 
         // Compara con cada letra del nodo hijo con la key
-        T newKey(key);
+        T newKey;
         get(newKey) = "";
         int i = 0;
 

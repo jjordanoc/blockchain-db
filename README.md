@@ -14,6 +14,14 @@
 
 En el presente proyecto se implementó el gestor de transacciones BlockDB basado en Blockchain. Este permite realizar operaciones de inserción, modificación y búsqueda de transacciones bancarias. Para esto, se implementó una estructura de Blockchain basada en una lista circular  doblemente enlazada que soporta diferentes dominios de datos.
 
+## Objetivos
+
+- Objetivo principal: Implementar un sistema gestor de transacciones basado en Blockchain que soporte consultas eficientes, indexando los valores por medio de estructuras de datos.
+- Objetivos específicos:
+  - Implementar la estructura de Blockchain.
+  - Elaborar una interfaz gráfica para interactuar con la estructura.
+  - Indexar las transacciones con una estructura de datos.
+
 ![Introduction](images/example.png)    
 
 ## Descripción del caso de estudio planteado por el grupo
